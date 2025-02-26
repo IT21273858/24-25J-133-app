@@ -74,3 +74,8 @@ final TextStyle cardbodyStyle = GoogleFonts.poppins(
   fontWeight: FontWeight.w500,
   color: HeadingColor,
 );
+final TextStyle childcardbodyStyle = GoogleFonts.poppins(
+  fontSize: 12,
+  fontWeight: FontWeight.w500,
+  color: HeadingColor,
+);

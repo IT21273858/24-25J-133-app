@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 // Reusable Text Input Field
 class CustomTextField extends StatelessWidget {
@@ -143,7 +144,6 @@ class RoundedDivider extends StatelessWidget {
 }
 
 // Slider of Card View Component
-// Slider of Card View Component
 class SelectableCardSlider extends StatefulWidget {
   final List<Map<String, String>> cardData;
   final Function(String) onSelected;
@@ -228,6 +228,253 @@ class _SelectableCardSliderState extends State<SelectableCardSlider> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+// Child card
+class ChildCardSlider extends StatelessWidget {
+  final List<Map<String, String>> childData;
+
+  const ChildCardSlider({super.key, required this.childData});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 175, // Ensures proper scrolling
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: childData.length,
+        itemBuilder: (context, index) {
+          final child = childData[index];
+
+          return Container(
+            width: 180,
+            height: 175,
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(23),
+              color: cardBackgroundcolor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundImage: AssetImage(child['image']!),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              child['name']!,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              overflow:
+                                  TextOverflow.ellipsis, // Prevent overflow
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(height: 8),
+                          Text(child['level']!, style: cardbodyStyle),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(child['lastLogged']!, style: childcardbodyStyle),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Last logged on", style: childcardbodyStyle),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Graph Component
+class BarChartWidget extends StatelessWidget {
+  final List<BarChartGroupData> barGroups;
+  final String title;
+  final String revenue;
+  final String dropdownValue;
+  final List<String> dropdownItems;
+  final void Function(String?)? onDropdownChanged; // Fix type issue
+  final Map<String, double> legendData;
+
+  const BarChartWidget({
+    super.key,
+    required this.barGroups,
+    required this.title,
+    required this.revenue,
+    required this.dropdownValue,
+    required this.dropdownItems,
+    required this.onDropdownChanged,
+    required this.legendData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Text(title, style: TextStyle(color: Colors.grey)),
+                      SizedBox(height: 5),
+                      Text(
+                        revenue,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: DropdownButton<String>(
+                          // dropdownColor: cardBackgroundcolor,
+                          value: dropdownValue,
+                          items:
+                              dropdownItems.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                          onChanged: onDropdownChanged,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              // Dropdown
+            ],
+          ),
+
+          SizedBox(height: 10),
+          SizedBox(
+            height: 120,
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceBetween,
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(),
+                  rightTitles: AxisTitles(),
+                  topTitles: AxisTitles(),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        const style = TextStyle(fontSize: 10);
+                        String text = "";
+                        switch (value.toInt()) {
+                          case 0:
+                            text = 'JAN';
+                            break;
+                          case 1:
+                            text = 'FEB';
+                            break;
+                          case 2:
+                            text = 'MAR';
+                            break;
+                          case 3:
+                            text = 'APR';
+                            break;
+                        }
+                        return SideTitleWidget(
+                          meta: meta,
+                          child: Text(text, style: style),
+                        );
+                      },
+                      reservedSize: 20,
+                    ),
+                  ),
+                ),
+                barGroups: barGroups,
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+
+          // Legend
+          Column(
+            children:
+                legendData.entries.map((entry) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 5,
+                              backgroundColor:
+                                  entry.value == 7
+                                      ? Colors.purple
+                                      : Colors.blue,
+                            ),
+                            SizedBox(width: 5),
+                            Text(entry.key),
+                          ],
+                        ),
+                        Text("${entry.value.toStringAsFixed(0)} %"),
+                      ],
+                    ),
+                  );
+                }).toList(),
+          ),
+        ],
       ),
     );
   }
