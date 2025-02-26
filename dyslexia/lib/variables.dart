@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // App information
 const String appTitle = 'Dyslexia';
@@ -20,3 +21,22 @@ const Color appPrimaryColor = Color(0xFF9370DB); // Purple
 const Color appSecondaryColor = Color(0xFF554997); // Darker purple
 const Color appTextColor = Color(0xFF4F4B65);
 const Color appBackgroundColor = Color(0xFFF0EFF4);
+
+// Font styles using Poppins
+final TextStyle headingStyle = GoogleFonts.poppins(
+  fontSize: 36,
+  fontWeight: FontWeight.bold,
+  color: appTextColor,
+);
+// Body style
+final TextStyle bodyStyle = GoogleFonts.poppins(
+  fontSize: 18,
+  color: appTextColor,
+);
+
+// Small font style
+final TextStyle smallTextStyle = GoogleFonts.poppins(
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+  color: appTextColor,
+);
