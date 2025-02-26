@@ -1,5 +1,7 @@
+import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp()); // Removed const to avoid hot reload issue
@@ -20,13 +22,13 @@ class MyApp extends StatelessWidget {
           backgroundColor: appPrimaryColor,
           foregroundColor: Colors.white, // Ensuring contrast
         ),
-        textTheme: const TextTheme(
-          headlineMedium: TextStyle(
+        textTheme: TextTheme(
+          headlineMedium: GoogleFonts.poppins(
             color: appTextColor,
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
-          bodyMedium: TextStyle(color: appTextColor, fontSize: 18),
+          bodyMedium: GoogleFonts.poppins(color: appTextColor, fontSize: 18),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: appSecondaryColor,
@@ -76,6 +78,16 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                 '$_counter',
                 style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
+                child: const Text("Login"),
               ),
             ],
           ),

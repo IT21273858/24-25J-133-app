@@ -8,6 +8,7 @@ plugins {
 android {
     namespace = "com.example.dyslexia"
     compileSdk = flutter.compileSdkVersion
+    // ndkVersion = flutter.ndkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
