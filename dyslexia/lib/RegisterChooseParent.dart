@@ -44,7 +44,7 @@ class _RegisterChooseParentState extends State<RegisterChooseParent> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Image.asset(
-                  'assets/images/Hello-amico.png',
+                  'assets/images/Notebook-amico.png',
                   height: 280,
                   width: 280,
                 ),
