@@ -10,6 +10,7 @@ class RegisterChooseChild extends StatefulWidget {
 
 class _RegisterChooseChildState extends State<RegisterChooseChild> {
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
   List<bool> isSelected = [true, false]; // Initial selection state
@@ -29,82 +30,82 @@ class _RegisterChooseChildState extends State<RegisterChooseChild> {
 
   @override
   Widget build(BuildContext context) {
-    const List<Widget> types = <Widget>[Text('Parent'), Text('Child')];
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
+        // Fix overflow issue
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 60, left: 0, right: 0, bottom: 0),
-              ),
               // Image at the top
               Container(
-                // padding: EdgeInsets.all(2),
-                height: 350,
+                height: 350, // Reduce height to fit
                 width: 350,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Image.asset(
                   'assets/images/Hello-amico.png',
-                  height: 311,
-                  width: 311,
+                  height: 280,
+                  width: 280,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 50,
-                  left: 20,
-                  right: 20,
-                  bottom: 20,
-                ),
-              ),
-              // Heading Section
-              Text('Create new account child', style: registerheadingStyle),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 230,
-                child: Text(
-                  'Create an Account Watch Progress Unfold!',
-                  style: registerbodyStyle,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 0, top: 40, right: 0, bottom: 0),
-              ),
-              CustomTextField(
-                hintText: "Enter Username",
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-              ),
+              const SizedBox(height: 20),
 
-              CustomTextField(
-                hintText: "Enter Email",
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
+              // Back Button + Title
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back_ios, size: 16),
+                    color: appTextColor,
+                  ),
+                  Text('Continue as ', style: registerbodyStyle),
+                  Text('Child', style: registerbodyboldStyle),
+                ],
               ),
-              CustomTextField(
-                hintText: "Password",
-                controller: passwordController,
-                obscureText: true,
+              const SizedBox(height: 20),
+
+              // Heading
+              Text('Create new account', style: registerheadingStyle),
+              const SizedBox(height: 20),
+
+              // Input Fields (Now inside Column)
+              Column(
+                children: [
+                  CustomTextField(
+                    hintText: "Enter Username",
+                    controller: usernameController,
+                    keyboardType: TextInputType.text,
+                  ),
+                  const SizedBox(height: 15),
+                  CustomTextField(
+                    hintText: "Enter Parent Email",
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 15),
+                  CustomTextField(
+                    hintText: "Password",
+                    controller: passwordController,
+                    obscureText: true,
+                  ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 0, top: 10, right: 0, bottom: 0),
-              ),
-              Padding(padding: EdgeInsets.only(top: 30)),
-              // Sign In Button
+              const SizedBox(height: 20),
+
+              // Register Button
               CustomButton(
-                text: "Register",
+                text: "Register as Child",
                 isLoading: isLoading,
                 onPressed: _handleRegister,
               ),
-              Padding(padding: EdgeInsets.only(top: 30)),
+              const SizedBox(height: 30),
 
+              // Login Option
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -126,18 +127,10 @@ class _RegisterChooseChildState extends State<RegisterChooseChild> {
                   ),
                 ],
               ),
+              const SizedBox(height: 30), // Extra space for better UI
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
-          );
-        },
-        child: const Text("Login"),
       ),
     );
   }
