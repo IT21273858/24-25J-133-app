@@ -66,6 +66,10 @@ flutter:
       - assets/images/meta.png
       - assets/images/Hello-amico.png
       - assets/images/Notebook-amico.png
+      - assets/images/curiositychild-pana.png
+      - assets/images/visual.png
+      - assets/images/reading.png
+      - assets/images/memory.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

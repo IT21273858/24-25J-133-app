@@ -141,3 +141,94 @@ class RoundedDivider extends StatelessWidget {
     );
   }
 }
+
+// Slider of Card View Component
+// Slider of Card View Component
+class SelectableCardSlider extends StatefulWidget {
+  final List<Map<String, String>> cardData;
+  final Function(String) onSelected;
+  final String initialSelected;
+
+  const SelectableCardSlider({
+    super.key,
+    required this.cardData,
+    required this.onSelected,
+    required this.initialSelected,
+  });
+
+  @override
+  _SelectableCardSliderState createState() => _SelectableCardSliderState();
+}
+
+class _SelectableCardSliderState extends State<SelectableCardSlider> {
+  String? selectedCard;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedCard = widget.initialSelected;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.cardData.length,
+        itemBuilder: (context, index) {
+          final card = widget.cardData[index];
+          final isSelected = selectedCard == card['title'];
+
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedCard = card['title'];
+              });
+              widget.onSelected(selectedCard!);
+            },
+            child: Container(
+              width: 200,
+              height: 68,
+              margin: EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(23),
+                border: Border.all(
+                  color: isSelected ? cardBordercolor : cardBackgroundcolor,
+                  width: 4,
+                ),
+                color: cardBackgroundcolor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(card['image']!, height: 80),
+                  SizedBox(height: 10),
+                  Text(
+                    card['title']!,
+                    style: cardheadingStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    card['description']!,
+                    style: cardbodyStyle.copyWith(color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

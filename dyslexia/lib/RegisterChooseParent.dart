@@ -1,4 +1,5 @@
 import 'package:dyslexia/LoginPage.dart';
+import 'package:dyslexia/RegisterDiseaseSelect.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
@@ -24,6 +25,10 @@ class _RegisterChooseParentState extends State<RegisterChooseParent> {
         isLoading = false;
       });
       print("Registering with ${emailController.text}");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => RegisterDiseaseSelect()),
+      );
     });
   }
 
