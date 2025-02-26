@@ -60,13 +60,15 @@ class CustomButton extends StatelessWidget {
   final bool isLoading;
   final Color backgroundColor;
   final Color textColor;
+  final Color borderColor;
 
   const CustomButton({
     super.key,
     required this.text,
     required this.onPressed,
     this.isLoading = false,
-    this.backgroundColor = appPrimaryColor,
+    this.backgroundColor = appButtonColor,
+    this.borderColor = appPrimaryColor,
     this.textColor = Colors.white,
   });
 
@@ -79,6 +81,8 @@ class CustomButton extends StatelessWidget {
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
+          shadowColor: appTextColor,
+          foregroundColor: appPrimaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),

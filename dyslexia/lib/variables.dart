@@ -23,6 +23,7 @@ const Color appTextColor = Color(0xFF4F4B65);
 const Color appBackgroundColor = Color(0xFFF0EFF4);
 const Color HeadingColor = Color.fromARGB(255, 0, 0, 0);
 const Color appTogglebuttonColor = Color(0xFF4F4B65);
+const Color appButtonColor = Color.fromARGB(187, 167, 125, 251); // Purple
 
 // Font styles using Poppins
 final TextStyle headingStyle = GoogleFonts.poppins(
