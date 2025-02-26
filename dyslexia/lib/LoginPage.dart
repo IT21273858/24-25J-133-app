@@ -34,103 +34,107 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: 100),
-              // Heading Section
-              Text('Hello Again!', style: headingStyle),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 230,
-                child: Text(
-                  'Welcome back you’ve been missed!',
-                  style: bodyStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 50),
-
-              // Email Field
-              CustomTextField(
-                hintText: "Enter Username",
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 20),
-
-              // Password Field
-              CustomTextField(
-                hintText: "Password",
-                controller: passwordController,
-                obscureText: true,
-              ),
-              const SizedBox(height: 20),
-
-              // Recovery Password Link
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text("Recovery Password", style: smallTextStyle),
-              ),
-              const SizedBox(height: 50),
-
-              // Sign In Button
-              CustomButton(
-                text: "Sign In",
-                isLoading: isLoading,
-                onPressed: _handleSignIn,
-              ),
-              const SizedBox(height: 80),
-
-              // "Or continue with" Divider
-              Row(
-                children: [
-                  Expanded(child: RoundedDivider()),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Text("or continue with", style: bodyStyle),
+      body: SingleChildScrollView(
+        // ✅ Fix overflow issue
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 100),
+                // Heading Section
+                Text('Hello Again!', style: headingStyle),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: 230,
+                  child: Text(
+                    'Welcome back you’ve been missed!',
+                    style: bodyStyle,
+                    textAlign: TextAlign.center,
                   ),
-                  Expanded(child: RoundedDivider()),
-                ],
-              ),
-              const SizedBox(height: 20),
+                ),
+                const SizedBox(height: 50),
 
-              // Social Login Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SocialLoginButton(imagePath: "assets/images/google.png"),
-                  const SizedBox(width: 15),
-                  SocialLoginButton(imagePath: "assets/images/apple.png"),
-                  const SizedBox(width: 15),
-                  SocialLoginButton(imagePath: "assets/images/meta.png"),
-                ],
-              ),
-              const SizedBox(height: 30),
+                // Email Field
+                CustomTextField(
+                  hintText: "Enter Username",
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 20),
 
-              // Register Now Link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Not a member? ", style: bodyStyle),
-                  GestureDetector(
-                    onTap: () {
-                      _handleSignIn();
-                    },
-                    child: Text(
-                      "Register now",
-                      style: bodyStyle.copyWith(
-                        color: appPrimaryColor,
-                        fontWeight: FontWeight.bold,
+                // Password Field
+                CustomTextField(
+                  hintText: "Password",
+                  controller: passwordController,
+                  obscureText: true,
+                ),
+                const SizedBox(height: 20),
+
+                // Recovery Password Link
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text("Recovery Password", style: smallTextStyle),
+                ),
+                const SizedBox(height: 50),
+
+                // Sign In Button
+                CustomButton(
+                  text: "Sign In",
+                  isLoading: isLoading,
+                  onPressed: _handleSignIn,
+                ),
+                const SizedBox(height: 50),
+
+                // "Or continue with" Divider
+                Row(
+                  children: [
+                    Expanded(child: RoundedDivider()),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text("or continue with", style: bodyStyle),
+                    ),
+                    Expanded(child: RoundedDivider()),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Social Login Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SocialLoginButton(imagePath: "assets/images/google.png"),
+                    const SizedBox(width: 15),
+                    SocialLoginButton(imagePath: "assets/images/apple.png"),
+                    const SizedBox(width: 15),
+                    SocialLoginButton(imagePath: "assets/images/meta.png"),
+                  ],
+                ),
+                const SizedBox(height: 30),
+
+                // Register Now Link
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Not a member? ", style: bodyStyle),
+                    GestureDetector(
+                      onTap: () {
+                        _handleSignIn();
+                      },
+                      child: Text(
+                        "Register now",
+                        style: bodyStyle.copyWith(
+                          color: appPrimaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ),
