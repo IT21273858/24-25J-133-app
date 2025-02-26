@@ -1,5 +1,4 @@
 import 'package:dyslexia/DashboardParent.dart';
-import 'package:dyslexia/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
