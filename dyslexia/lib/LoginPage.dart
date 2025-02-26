@@ -1,3 +1,4 @@
+import 'package:dyslexia/RegisterChoose.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
@@ -23,6 +24,10 @@ class _LoginPageState extends State<LoginPage> {
         isLoading = false;
       });
       print("Logging in with ${emailController.text}");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => RegisterChoose()),
+      );
     });
   }
 
@@ -112,7 +117,9 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Text("Not a member? ", style: bodyStyle),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      _handleSignIn();
+                    },
                     child: Text(
                       "Register now",
                       style: bodyStyle.copyWith(
