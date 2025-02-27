@@ -43,27 +43,53 @@ class _CustomDrawerState extends State<CustomDrawer> {
           Center(
             child: Column(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    "assets/images/user.png",
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  "Navaratnam Sanjeevan",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  "child user",
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                Padding(padding: EdgeInsets.only(left: 40)),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 10), // Left padding
+                    // Profile Image
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.asset(
+                        "assets/images/menu_user.png",
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+
+                    SizedBox(width: 12), // Spacing between image and text
+                    // Name & Role (Aligned Right)
+                    Expanded(
+                      child: Align(
+                        alignment:
+                            Alignment.centerRight, // Aligns text to the right
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.end, // Align text to right
+                          children: [
+                            Text(
+                              "Navaratnam Sanjeevan",
+                              style: menuAppHeadingStyle,
+                              maxLines: 2,
+                              softWrap: true,
+                              textAlign: TextAlign.right, // Align text right
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              "child user",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                              textAlign: TextAlign.right, // Align text right
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

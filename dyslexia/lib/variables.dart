@@ -92,3 +92,7 @@ final TextStyle menuAppLogoStyle = GoogleFonts.pacifico(
   fontSize: 20,
   color: menuColor,
 );
+final TextStyle menuAppHeadingStyle = GoogleFonts.poppins(
+  fontSize: 26,
+  color: menuColor,
+);
