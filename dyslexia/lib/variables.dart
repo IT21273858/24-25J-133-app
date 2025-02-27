@@ -30,6 +30,7 @@ const Color appButtonColor = Color.fromARGB(187, 167, 125, 251); // Purple
 const Color cardBackgroundcolor = Color(0xFFE5E5EF);
 const Color cardBordercolor = Color(0xFF9370DB);
 const Color editbuttonColor = Color(0xFF4F4B65);
+const Color menuColor = Color(0xFF554997);
 
 // Font styles using Poppins
 final TextStyle headingStyle = GoogleFonts.poppins(
@@ -85,4 +86,9 @@ final TextStyle editButtontextStyle = GoogleFonts.poppins(
   fontSize: 16,
   color: editbuttonColor,
   fontWeight: FontWeight.w600,
+);
+
+final TextStyle menuAppLogoStyle = GoogleFonts.pacifico(
+  fontSize: 20,
+  color: menuColor,
 );

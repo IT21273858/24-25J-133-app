@@ -1,3 +1,4 @@
+import 'package:dyslexia/CustomDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
@@ -52,7 +53,14 @@ class ProfileParent extends StatelessWidget {
                         ),
                         child: IconButton(
                           icon: Icon(Icons.menu, color: Colors.black),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomDrawer(),
+                              ),
+                            );
+                          },
                         ),
                       ),
 
