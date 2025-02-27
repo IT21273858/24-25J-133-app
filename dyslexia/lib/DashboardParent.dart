@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class DashboardParent extends StatelessWidget {
   @override
@@ -12,7 +13,7 @@ class DashboardParent extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
         child: ListView(
           children: [
-            //  User Info Section with Shadow & Rounded Corners
+            // User Info Section with Shadow & Rounded Corners
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -35,7 +36,7 @@ class DashboardParent extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      //  Hamburger Menu with Shadow
+                      // Hamburger Menu with Shadow
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -55,7 +56,7 @@ class DashboardParent extends StatelessWidget {
                         ),
                       ),
 
-                      //  User Icon with Shadow
+                      // User Icon with Shadow
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -97,7 +98,7 @@ class DashboardParent extends StatelessWidget {
                             Row(
                               children: [
                                 Icon(
-                                  Icons.email_outlined,
+                                  FeatherIcons.mail,
                                   size: 20,
                                   color: Colors.black,
                                 ),
@@ -115,7 +116,7 @@ class DashboardParent extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
 
-                  //  Edit Button
+                  // Edit Button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -127,16 +128,21 @@ class DashboardParent extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
+                            horizontal: 16,
+                            vertical: 4,
                           ),
+                          minimumSize: Size(0, 20),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.edit, size: 18, color: Colors.black),
+                            Icon(
+                              FeatherIcons.edit,
+                              size: 18,
+                              color: editbuttonColor,
+                            ),
                             SizedBox(width: 6),
-                            Text("Edit", style: TextStyle(color: Colors.black)),
+                            Text("Edit", style: editButtontextStyle),
                           ],
                         ),
                       ),
@@ -145,126 +151,133 @@ class DashboardParent extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
 
-            //  Wrap the Performance Section in a `Column`
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+            // Scrollable Section for "Monitor Performance" and "Your Children"
+            SizedBox(
+              height:
+                  MediaQuery.of(context).size.height *
+                  0.7, // 60% of screen height
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
                     children: [
-                      Text(
-                        'Monitor Performance',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Icon(Icons.speed, size: 24, color: Colors.black),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-
-                  //  Reusable Bar Chart
-                  BarChartWidget(
-                    barGroups: [
-                      BarChartGroupData(
-                        x: 0,
-                        barRods: [
-                          BarChartRodData(
-                            toY: 7,
-                            color: Colors.purple,
-                            width: 10,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Monitor Performance',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          BarChartRodData(
-                            toY: 5,
-                            color: Colors.blue,
-                            width: 10,
-                          ),
+                          SizedBox(width: 10),
+                          Icon(Icons.speed, size: 24, color: Colors.black),
                         ],
-                      ),
-                      BarChartGroupData(
-                        x: 2,
-                        barRods: [
-                          BarChartRodData(
-                            toY: 6,
-                            color: Colors.purple,
-                            width: 10,
-                          ),
-                          BarChartRodData(
-                            toY: 5,
-                            color: Colors.blue,
-                            width: 10,
-                          ),
-                        ],
-                      ),
-                      BarChartGroupData(
-                        x: 1,
-                        barRods: [
-                          BarChartRodData(
-                            toY: 5,
-                            color: Colors.purple,
-                            width: 10,
-                          ),
-                          BarChartRodData(
-                            toY: 6,
-                            color: Colors.blue,
-                            width: 10,
-                          ),
-                        ],
-                      ),
-                    ],
-                    title: "Performance",
-                    revenue: "+12,875%",
-                    dropdownValue: "Child 1",
-                    dropdownItems: ["Child 1", "Child 2", "Child 3"],
-                    onDropdownChanged: (value) {},
-                    legendData: {"Previous Scores": 7213, "Now": 5662},
-                  ),
-                  SizedBox(height: 30),
-
-                  //  Child Section
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Your Children",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
                       ),
                       SizedBox(height: 10),
 
-                      //  Children Cards List (Slider)
-                      ChildCardSlider(
-                        childData: [
-                          {
-                            "name": "Child 1",
-                            "level": "Level 02",
-                            "lastLogged": "12 Feb 2024 - 12:30pm",
-                            "image": "assets/images/child.png",
-                          },
-                          {
-                            "name": "Child 2",
-                            "level": "Level 03",
-                            "lastLogged": "10 Feb 2024 - 11:45am",
-                            "image": "assets/images/child.png",
-                          },
-                          {
-                            "name": "Child 3",
-                            "level": "Level 01",
-                            "lastLogged": "08 Feb 2024 - 02:15pm",
-                            "image": "assets/images/child.png",
-                          },
+                      // Reusable Bar Chart
+                      BarChartWidget(
+                        barGroups: [
+                          BarChartGroupData(
+                            x: 0,
+                            barRods: [
+                              BarChartRodData(
+                                toY: 7,
+                                color: Colors.purple,
+                                width: 10,
+                              ),
+                              BarChartRodData(
+                                toY: 5,
+                                color: Colors.blue,
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                          BarChartGroupData(
+                            x: 2,
+                            barRods: [
+                              BarChartRodData(
+                                toY: 6,
+                                color: Colors.purple,
+                                width: 10,
+                              ),
+                              BarChartRodData(
+                                toY: 5,
+                                color: Colors.blue,
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                          BarChartGroupData(
+                            x: 1,
+                            barRods: [
+                              BarChartRodData(
+                                toY: 5,
+                                color: Colors.purple,
+                                width: 10,
+                              ),
+                              BarChartRodData(
+                                toY: 6,
+                                color: Colors.blue,
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                        ],
+                        title: "Performance",
+                        revenue: "+12,875%",
+                        dropdownValue: "Child 1",
+                        dropdownItems: ["Child 1", "Child 2", "Child 3"],
+                        onDropdownChanged: (value) {},
+                        legendData: {"Previous Scores": 7213, "Now": 5662},
+                      ),
+                      SizedBox(height: 20),
+
+                      // Child Section
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Your Children",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+
+                          // Children Cards List (Slider)
+                          ChildCardSlider(
+                            childData: [
+                              {
+                                "name": "Child 1",
+                                "level": "Level 02",
+                                "lastLogged": "12 Feb 2024 - 12:30pm",
+                                "image": "assets/images/child.png",
+                              },
+                              {
+                                "name": "Child 2",
+                                "level": "Level 03",
+                                "lastLogged": "10 Feb 2024 - 11:45am",
+                                "image": "assets/images/child.png",
+                              },
+                              {
+                                "name": "Child 3",
+                                "level": "Level 01",
+                                "lastLogged": "08 Feb 2024 - 02:15pm",
+                                "image": "assets/images/child.png",
+                              },
+                            ],
+                          ),
                         ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ],
