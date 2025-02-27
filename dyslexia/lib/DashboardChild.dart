@@ -4,7 +4,7 @@ import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
-class DashboardParent extends StatelessWidget {
+class DashboardChild extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +87,7 @@ class DashboardParent extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Navaratnam Sanjeevan',
+                              'Vijayathas Shangeeth',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -104,7 +104,22 @@ class DashboardParent extends StatelessWidget {
                                 ),
                                 SizedBox(width: 5),
                                 Text(
-                                  'Shankarjeevan011@gmail.com',
+                                  'star@gmail.com',
+                                  style: TextStyle(color: HeadingColor),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 5),
+                            Row(
+                              children: [
+                                Icon(
+                                  FeatherIcons.book,
+                                  size: 20,
+                                  color: Colors.black,
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  'Reading',
                                   style: TextStyle(color: HeadingColor),
                                 ),
                               ],
@@ -114,7 +129,7 @@ class DashboardParent extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
 
                   // Edit Button
                   Row(
@@ -167,7 +182,7 @@ class DashboardParent extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            'Monitor Performance',
+                            'Performance',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -230,8 +245,8 @@ class DashboardParent extends StatelessWidget {
                         ],
                         title: "Performance",
                         revenue: "+12,875%",
-                        dropdownValue: "Child 1",
-                        dropdownItems: ["Child 1", "Child 2", "Child 3"],
+                        dropdownValue: "Game 1",
+                        dropdownItems: ["Game 1", "Game 2", "Game 3"],
                         onDropdownChanged: (value) {},
                         legendData: {"Previous Scores": 7213, "Now": 5662},
                       ),
@@ -242,7 +257,7 @@ class DashboardParent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Your Children",
+                            "Games Played",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -251,25 +266,25 @@ class DashboardParent extends StatelessWidget {
                           SizedBox(height: 10),
 
                           // Children Cards List (Slider)
-                          ChildCardSlider(
-                            childData: [
+                          GameCardSlider(
+                            gameData: [
                               {
-                                "name": "Child 1",
+                                "name": "Game 1",
                                 "level": "Level 02",
-                                "lastLogged": "12 Feb 2024 - 12:30pm",
-                                "image": "assets/images/child.png",
+                                "points": "50",
+                                "image": "assets/images/games_background.jpg",
                               },
                               {
-                                "name": "Child 2",
+                                "name": "Game 2",
+                                "level": "Level 02",
+                                "points": "120",
+                                "image": "assets/images/games_background.jpg",
+                              },
+                              {
+                                "name": "Game 3",
                                 "level": "Level 03",
-                                "lastLogged": "10 Feb 2024 - 11:45am",
-                                "image": "assets/images/child.png",
-                              },
-                              {
-                                "name": "Child 3",
-                                "level": "Level 01",
-                                "lastLogged": "08 Feb 2024 - 02:15pm",
-                                "image": "assets/images/child.png",
+                                "points": "150",
+                                "image": "assets/images/games_background.jpg",
                               },
                             ],
                           ),
