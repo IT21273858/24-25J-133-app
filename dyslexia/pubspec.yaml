@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
   fl_chart: ^0.70.2
+  flutter_feather_icons: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,8 @@ flutter:
       - assets/images/memory.png
       - assets/images/user.png
       - assets/images/child.png
+      - assets/images/games_background.jpg
+      - assets/images/menu_user.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

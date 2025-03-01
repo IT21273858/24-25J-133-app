@@ -1,5 +1,5 @@
 import 'package:dyslexia/LoginPage.dart';
-import 'package:dyslexia/RegisterDiseaseSelect.dart';
+import 'package:dyslexia/ProfileParent.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
@@ -27,7 +27,7 @@ class _RegisterChooseParentState extends State<RegisterChooseParent> {
       print("Registering with ${emailController.text}");
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => RegisterDiseaseSelect()),
+        MaterialPageRoute(builder: (context) => ProfileParent()),
       );
     });
   }

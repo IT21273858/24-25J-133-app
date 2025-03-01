@@ -479,3 +479,119 @@ class BarChartWidget extends StatelessWidget {
     );
   }
 }
+
+// Game card
+class GameCardSlider extends StatelessWidget {
+  final List<Map<String, String>> gameData;
+
+  const GameCardSlider({super.key, required this.gameData});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 172, // Adjusted height for better spacing
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: gameData.length,
+        itemBuilder: (context, index) {
+          final game = gameData[index];
+
+          return Container(
+            width: 160,
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                // Background Image
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(18),
+                    topRight: Radius.circular(18),
+                  ),
+                  child: Image.asset(
+                    game['image']!,
+                    width: double.infinity,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+
+                // Points Display (Top-Right)
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.bookmark_border,
+                          size: 14,
+                          color: Colors.black,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          game['points']!,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Game Name & Level (Bottom Section)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(18),
+                        bottomRight: Radius.circular(18),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          game['name']!,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          game['level']!,
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
