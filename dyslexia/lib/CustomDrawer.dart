@@ -45,21 +45,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
               children: [
                 Padding(padding: EdgeInsets.only(left: 40)),
                 Row(
+                  spacing: 10,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(width: 10), // Left padding
+                    SizedBox(width: 5), // Left padding
                     // Profile Image
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Image.asset(
                         "assets/images/menu_user.png",
-                        width: 80,
-                        height: 80,
+                        width: 120,
+                        height: 120,
                         fit: BoxFit.cover,
                       ),
                     ),
 
-                    SizedBox(width: 12), // Spacing between image and text
                     // Name & Role (Aligned Right)
                     Expanded(
                       child: Align(
@@ -81,7 +81,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               "child user",
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 14,
+                                fontSize: 16,
                               ),
                               textAlign: TextAlign.right, // Align text right
                             ),
@@ -89,6 +89,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                       ),
                     ),
+                    SizedBox(width: 10),
                   ],
                 ),
               ],
