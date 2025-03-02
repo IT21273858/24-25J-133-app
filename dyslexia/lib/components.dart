@@ -323,6 +323,96 @@ class ChildCardSlider extends StatelessWidget {
   }
 }
 
+// Child card slider for Dashboard
+class ChildCardSliderDashboard extends StatelessWidget {
+  final List<Map<String, String>> childData;
+
+  const ChildCardSliderDashboard({super.key, required this.childData});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 175, // Ensures proper scrolling
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: childData.length,
+        itemBuilder: (context, index) {
+          final child = childData[index];
+
+          return Container(
+            width: 180,
+            height: 175,
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(23),
+              color: childcardbodyColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundImage: AssetImage(child['image']!),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              child['name']!,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              overflow:
+                                  TextOverflow.ellipsis, // Prevent overflow
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(height: 8),
+                          Text(child['level']!, style: cardbodyStyle),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(child['lastLogged']!, style: childcardbodyStyle),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Last logged on", style: childcardbodyStyle),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
 /// Graph Component
 class BarChartWidget extends StatelessWidget {
   final List<BarChartGroupData> barGroups;
@@ -609,7 +699,7 @@ class LineChartWidget extends StatelessWidget {
         LineChartData(
           gridData: FlGridData(
             show: true,
-            drawVerticalLine: false,
+            drawVerticalLine: true,
             getDrawingHorizontalLine: (value) {
               return FlLine(
                 color: Colors.grey.withOpacity(0.3),
@@ -620,7 +710,9 @@ class LineChartWidget extends StatelessWidget {
           titlesData: FlTitlesData(
             show: true,
             leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            // rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(reservedSize: 20, showTitles: true),
+            ),
             topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(

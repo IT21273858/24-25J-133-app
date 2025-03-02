@@ -33,6 +33,7 @@ const Color editbuttonColor = Color(0xFF4F4B65);
 const Color menuColor = Color(0xFF554997);
 const Color linechartblueColor = Color(0xFF4A3AFF);
 const Color linechartbodyColor = Color(0xFF6D3AFF);
+const Color childcardbodyColor = Color(0xFFCFCAFF);
 
 // Font styles using Poppins
 final TextStyle headingStyle = GoogleFonts.poppins(

@@ -1,3 +1,4 @@
+import 'package:dyslexia/RegisterChooseForChild.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
@@ -39,7 +40,8 @@ class DashboardParent extends StatelessWidget {
                 ),
                 _buildChildSelection(),
                 _buildPerformanceSection(),
-                _buildManageChildrenSection(),
+                _buildManageChildrenSection(context),
+                Padding(padding: EdgeInsets.only(bottom: 10)),
               ],
             ),
           ],
@@ -202,6 +204,7 @@ class DashboardParent extends StatelessWidget {
                     ),
                   ],
                 ),
+                Padding(padding: EdgeInsets.only(top: 10)),
                 LineChartWidget(chartData: performanceData),
               ],
             ),
@@ -212,7 +215,7 @@ class DashboardParent extends StatelessWidget {
   }
 
   // Manage Children Section
-  Widget _buildManageChildrenSection() {
+  Widget _buildManageChildrenSection(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -223,16 +226,31 @@ class DashboardParent extends StatelessWidget {
             children: [
               Text(
                 "Manage Children",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
               IconButton(
-                icon: Icon(Icons.add_circle_outline, size: 24),
-                onPressed: () {},
+                icon: Icon(
+                  Icons.add_circle_outline,
+                  size: 24,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RegisterChooseForChild(),
+                    ),
+                  );
+                },
               ),
             ],
           ),
           SizedBox(height: 10),
-          ChildCardSlider(
+          ChildCardSliderDashboard(
             childData: [
               {
                 "name": "Child 1",
