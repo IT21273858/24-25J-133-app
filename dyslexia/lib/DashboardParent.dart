@@ -277,33 +277,6 @@ class DashboardParent extends StatelessWidget {
     );
   }
 
-  Widget _buildChildCard(String name, String level, String imagePath) {
-    return Container(
-      width: 160,
-      margin: EdgeInsets.only(right: 10),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          CircleAvatar(radius: 30, backgroundImage: AssetImage(imagePath)),
-          SizedBox(height: 8),
-          Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(level, style: TextStyle(color: Colors.grey)),
-        ],
-      ),
-    );
-  }
-
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
     return Container(
       decoration: BoxDecoration(
