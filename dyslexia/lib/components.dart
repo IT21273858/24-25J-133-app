@@ -595,3 +595,73 @@ class GameCardSlider extends StatelessWidget {
     );
   }
 }
+
+class LineChartWidget extends StatelessWidget {
+  final List<FlSpot> chartData; // Accept data from Dashboard
+
+  const LineChartWidget({super.key, required this.chartData});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 220,
+      child: LineChart(
+        LineChartData(
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            getDrawingHorizontalLine: (value) {
+              return FlLine(
+                color: Colors.grey.withOpacity(0.3),
+                strokeWidth: 1,
+              );
+            },
+          ),
+          titlesData: FlTitlesData(
+            show: true,
+            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            // rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 20,
+                interval: 1,
+                getTitlesWidget: (value, meta) {
+                  switch (value.toInt()) {
+                    case 0:
+                      return Text("10:00", style: TextStyle(fontSize: 10));
+                    case 2:
+                      return Text("12:00", style: TextStyle(fontSize: 10));
+                    case 4:
+                      return Text("14:00", style: TextStyle(fontSize: 10));
+                    case 6:
+                      return Text("16:00", style: TextStyle(fontSize: 10));
+                    case 8:
+                      return Text("18:00", style: TextStyle(fontSize: 10));
+                    default:
+                      return Text("", style: TextStyle(fontSize: 10));
+                  }
+                },
+              ),
+            ),
+          ),
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            LineChartBarData(
+              spots: chartData, // Dynamic data
+              isCurved: true,
+              color: linechartblueColor,
+              barWidth: 3,
+              isStrokeCapRound: true,
+              belowBarData: BarAreaData(
+                show: true,
+                color: Colors.purple.withOpacity(0.2),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
