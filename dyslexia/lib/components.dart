@@ -696,6 +696,7 @@ class LineChartWidget extends StatelessWidget {
     return SizedBox(
       height: 220,
       child: LineChart(
+        duration: Duration(milliseconds: 5000),
         LineChartData(
           gridData: FlGridData(
             show: true,

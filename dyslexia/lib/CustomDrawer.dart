@@ -1,3 +1,4 @@
+import 'package:dyslexia/DashboardChild.dart';
 import 'package:dyslexia/DashboardParent.dart';
 import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/ProfileChild.dart';
@@ -19,7 +20,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     {
       "icon": FeatherIcons.gift,
       "label": "Lessons / Games",
-      "page": ProfileParent(),
+      "page": DashboardChild(),
     },
     {"icon": FeatherIcons.award, "label": "Profile", "page": ProfileChild()},
     {"icon": FeatherIcons.barChart2, "label": "Insights", "page": LoginPage()},
