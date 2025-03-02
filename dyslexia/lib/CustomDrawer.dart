@@ -1,3 +1,8 @@
+import 'package:dyslexia/DashboardChild.dart';
+import 'package:dyslexia/DashboardParent.dart';
+import 'package:dyslexia/LoginPage.dart';
+import 'package:dyslexia/ProfileChild.dart';
+import 'package:dyslexia/ProfileParent.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -11,10 +16,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
   int selectedIndex = 0; // Active Menu Item
 
   final List<Map<String, dynamic>> menuItems = [
-    {"icon": FeatherIcons.home, "label": "Home"},
-    {"icon": FeatherIcons.gift, "label": "Lessons / Games"},
-    {"icon": FeatherIcons.award, "label": "Profile"},
-    {"icon": FeatherIcons.barChart2, "label": "Insights"},
+    {"icon": FeatherIcons.home, "label": "Home", "page": DashboardParent()},
+    {
+      "icon": FeatherIcons.gift,
+      "label": "Lessons / Games",
+      "page": DashboardChild(),
+    },
+    {"icon": FeatherIcons.award, "label": "Profile", "page": ProfileChild()},
+    {"icon": FeatherIcons.barChart2, "label": "Insights", "page": LoginPage()},
   ];
 
   @override
@@ -47,7 +56,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(width: 10), // Left padding
+                    SizedBox(width: 5), // Left padding
                     // Profile Image
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16),
@@ -59,36 +68,34 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                     ),
 
-                    SizedBox(width: 12), // Spacing between image and text
                     // Name & Role (Aligned Right)
                     Expanded(
                       child: Align(
-                        alignment:
-                            Alignment.centerRight, // Aligns text to the right
+                        alignment: Alignment.centerRight,
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.end, // Align text to right
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
                               "Navaratnam Sanjeevan",
                               style: menuAppHeadingStyle,
                               maxLines: 2,
                               softWrap: true,
-                              textAlign: TextAlign.right, // Align text right
+                              textAlign: TextAlign.right,
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
                               "child user",
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 14,
+                                fontSize: 16,
                               ),
-                              textAlign: TextAlign.right, // Align text right
+                              textAlign: TextAlign.right,
                             ),
                           ],
                         ),
                       ),
                     ),
+                    SizedBox(width: 10),
                   ],
                 ),
               ],
@@ -123,6 +130,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     setState(() {
                       selectedIndex = index;
                     });
+
+                    // Navigate using MaterialPageRoute
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => menuItems[index]["page"],
+                      ),
+                    );
                   },
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 4),
@@ -158,7 +173,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle logout action
+                  // Navigate to login page using MaterialPageRoute
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

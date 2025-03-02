@@ -323,6 +323,96 @@ class ChildCardSlider extends StatelessWidget {
   }
 }
 
+// Child card slider for Dashboard
+class ChildCardSliderDashboard extends StatelessWidget {
+  final List<Map<String, String>> childData;
+
+  const ChildCardSliderDashboard({super.key, required this.childData});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 175, // Ensures proper scrolling
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: childData.length,
+        itemBuilder: (context, index) {
+          final child = childData[index];
+
+          return Container(
+            width: 180,
+            height: 175,
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(23),
+              color: childcardbodyColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundImage: AssetImage(child['image']!),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              child['name']!,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              overflow:
+                                  TextOverflow.ellipsis, // Prevent overflow
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(height: 8),
+                          Text(child['level']!, style: cardbodyStyle),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(child['lastLogged']!, style: childcardbodyStyle),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Last logged on", style: childcardbodyStyle),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
 /// Graph Component
 class BarChartWidget extends StatelessWidget {
   final List<BarChartGroupData> barGroups;
@@ -591,6 +681,79 @@ class GameCardSlider extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class LineChartWidget extends StatelessWidget {
+  final List<FlSpot> chartData; // Accept data from Dashboard
+
+  const LineChartWidget({super.key, required this.chartData});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 220,
+      child: LineChart(
+        duration: Duration(milliseconds: 5000),
+        LineChartData(
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: true,
+            getDrawingHorizontalLine: (value) {
+              return FlLine(
+                color: Colors.grey.withOpacity(0.3),
+                strokeWidth: 1,
+              );
+            },
+          ),
+          titlesData: FlTitlesData(
+            show: true,
+            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(reservedSize: 20, showTitles: true),
+            ),
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 20,
+                interval: 1,
+                getTitlesWidget: (value, meta) {
+                  switch (value.toInt()) {
+                    case 0:
+                      return Text("10:00", style: TextStyle(fontSize: 10));
+                    case 2:
+                      return Text("12:00", style: TextStyle(fontSize: 10));
+                    case 4:
+                      return Text("14:00", style: TextStyle(fontSize: 10));
+                    case 6:
+                      return Text("16:00", style: TextStyle(fontSize: 10));
+                    case 8:
+                      return Text("18:00", style: TextStyle(fontSize: 10));
+                    default:
+                      return Text("", style: TextStyle(fontSize: 10));
+                  }
+                },
+              ),
+            ),
+          ),
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            LineChartBarData(
+              spots: chartData, // Dynamic data
+              isCurved: true,
+              color: linechartblueColor,
+              barWidth: 3,
+              isStrokeCapRound: true,
+              belowBarData: BarAreaData(
+                show: true,
+                color: Colors.purple.withOpacity(0.2),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

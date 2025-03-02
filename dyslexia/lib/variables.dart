@@ -31,6 +31,9 @@ const Color cardBackgroundcolor = Color(0xFFE5E5EF);
 const Color cardBordercolor = Color(0xFF9370DB);
 const Color editbuttonColor = Color(0xFF4F4B65);
 const Color menuColor = Color(0xFF554997);
+const Color linechartblueColor = Color(0xFF4A3AFF);
+const Color linechartbodyColor = Color(0xFF6D3AFF);
+const Color childcardbodyColor = Color(0xFFCFCAFF);
 
 // Font styles using Poppins
 final TextStyle headingStyle = GoogleFonts.poppins(
@@ -93,6 +96,6 @@ final TextStyle menuAppLogoStyle = GoogleFonts.pacifico(
   color: menuColor,
 );
 final TextStyle menuAppHeadingStyle = GoogleFonts.poppins(
-  fontSize: 26,
+  fontSize: 34,
   color: menuColor,
 );
