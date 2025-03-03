@@ -61,6 +61,7 @@ final TextStyle registerheadingStyle = GoogleFonts.poppins(
   fontWeight: FontWeight.w600,
   color: HeadingColor,
 );
+
 final TextStyle registerNewLevelComp = GoogleFonts.poppins(
   fontSize: 38,
   fontWeight: FontWeight.w600,
@@ -112,4 +113,15 @@ final TextStyle menuAppLogoStyle = GoogleFonts.pacifico(
 final TextStyle menuAppHeadingStyle = GoogleFonts.poppins(
   fontSize: 34,
   color: menuColor,
+);
+
+final TextStyle gamescoreHeadingStyle = GoogleFonts.poppins(
+  fontSize: 42,
+  fontWeight: FontWeight.w500,
+  color: HeadingColor,
+);
+final TextStyle gamescoresubHeadingStyle = GoogleFonts.poppins(
+  fontSize: 20,
+  fontWeight: FontWeight.normal,
+  color: HeadingColor,
 );

@@ -1,5 +1,6 @@
 import 'package:dyslexia/DashboardChild.dart';
 import 'package:dyslexia/DashboardParent.dart';
+import 'package:dyslexia/GameScorePage.dart';
 import 'package:dyslexia/LevelUnlocker.dart';
 import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/ProfileChild.dart';
@@ -29,6 +30,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "icon": FeatherIcons.barChart2,
       "label": "LevelUnlock",
       "page": LevelUnlocker(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Game Score",
+      "page": Gamescorepage(),
     },
   ];
 
