@@ -1,51 +1,15 @@
-import 'package:dyslexia/LoginPage.dart';
-import 'package:dyslexia/RegisterChooseParent.dart';
-import 'package:dyslexia/RegisterChooseChild.dart';
-import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
-import 'package:dyslexia/components.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class LevelUnlocker extends StatefulWidget {
   @override
-  _RegisterChooseState createState() => _RegisterChooseState();
+  _levelUnlocker createState() => _levelUnlocker();
 }
 
-class _RegisterChooseState extends State<LevelUnlocker> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  bool isLoading = false;
-  List<bool> isSelected = [true, false]; // Initial selection state
-
-  void _handleRegister() {
-    setState(() {
-      isLoading = true;
-    });
-    // Simulate a network request
-    Future.delayed(Duration(seconds: 2), () {
-      setState(() {
-        isLoading = false;
-      });
-      print("Registering with ${emailController.text}");
-
-      // Navigate based on selection
-      if (isSelected[0]) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RegisterChooseParent()),
-        );
-      } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RegisterChooseChild()),
-        );
-      }
-    });
-  }
-
+class _levelUnlocker extends State<LevelUnlocker> {
   @override
   Widget build(BuildContext context) {
-    const List<Widget> types = <Widget>[Text('Parent'), Text('Child')];
     return Scaffold(
       body: Center(
         child: Padding(
@@ -104,15 +68,6 @@ class _RegisterChooseState extends State<LevelUnlocker> {
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
-          );
-        },
-        child: const Text("Login"),
       ),
     );
   }
