@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 // Reusable Text Input Field
@@ -211,6 +211,88 @@ class _SelectableCardSliderState extends State<SelectableCardSlider> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(card['image']!, height: 80),
+                  SizedBox(height: 10),
+                  Text(
+                    card['title']!,
+                    style: cardheadingStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    card['description']!,
+                    style: cardbodyStyle.copyWith(color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+//GameScore Card
+class GameScoreCardChild extends StatefulWidget {
+  final List<Map<String, String>> cardData;
+  final List<IconData> icons;
+
+  const GameScoreCardChild({
+    super.key,
+    required this.cardData,
+    required this.icons,
+  });
+
+  @override
+  _GameScoreCard createState() => _GameScoreCard();
+}
+
+class _GameScoreCard extends State<GameScoreCardChild> {
+  String? selectedCard;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 150,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.cardData.length,
+        itemBuilder: (context, index) {
+          final card = widget.cardData[index];
+          final icon = widget.icons[index];
+
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedCard = card['title'];
+              });
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.25,
+              margin: EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(23),
+                border: Border.all(color: cardBordercolor, width: 4),
+                color: cardBackgroundcolor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon),
                   SizedBox(height: 10),
                   Text(
                     card['title']!,
