@@ -91,7 +91,7 @@ class _DashboardChildState extends State<DashboardChild> {
     );
   }
 
-  // 🔹 Emoji Selection Widget
+  // Emoji Selection Widget
   Widget _buildEmotionSelection() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
@@ -160,7 +160,7 @@ class _DashboardChildState extends State<DashboardChild> {
     );
   }
 
-  // 🔹 Header Section
+  // Header Section
   Widget _buildHeader(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -219,7 +219,7 @@ class _DashboardChildState extends State<DashboardChild> {
     );
   }
 
-  // 🔹 Performance Section with Line Chart
+  // Performance Section with Line Chart
   Widget _buildPerformanceSection() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0),

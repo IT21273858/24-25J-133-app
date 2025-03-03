@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 // Reusable Text Input Field
 class CustomTextField extends StatelessWidget {
@@ -754,6 +755,119 @@ class LineChartWidget extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// Games score card
+class GameScoreCard extends StatelessWidget {
+  final String image;
+  final String name;
+  final String description;
+  final int points;
+  final double progress;
+
+  const GameScoreCard({
+    super.key,
+    required this.image,
+    required this.name,
+    required this.description,
+    required this.points,
+    required this.progress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Game Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              image,
+              width: 123,
+              height: 123,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(width: 12),
+
+          // Game Info (Title & Description)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 10,
+              children: [
+                // game name
+                Text(
+                  name,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ).animate().flipH(duration: 500.ms),
+                // Text(
+                //   name,
+                //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                // ),
+                // description
+                Text(
+                  description,
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ).animate().flip(delay: 600.ms),
+
+                // Points & Progress Bar
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: pointsBackgroundColor.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        "Points : $points",
+                        style: TextStyle(
+                          color: pointsTextColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ).animate().flip(delay: 700.ms),
+                    Text(
+                      "${(progress * 100).toInt()}%",
+                      style: TextStyle(fontSize: 14),
+                    ).animate().flip(delay: 800.ms),
+                  ],
+                ),
+                // Progress Bar
+                LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: Colors.grey.shade200,
+                  color: Colors.purple,
+                  minHeight: 6,
+                  borderRadius: BorderRadius.circular(8),
+                ).animate().flip(delay: 900.ms),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
