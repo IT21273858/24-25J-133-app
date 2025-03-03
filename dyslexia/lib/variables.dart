@@ -61,11 +61,23 @@ final TextStyle registerheadingStyle = GoogleFonts.poppins(
   fontWeight: FontWeight.w600,
   color: HeadingColor,
 );
+final TextStyle registerNewLevelComp = GoogleFonts.poppins(
+  fontSize: 38,
+  fontWeight: FontWeight.w600,
+  color: HeadingColor,
+);
 final TextStyle registerbodyStyle = GoogleFonts.poppins(
   fontSize: 16,
   fontWeight: FontWeight.w400,
   color: HeadingColor,
 );
+
+final TextStyle unlockPagebodyStyle = GoogleFonts.poppins(
+  fontSize: 20,
+  fontWeight: FontWeight.w400,
+  color: HeadingColor,
+);
+
 final TextStyle registerbodyboldStyle = GoogleFonts.poppins(
   fontSize: 16,
   fontWeight: FontWeight.w600,
