@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 // Reusable Text Input Field
 class CustomTextField extends StatelessWidget {
@@ -817,14 +818,18 @@ class GameScoreCard extends StatelessWidget {
                 Text(
                   name,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
+                ).animate().flipH(duration: 500.ms),
+                // Text(
+                //   name,
+                //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                // ),
                 // description
                 Text(
                   description,
                   style: TextStyle(color: Colors.grey, fontSize: 14),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
-                ),
+                ).animate().flip(delay: 600.ms),
 
                 // Points & Progress Bar
                 Row(
@@ -844,11 +849,11 @@ class GameScoreCard extends StatelessWidget {
                           fontSize: 14,
                         ),
                       ),
-                    ),
+                    ).animate().flip(delay: 700.ms),
                     Text(
                       "${(progress * 100).toInt()}%",
                       style: TextStyle(fontSize: 14),
-                    ),
+                    ).animate().flip(delay: 800.ms),
                   ],
                 ),
                 // Progress Bar
@@ -858,7 +863,7 @@ class GameScoreCard extends StatelessWidget {
                   color: Colors.purple,
                   minHeight: 6,
                   borderRadius: BorderRadius.circular(8),
-                ),
+                ).animate().flip(delay: 900.ms),
               ],
             ),
           ),

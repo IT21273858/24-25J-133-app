@@ -71,10 +71,7 @@ class ScoresPage extends StatelessWidget {
                 Padding(padding: EdgeInsets.only(bottom: 10)),
               ],
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.75,
-              child: _buildPastScoresSection(),
-            ),
+            SizedBox(child: _buildPastScoresSection(context)),
           ],
         ),
       ),
@@ -119,10 +116,11 @@ class ScoresPage extends StatelessWidget {
   }
 
   // Past Scores Section
-  Widget _buildPastScoresSection() {
+  Widget _buildPastScoresSection(context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Expanded(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.80,
         child: SingleChildScrollView(
           child: Column(
             children:
