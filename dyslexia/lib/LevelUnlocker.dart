@@ -1,3 +1,4 @@
+import 'package:dyslexia/DashboardChild.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -22,7 +23,18 @@ class _levelUnlocker extends State<LevelUnlocker> {
               Padding(padding: EdgeInsets.only(top: 20)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [Icon(FeatherIcons.xCircle, size: 24)],
+                children: [
+                  IconButton(
+                    icon: Icon(FeatherIcons.xCircle, size: 24),
+                    onPressed:
+                        () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DashboardChild(),
+                          ),
+                        ),
+                  ),
+                ],
               ),
               Column(
                 spacing: 24,
