@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: VideoSplashScreen(), // Show video first
+      home: VideoSplashScreen(), // Show splash screen first
     );
   }
 }
@@ -39,24 +39,29 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
     super.initState();
 
     // Initialize video controller
-    _controller = VideoPlayerController.asset("assets/videos/splash.mp4")
-      ..initialize().then((_) {
-        setState(() {});
-        _controller.play(); // Start video playback
-      });
+    _controller =
+        VideoPlayerController.asset("assets/videos/splash.mp4")
+          ..initialize().then((_) {
+            setState(() {});
+            _controller.play();
+          })
+          ..setLooping(false); // Ensure video plays only once
 
-    // Listen for when the video ends
+    // Listen when the video ends
     _controller.addListener(() {
-      if (_controller.value.position == _controller.value.duration) {
+      if (_controller.value.position >=
+          (_controller.value.duration - Duration(milliseconds: 500))) {
         _navigateToLogin();
       }
     });
   }
 
   void _navigateToLogin() {
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+    if (mounted) {
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+    }
   }
 
   @override
@@ -64,13 +69,12 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
     return Scaffold(
       backgroundColor: Colors.black, // Ensure background remains black
       body: Stack(
-        fit: StackFit.expand, // Ensures full-screen coverage
+        fit: StackFit.expand, // Fullscreen video
         children: [
           if (_controller.value.isInitialized)
             Positioned.fill(
-              // Forces the video to take full screen
               child: FittedBox(
-                fit: BoxFit.cover, // Scale the video to cover entire screen
+                fit: BoxFit.cover, // Scale video to cover entire screen
                 child: SizedBox(
                   width: _controller.value.size.width,
                   height: _controller.value.size.height,
@@ -81,7 +85,7 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
           else
             Center(
               child: CircularProgressIndicator(),
-            ), // Show loading indicator
+            ), // Show loading while initializing
         ],
       ),
     );
@@ -89,7 +93,7 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
 
   @override
   void dispose() {
-    _controller.dispose(); // Dispose video when leaving screen
+    _controller.dispose();
     super.dispose();
   }
 }
