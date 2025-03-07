@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     // Navigate to video splash screen before RegisterChoose()
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder:
