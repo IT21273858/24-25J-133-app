@@ -1,30 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:dyslexia/LoginPage.dart';
-import 'package:dyslexia/variables.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: appTitle,
-      theme: ThemeData(
-        primaryColor: appPrimaryColor,
-        scaffoldBackgroundColor: appBackgroundColor,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: appPrimaryColor,
-          foregroundColor: Colors.white,
-        ),
-      ),
-      home: VideoSplashScreen(), // Show video first
-    );
-  }
-}
 
 class VideoSplashScreen extends StatefulWidget {
   @override
@@ -39,10 +15,10 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
     super.initState();
 
     // Initialize video controller
-    _controller = VideoPlayerController.asset("assets/videos/splash.mp4")
+    _controller = VideoPlayerController.asset("assets/videos/loading.mp4")
       ..initialize().then((_) {
         setState(() {});
-        _controller.play(); // Start video playback
+        _controller.play();
       });
 
     // Listen for when the video ends
@@ -62,15 +38,14 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Ensure background remains black
       body: Stack(
         fit: StackFit.expand, // Ensures full-screen coverage
         children: [
           if (_controller.value.isInitialized)
             Positioned.fill(
-              // Forces the video to take full screen
+              // Makes the video fill the entire screen
               child: FittedBox(
-                fit: BoxFit.cover, // Scale the video to cover entire screen
+                fit: BoxFit.cover, // Stretch to cover the entire screen
                 child: SizedBox(
                   width: _controller.value.size.width,
                   height: _controller.value.size.height,
@@ -89,7 +64,7 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
 
   @override
   void dispose() {
-    _controller.dispose(); // Dispose video when leaving screen
+    _controller.dispose();
     super.dispose();
   }
 }
