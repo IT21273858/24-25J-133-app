@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
@@ -43,6 +44,7 @@ class ApiService {
   }
 
   /// **Handle login response and store user data**
+
   static Future<Map<String, dynamic>?> _handleLoginResponse(
     String responseBody,
     String role,
@@ -50,26 +52,42 @@ class ApiService {
     try {
       final responseData = jsonDecode(responseBody);
 
-      // Extract values safely with default fallbacks
+      // Extract the token
       final String token = responseData['token'] ?? '';
-      final String userId =
-          responseData['user_id']?.toString() ??
-          ''; // Ensure it's stored as a string
-      final String name = responseData['name'] ?? 'User';
-      final String img = responseData['img'] ?? '';
+      if (token.isEmpty) {
+        print("Invalid API response: Missing token");
+        return null;
+      }
 
-      if (token.isEmpty || userId.isEmpty) {
-        print("Invalid API response: Missing token or user_id");
+      // Decode JWT token
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+
+      // Extract values safely
+      final String userId = decodedToken['user']?.toString() ?? '';
+      final String name = decodedToken['name'] ?? 'User';
+      final String img = decodedToken['img'] ?? '';
+
+      if (userId.isEmpty) {
+        print("Invalid JWT Token: Missing user_id");
         return null;
       }
 
       // Save data in SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', token);
-      await prefs.setString('user_id', userId);
+      await prefs.setString('user_id', userId); // Store user_id
       await prefs.setString('user_role', role);
       await prefs.setString('user_name', name);
       await prefs.setString('user_image', img);
+
+      // Print for debugging
+      print("=========== Decoded User Data ===========");
+      print("Token: $token");
+      print("Decoded User ID: $userId");
+      print("Role: $role");
+      print("Name: $name");
+      print("Image URL: $img");
+      print("====================================");
 
       return {
         "role": role,

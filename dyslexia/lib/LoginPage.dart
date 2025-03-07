@@ -33,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (response != null) {
       print("*****************************User role: ${response["role"]}");
+      print("*****************************User: ${response["name"]}");
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
