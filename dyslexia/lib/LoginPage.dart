@@ -2,6 +2,7 @@ import 'package:dyslexia/RegisterChoose.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
+import 'package:dyslexia/VideoSplashScreen.dart'; // Import the video screen
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,24 +19,23 @@ class _LoginPageState extends State<LoginPage> {
       isLoading = true;
     });
 
-    // Simulate a network request
-    Future.delayed(Duration(seconds: 2), () {
-      setState(() {
-        isLoading = false;
-      });
-      print("Logging in with ${emailController.text}");
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => RegisterChoose()),
-      );
-    });
+    // Navigate to video splash screen before RegisterChoose()
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => VideoSplashScreen(
+              nextScreen:
+                  RegisterChoose(), // Navigate to RegisterChoose after video
+            ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        // ✅ Fix overflow issue
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -119,9 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     Text("Not a member? ", style: bodyStyle),
                     GestureDetector(
-                      onTap: () {
-                        _handleSignIn();
-                      },
+                      onTap: _handleSignIn,
                       child: Text(
                         "Register now",
                         style: bodyStyle.copyWith(

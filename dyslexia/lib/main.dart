@@ -1,103 +1,99 @@
+import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/variables.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  runApp(MyApp()); // Removed const to avoid hot reload issue
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // Removed const to prevent hot reload errors
-  MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: appTitle,
       theme: ThemeData(
         primaryColor: appPrimaryColor,
         scaffoldBackgroundColor: appBackgroundColor,
         appBarTheme: const AppBarTheme(
           backgroundColor: appPrimaryColor,
-          foregroundColor: Colors.white, // Ensuring contrast
+          foregroundColor: Colors.white,
         ),
-        textTheme: TextTheme(
-          headlineMedium: GoogleFonts.poppins(
-            color: appTextColor,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-          bodyMedium: GoogleFonts.poppins(color: appTextColor, fontSize: 18),
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: appSecondaryColor,
-        ),
-        colorScheme: ColorScheme.fromSeed(seedColor: appPrimaryColor),
       ),
-      home: MyHomePage(), // Removed const
+      home: VideoSplashScreen(), // Show splash screen first
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key}); // Removed const
-
+class VideoSplashScreen extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _VideoSplashScreenState createState() => _VideoSplashScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _VideoSplashScreenState extends State<VideoSplashScreen> {
+  late VideoPlayerController _controller;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize video controller
+    _controller =
+        VideoPlayerController.asset("assets/videos/splash.mp4")
+          ..initialize().then((_) {
+            setState(() {});
+            _controller.play();
+          })
+          ..setLooping(false); // Ensure video plays only once
+
+    // Listen when the video ends
+    _controller.addListener(() {
+      if (_controller.value.position >=
+          (_controller.value.duration - Duration(milliseconds: 500))) {
+        _navigateToLogin();
+      }
     });
+  }
+
+  void _navigateToLogin() {
+    if (mounted) {
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(appTitle)),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(appBackground),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'You have pushed the button this many times:',
-                style: TextStyle(color: appTextColor, fontSize: 18),
+      backgroundColor: Colors.black, // Ensure background remains black
+      body: Stack(
+        fit: StackFit.expand, // Fullscreen video
+        children: [
+          if (_controller.value.isInitialized)
+            Positioned.fill(
+              child: FittedBox(
+                fit: BoxFit.cover, // Scale video to cover entire screen
+                child: SizedBox(
+                  width: _controller.value.size.width,
+                  height: _controller.value.size.height,
+                  child: VideoPlayer(_controller),
+                ),
               ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                  );
-                },
-                child: const Text("Login"),
-              ),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+            )
+          else
+            Center(
+              child: CircularProgressIndicator(),
+            ), // Show loading while initializing
+        ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
