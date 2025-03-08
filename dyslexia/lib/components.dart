@@ -359,7 +359,11 @@ class ChildCardSlider extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 20,
-                            backgroundImage: AssetImage(child['image']!),
+                            backgroundImage:
+                                child['image']!.startsWith('http')
+                                    ? NetworkImage(child['image']!)
+                                    : AssetImage(child['image']!)
+                                        as ImageProvider,
                           ),
                         ],
                       ),

@@ -4,6 +4,7 @@ import 'package:dyslexia/GameScorePage.dart';
 import 'package:dyslexia/LevelUnlocker.dart';
 import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/ProfileChild.dart';
+import 'package:dyslexia/ProfileParent.dart';
 import 'package:dyslexia/ScoresPage.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "page": DashboardChild(),
     },
     {"icon": FeatherIcons.award, "label": "Profile", "page": ProfileChild()},
+    {
+      "icon": FeatherIcons.award,
+      "label": "Profile Parent",
+      "page": ProfileParent(),
+    },
     {"icon": FeatherIcons.barChart2, "label": "Insights", "page": ScoresPage()},
     {
       "icon": FeatherIcons.barChart2,

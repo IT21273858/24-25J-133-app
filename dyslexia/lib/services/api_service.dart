@@ -96,6 +96,9 @@ class ApiService {
       print("Image URL: $img");
       print("====================================");
 
+      // Fetch and store parent details
+      await ApiService.fetchAndStoreParentDetails();
+
       return {
         "role": role,
         "token": token,
@@ -153,6 +156,86 @@ class ApiService {
       print("User logged out successfully");
     } catch (e) {
       print("Error in logoutUser: $e");
+    }
+  }
+
+  // Fetch Parent Details Using user_id
+  static Future<void> fetchAndStoreParentDetails() async {
+    try {
+      print("Income to fetch parent details");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('user_id');
+      String? token = prefs.getString('auth_token');
+
+      if (userId == null || token == null) {
+        print("User ID or Token not found in local storage.");
+        return;
+      }
+
+      String url = '$parentBaseUrl/get/$userId';
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {"Authorization": "Bearer $token"},
+      );
+
+      if (response.statusCode == 200) {
+        final parentData = jsonDecode(response.body);
+
+        // Store data in SharedPreferences
+        print("**************");
+        print(parentData);
+        await prefs.setString('parent_name', parentData['parent']['name']);
+        await prefs.setString('parent_email', parentData['parent']['email']);
+        await prefs.setString(
+          'parent_image',
+          parentData['parent']['profile_img'],
+        );
+        await prefs.setString(
+          'parent_phone',
+          parentData['parent']['phoneNumber'],
+        );
+        await prefs.setString(
+          'parent_address',
+          parentData['parent']['address'],
+        );
+        // Fetch and Store Children Details
+        List<dynamic> children = parentData['parent']['Children'] ?? [];
+        await storeChildrenDetails(children);
+        print("✅ Parent details fetched and stored successfully.");
+      } else {
+        print("⚠️ Failed to fetch parent details: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("❌ Error in fetchAndStoreParentDetails: $e");
+    }
+  }
+
+  /// Store Children Details in SharedPreferences
+  static Future<void> storeChildrenDetails(List<dynamic> children) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String> childrenList = [];
+
+      for (var child in children) {
+        String childData = jsonEncode({
+          "id": child['id'],
+          "name": child['name'],
+          "email": child['email'],
+          "profile_img": child['profile_img'],
+          "level": child['level'],
+          "phone": child['phoneNumber'],
+          "address": child['address'],
+        });
+        childrenList.add(childData);
+      }
+
+      await prefs.setStringList('children_list', childrenList);
+
+      print("✅ Children details stored successfully.");
+      print("Children List: $childrenList");
+    } catch (e) {
+      print("❌ Error in storeChildrenDetails: $e");
     }
   }
 }
