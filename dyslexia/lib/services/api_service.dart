@@ -14,12 +14,16 @@ class ApiService {
     String email,
     String password,
   ) async {
+    print("Income to login function");
     try {
       final parentResponse = await http.post(
         Uri.parse('$parentBaseUrl/login'),
         body: jsonEncode({"email": email, "password": password}),
         headers: {"Content-Type": "application/json"},
       );
+
+      print("Parent response status: ${parentResponse.statusCode}");
+      print("Parent response body: ${parentResponse.body}"); // Debugging
 
       if (parentResponse.statusCode == 200) {
         return await _handleLoginResponse(parentResponse.body, 'parent');
@@ -30,6 +34,9 @@ class ApiService {
         body: jsonEncode({"email": email, "password": password}),
         headers: {"Content-Type": "application/json"},
       );
+
+      print("Child response status: ${childResponse.statusCode}");
+      print("Child response body: ${childResponse.body}"); // Debugging
 
       if (childResponse.statusCode == 200) {
         return await _handleLoginResponse(childResponse.body, 'child');
@@ -43,7 +50,7 @@ class ApiService {
     }
   }
 
-  /// **Handle login response and store user data**
+  /// Handle login response and store user data
 
   static Future<Map<String, dynamic>?> _handleLoginResponse(
     String responseBody,
