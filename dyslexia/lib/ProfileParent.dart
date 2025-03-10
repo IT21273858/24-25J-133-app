@@ -30,8 +30,8 @@ class _ProfileParentState extends State<ProfileParent> {
 
   Future<void> _loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await ApiService.fetchAndStoreParentDetails(); // Fetch latest details
 
+    // ✅ Load from local storage first (to show existing data instantly)
     setState(() {
       userName = prefs.getString('parent_name') ?? "Unknown User";
       userEmail = prefs.getString('parent_email') ?? "No Email";
@@ -39,7 +39,7 @@ class _ProfileParentState extends State<ProfileParent> {
       userPhone = prefs.getString('parent_phone') ?? "No Phone";
       userAddress = prefs.getString('parent_address') ?? "No Address";
 
-      // Load stored children data and cast it properly
+      // Load stored children data and cast properly
       List<String>? storedChildren = prefs.getStringList('children_list');
       if (storedChildren != null) {
         childrenList =
@@ -49,25 +49,23 @@ class _ProfileParentState extends State<ProfileParent> {
       }
     });
 
-    // Print fetched user details for debugging
-    print("=========== Parent Details from Storage ===========");
-    print("Name: $userName");
-    print("Email: $userEmail");
-    print("Image: $userImage");
-    print("Phone: $userPhone");
-    print("Address: $userAddress");
-    print("====================================");
+    // ✅ Fetch latest data from API in the background and update UI
+    await ApiService.fetchAndStoreParentDetails();
+    _updateChildrenData(); // Reload UI after fetching
+  }
 
-    // Print children details for debugging
-    print("=========== Children Details ===========");
-    for (var child in childrenList) {
-      print("Child Name: ${child['name']}");
-      print("Child Email: ${child['email']}");
-      print("Child Level: ${child['level']}");
-      print("Child Image: ${child['profile_img']}");
-      print("Child Address: ${child['address']}");
-      print("------------------------------------");
-    }
+  /// **Update UI after fetching API data**
+  Future<void> _updateChildrenData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      List<String>? storedChildren = prefs.getStringList('children_list');
+      if (storedChildren != null) {
+        childrenList =
+            storedChildren
+                .map((child) => jsonDecode(child) as Map<String, dynamic>)
+                .toList();
+      }
+    });
   }
 
   @override
@@ -374,7 +372,9 @@ class _ProfileParentState extends State<ProfileParent> {
                                         "level":
                                             child["level"]?.toString() ??
                                             "No Level",
-                                        "lastLogged": "Not Available",
+                                        "lastLogged":
+                                            child["updatedAt"]?.toString() ??
+                                            "Not Available",
                                         "image":
                                             child["profile_img"]!
                                                     .toString()

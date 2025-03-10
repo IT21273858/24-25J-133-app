@@ -357,13 +357,46 @@ class ChildCardSlider extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundImage:
-                                child['image']!.startsWith('http')
-                                    ? NetworkImage(child['image']!)
-                                    : AssetImage(child['image']!)
-                                        as ImageProvider,
+                          // User Icon with Shadow
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: SizedBox(
+                                width: 60,
+                                height: 60,
+                                child:
+                                    child['image']!.startsWith('http')
+                                        ? Image.network(
+                                          child['image']!,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (
+                                            context,
+                                            error,
+                                            stackTrace,
+                                          ) {
+                                            return Image.asset(
+                                              'assets/images/user.png',
+                                            );
+                                          },
+                                        )
+                                        : Image.asset(
+                                          child['image']!,
+                                          fit: BoxFit.cover,
+                                        ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -372,7 +405,7 @@ class ChildCardSlider extends StatelessWidget {
                           Expanded(
                             child: Text(
                               child['name']!,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: cardheadingStyle,
                               overflow:
                                   TextOverflow.ellipsis, // Prevent overflow
                             ),

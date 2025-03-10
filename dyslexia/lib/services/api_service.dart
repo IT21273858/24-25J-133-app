@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class ApiService {
   static const String parentBaseUrl =
@@ -212,12 +213,16 @@ class ApiService {
   }
 
   /// Store Children Details in SharedPreferences
+
   static Future<void> storeChildrenDetails(List<dynamic> children) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       List<String> childrenList = [];
 
       for (var child in children) {
+        // Convert the `updatedAt` timestamp into a readable format
+        String formattedDate = formatDateTime(child['updatedAt']);
+
         String childData = jsonEncode({
           "id": child['id'],
           "name": child['name'],
@@ -226,6 +231,7 @@ class ApiService {
           "level": child['level'],
           "phone": child['phoneNumber'],
           "address": child['address'],
+          "updatedAt": formattedDate, // Store formatted date
         });
         childrenList.add(childData);
       }
@@ -236,6 +242,20 @@ class ApiService {
       print("Children List: $childrenList");
     } catch (e) {
       print("❌ Error in storeChildrenDetails: $e");
+    }
+  }
+
+  /// **🔹 Helper Function: Convert Timestamp to "12 Feb 2024 - 12:30pm" Format**
+  static String formatDateTime(String dateTimeString) {
+    try {
+      DateTime dateTime = DateTime.parse(dateTimeString).toLocal();
+      String formattedDate = DateFormat(
+        "dd MMM yyyy - h:mm a",
+      ).format(dateTime);
+      return formattedDate;
+    } catch (e) {
+      print("❌ Error formatting date: $e");
+      return "Invalid Date"; // Fallback in case of errors
     }
   }
 }
