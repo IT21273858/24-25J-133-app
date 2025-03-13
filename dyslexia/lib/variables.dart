@@ -168,3 +168,9 @@ final TextStyle timeClock = GoogleFonts.poppins(
   fontWeight: FontWeight.w300,
   color: Colors.white,
 );
+
+final TextStyle rCheckpointtxtDisplayH = GoogleFonts.lilyScriptOne(
+  fontSize: 52,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
