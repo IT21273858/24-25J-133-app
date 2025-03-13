@@ -80,6 +80,8 @@ flutter:
     - assets/images/keybro.png
     - assets/images/stand.png
     - assets/images/test123.png
+    - assets/images/circ.png
+    - assets/images/tri.png
     - assets/images/test12345.png
     #   - images/a_dot_burr.jpeg
     #   - images/a_dot_ham.jpeg
