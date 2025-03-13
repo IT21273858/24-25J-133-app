@@ -36,7 +36,7 @@ const Color linechartbodyColor = Color(0xFF6D3AFF);
 const Color childcardbodyColor = Color(0xFFCFCAFF);
 const Color pointsBackgroundColor = Color(0xFF9370DB);
 const Color pointsTextColor = Color(0xFFF0EFF4);
-
+const Color readingTitleColor = Color.fromRGBO(79, 75, 101, 1);
 // Font styles using Poppins
 final TextStyle headingStyle = GoogleFonts.poppins(
   fontSize: 36,
@@ -124,4 +124,47 @@ final TextStyle gamescoresubHeadingStyle = GoogleFonts.poppins(
   fontSize: 20,
   fontWeight: FontWeight.normal,
   color: HeadingColor,
+);
+
+final TextStyle rCheckpointTitle = GoogleFonts.poppins(
+  fontSize: 24,
+  fontWeight: FontWeight.w500,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointLv = GoogleFonts.poppins(
+  fontSize: 20,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointtxtDisplay = GoogleFonts.lilyScriptOne(
+  fontSize: 46,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointParaDisplay = GoogleFonts.lobsterTwo(
+  fontSize: 24,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointInst = GoogleFonts.poppins(
+  fontSize: 16,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointSkip = GoogleFonts.poppins(
+  fontSize: 16,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+  decoration: TextDecoration.underline,
+);
+
+final TextStyle timeClock = GoogleFonts.poppins(
+  fontSize: 20,
+  fontWeight: FontWeight.w300,
+  color: Colors.white,
 );

@@ -4,6 +4,9 @@ import 'package:dyslexia/GameScorePage.dart';
 import 'package:dyslexia/LevelUnlocker.dart';
 import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/ProfileChild.dart';
+import 'package:dyslexia/ReadingCheckpoint1.dart';
+import 'package:dyslexia/ReadingCheckpoint2.dart';
+import 'package:dyslexia/ReadingCheckpoint3.dart';
 import 'package:dyslexia/ScoresPage.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +38,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "icon": FeatherIcons.barChart2,
       "label": "Game Score",
       "page": Gamescorepage(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Checkpointone",
+      "page": ReadCheckpointOne(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "CheckpointTwo",
+      "page": ReadCheckpointTwo(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Checkpointhree",
+      "page": ReadCheckpointThree(),
     },
   ];
 
