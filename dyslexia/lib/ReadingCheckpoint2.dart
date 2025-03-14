@@ -1,18 +1,74 @@
 import 'package:dyslexia/RegisterChooseForChild.dart';
+import 'package:dyslexia/serviceprovider/audio_recorder.dart';
+import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:provider/provider.dart';
 
-class ReadCheckpointTwo extends StatelessWidget {
+class ReadCheckpointTwo extends StatefulWidget {
+  @override
+  State<ReadCheckpointTwo> createState() => _ReadCheckpointTwoState();
+}
+
+class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
+  final recorder = AudioRecorderService();
+
+  bool isrecording = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isrecording = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final timer = Provider.of<TimerService>(context);
+
     String displayText =
         "Reading a paragraph is like reading a imagination of a writer. We can immerse through the writers thought, emotion when the writer writting the para and the word that he thinks next";
     String textinstruction = "press the mic icon & speak the word displayed ";
+
+    Future<void> startRecording() async {
+      await recorder.startRecording();
+      timer.startTimer();
+      setState(() {
+        isrecording = true;
+      });
+    }
+
+    Future<void> stopRecording() async {
+      String? outputpath = await recorder.stopRecording();
+      timer.stopTimer();
+      timer.resetTimer();
+      setState(() {
+        isrecording = false;
+      });
+      print("audio stoped");
+      print(outputpath ?? "no path");
+    }
+
+    Future<void> handleRecording() async {
+      if (!isrecording) {
+        //start record here
+        await startRecording();
+      } else {
+        //stop record here
+        await stopRecording();
+      }
+    }
+
+    Future<void> handleReStart() async {
+      //stop record here
+      await stopRecording();
+      timer.resetTimer();
+    }
+
     return Scaffold(
       backgroundColor: Color(0xFFF0EFF4),
       body: Padding(
@@ -66,7 +122,10 @@ class ReadCheckpointTwo extends StatelessWidget {
                                 spacing: 3,
                                 children: [
                                   Icon(Icons.circle, color: Colors.white),
-                                  Text("00 : 00", style: timeClock),
+                                  Text(
+                                    timer.getFormattedTime(),
+                                    style: timeClock,
+                                  ),
                                 ],
                               ),
                             ),
@@ -117,7 +176,7 @@ class ReadCheckpointTwo extends StatelessWidget {
                                   ),
                                 ),
                                 child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: handleReStart,
                                   icon: Icon(
                                     Icons.refresh,
                                     color: Colors.white,
@@ -138,9 +197,12 @@ class ReadCheckpointTwo extends StatelessWidget {
                           spacing: 9,
                           children: [
                             CustomButton(
-                              text: "Start Reading",
+                              text:
+                                  isrecording
+                                      ? "Check Fluency"
+                                      : "Start Reading",
                               isLoading: false,
-                              onPressed: () {},
+                              onPressed: handleRecording,
                             ),
                             TextButton(
                               onPressed: () {},
@@ -206,173 +268,6 @@ class ReadCheckpointTwo extends StatelessWidget {
   }
 
   // Scrollable Child Selection
-  // Widget _buildChildSelection() {
-  //   return Container(
-  //     height: 30,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: children.length,
-  //       itemBuilder: (context, index) {
-  //         return Padding(
-  //           padding: EdgeInsets.symmetric(horizontal: 8.0),
-  //           child: ElevatedButton(
-  //             onPressed: () {},
-  //             style: ElevatedButton.styleFrom(
-  //               backgroundColor: Colors.white,
-  //               elevation: 0,
-  //               shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20),
-  //               ),
-  //             ),
-  //             child: Text(
-  //               children[index],
-  //               style: TextStyle(color: Colors.black),
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // // Performance Section with Line Chart
-  // Widget _buildPerformanceSection() {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 16.0),
-  //     child: Column(
-  //       children: [
-  //         Container(
-  //           padding: EdgeInsets.all(12),
-  //           decoration: BoxDecoration(
-  //             color: Colors.white,
-  //             borderRadius: BorderRadius.circular(18),
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 color: Colors.grey.withOpacity(0.2),
-  //                 spreadRadius: 1,
-  //                 blurRadius: 5,
-  //               ),
-  //             ],
-  //           ),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             spacing: 5,
-  //             children: [
-  //               Padding(padding: EdgeInsets.only(left: 10, right: 10)),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Text(
-  //                         'Statistics',
-  //                         style: TextStyle(
-  //                           fontSize: 18,
-  //                           fontWeight: FontWeight.normal,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         'Game Name',
-  //                         style: TextStyle(
-  //                           fontSize: 16,
-  //                           color: Colors.black,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.end,
-  //                     children: [
-  //                       Text(
-  //                         '1,027',
-  //                         style: TextStyle(
-  //                           fontSize: 20,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         '+12.75%',
-  //                         style: TextStyle(color: Colors.green, fontSize: 14),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //               Padding(padding: EdgeInsets.only(top: 10)),
-  //               LineChartWidget(chartData: performanceData),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // // Manage Children Section
-  // Widget _buildManageChildrenSection(BuildContext context) {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 16.0),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text(
-  //               "Manage Children",
-  //               style: TextStyle(
-  //                 fontSize: 18,
-  //                 fontWeight: FontWeight.bold,
-  //                 color: Colors.black,
-  //               ),
-  //             ),
-  //             IconButton(
-  //               icon: Icon(
-  //                 Icons.add_circle_outline,
-  //                 size: 24,
-  //                 color: Colors.black,
-  //               ),
-  //               onPressed: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => RegisterChooseForChild(),
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         SizedBox(height: 10),
-  //         ChildCardSliderDashboard(
-  //           childData: [
-  //             {
-  //               "name": "Child 1",
-  //               "level": "Level 02",
-  //               "lastLogged": "12 Feb 2024 - 12:30pm",
-  //               "image": "assets/images/child.png",
-  //             },
-  //             {
-  //               "name": "Child 2",
-  //               "level": "Level 03",
-  //               "lastLogged": "10 Feb 2024 - 11:45am",
-  //               "image": "assets/images/child.png",
-  //             },
-  //             {
-  //               "name": "Child 3",
-  //               "level": "Level 01",
-  //               "lastLogged": "08 Feb 2024 - 02:15pm",
-  //               "image": "assets/images/child.png",
-  //             },
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
     return Container(
       // decoration: BoxDecoration(

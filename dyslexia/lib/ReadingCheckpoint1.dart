@@ -1,21 +1,26 @@
-import 'package:dyslexia/RegisterChooseForChild.dart';
-import 'package:dyslexia/variables.dart';
-import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:dyslexia/serviceprovider/audio_recorder.dart';
+import 'package:dyslexia/variables.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
-class ReadCheckpointOne extends StatelessWidget {
-  final List<FlSpot> performanceData = [
-    FlSpot(0, 2),
-    FlSpot(1, 3),
-    FlSpot(2, 5),
-    FlSpot(3, 4),
-    FlSpot(4, 6),
-    FlSpot(5, 4),
-  ]; // Sample Data
+class ReadCheckpointOne extends StatefulWidget {
+  @override
+  State<ReadCheckpointOne> createState() => _ReadCheckpointOneState();
+}
 
-  final List<String> children = ["Child 1", "Child 2", "Child 3", "Child 4"];
+class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
+  // audio recoridnf
+  final recorder = AudioRecorderService();
+
+  bool isrecording = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isrecording = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +28,33 @@ class ReadCheckpointOne extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     String displayText = "Bamboo";
     String textinstruction = "press the mic icon & speak the word displayed ";
+
+    Future<void> startRecording() async {
+      await recorder.startRecording();
+      setState(() {
+        isrecording = true;
+      });
+    }
+
+    Future<void> stopRecording() async {
+      String? outputpath = await recorder.stopRecording();
+      setState(() {
+        isrecording = false;
+      });
+      print("audio stoped");
+      print(outputpath ?? "no path");
+    }
+
+    Future<void> handleRecording() async {
+      if (!isrecording) {
+        //start record here
+        await startRecording();
+      } else {
+        //stop record here
+        await stopRecording();
+      }
+    }
+
     return Scaffold(
       backgroundColor: Color(0xFFF0EFF4),
       body: Padding(
@@ -109,12 +141,17 @@ class ReadCheckpointOne extends StatelessWidget {
                                   ),
                                 ),
                                 child: IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.mic, color: Colors.white),
+                                  onPressed: handleRecording,
+                                  icon: Icon(
+                                    !isrecording
+                                        ? FeatherIcons.mic
+                                        : FeatherIcons.pause,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                               Text(
-                                textinstruction,
+                                isrecording ? "Recording..." : textinstruction,
                                 style: rCheckpointInst,
                                 textAlign: TextAlign.center,
                               ),
@@ -187,174 +224,6 @@ class ReadCheckpointOne extends StatelessWidget {
                 radius: 20,
                 backgroundImage: AssetImage('assets/images/user.png'),
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Scrollable Child Selection
-  Widget _buildChildSelection() {
-    return Container(
-      height: 30,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: children.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: Text(
-                children[index],
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  // Performance Section with Line Chart
-  Widget _buildPerformanceSection() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 5,
-              children: [
-                Padding(padding: EdgeInsets.only(left: 10, right: 10)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Statistics',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        Text(
-                          'Game Name',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '1,027',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '+12.75%',
-                          style: TextStyle(color: Colors.green, fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Padding(padding: EdgeInsets.only(top: 10)),
-                LineChartWidget(chartData: performanceData),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Manage Children Section
-  Widget _buildManageChildrenSection(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Manage Children",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.add_circle_outline,
-                  size: 24,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RegisterChooseForChild(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          ChildCardSliderDashboard(
-            childData: [
-              {
-                "name": "Child 1",
-                "level": "Level 02",
-                "lastLogged": "12 Feb 2024 - 12:30pm",
-                "image": "assets/images/child.png",
-              },
-              {
-                "name": "Child 2",
-                "level": "Level 03",
-                "lastLogged": "10 Feb 2024 - 11:45am",
-                "image": "assets/images/child.png",
-              },
-              {
-                "name": "Child 3",
-                "level": "Level 01",
-                "lastLogged": "08 Feb 2024 - 02:15pm",
-                "image": "assets/images/child.png",
-              },
             ],
           ),
         ],

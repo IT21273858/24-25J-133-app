@@ -1,10 +1,14 @@
+import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/variables.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(create: (context) => TimerService(), child: MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
