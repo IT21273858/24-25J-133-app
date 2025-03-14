@@ -20,8 +20,8 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
 
   @override
   void initState() {
-    super.initState();
     isrecording = false;
+    super.initState();
   }
 
   @override

@@ -5,13 +5,35 @@ import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class VisualProcessText1 extends StatelessWidget {
+class VisualProcessText1 extends StatefulWidget {
+  @override
+  State<VisualProcessText1> createState() => _VisualProcessText1State();
+}
+
+class _VisualProcessText1State extends State<VisualProcessText1> {
+  int selection = -1;
+
+  final List<Map<String, double>> sizeConfig = [
+    {'count': 3, 'height': 148, 'width': 127},
+    {'count': 4, 'height': 117, 'width': 100},
+    {'count': 5, 'height': 92, 'width': 79},
+  ];
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     String displayText = "Bamboo";
     String textinstruction = "choose next shape";
+
+    List<Map<String, String>> pattern = [
+      {'shape': "circle", 'shapeurl': 'assets/images/circ.png'},
+      {'shape': "triangle", 'shapeurl': 'assets/images/tri.png'},
+      {'shape': "circle", 'shapeurl': 'assets/images/circ.png'},
+      {'shape': "triangle", 'shapeurl': 'assets/images/tri.png'},
+      {'shape': "circle", 'shapeurl': 'assets/images/circ.png'},
+    ];
+
     return Scaffold(
       backgroundColor: Color(0xFFF0EFF4),
       body: Padding(
@@ -54,78 +76,34 @@ class VisualProcessText1 extends StatelessWidget {
                         ],
                       ),
                       Center(
-                        child: Column(
-                          spacing: 9,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 5.0,
-                                bottom: 40,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                spacing: 5,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    spacing: 5,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(15),
-                                          ),
-                                        ),
-                                        width: 127,
-                                        height: 148,
-                                        child: Image.asset(
-                                          "assets/images/circ.png",
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(15),
-                                          ),
-                                        ),
-                                        width: 127,
-                                        height: 148,
-                                        child: Image.asset(
-                                          "assets/images/tri.png",
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(15),
-                                          ),
-                                        ),
-                                        width: 127,
-                                        height: 148,
-                                        child: Image.asset(
-                                          "assets/images/circ.png",
-                                        ),
-                                      ),
-                                    ],
+                        child: SizedBox(
+                          width: screenWidth * 0.8,
+                          height: screenHeight * 0.53,
+                          child: ListView.builder(
+                            itemCount: pattern.length,
+                            itemBuilder: (context, index) {
+                              final dimentions = sizeConfig.firstWhere(
+                                (element) => element['count'] == pattern.length,
+                              );
+
+                              return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(15),
                                   ),
-                                ],
-                              ),
-                            ),
-                            // TextButton(
-                            //   onPressed: () {},
-                            //   child: Text(
-                            //     "Skip Word",
-                            //     style: rCheckpointSkip,
-                            //     textAlign: TextAlign.center,
-                            //   ),
-                            // ),
-                          ],
+                                ),
+                                // margin: EdgeInsets.only(bottom: 5),
+                                width: dimentions['width'],
+                                height: dimentions['height'],
+                                child: Image.asset(pattern[index]['shapeurl']!),
+                              );
+                            },
+                          ),
                         ),
                       ),
                       Center(
                         child: SizedBox(
-                          width: screenWidth * 0.6,
+                          width: screenWidth * 0.8,
                           child: Column(
                             spacing: 5,
                             children: [
@@ -150,38 +128,89 @@ class VisualProcessText1 extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 spacing: 8,
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(15),
+                                  RawMaterialButton(
+                                    splashColor: Colors.transparent,
+                                    onPressed: () {
+                                      setState(() {
+                                        selection = 0;
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                        color:
+                                            selection == 0
+                                                ? Colors.deepPurple[100]
+                                                : null,
                                       ),
-                                    ),
-                                    width: 69,
-                                    height: 81,
-                                    child: Image.asset(
-                                      "assets/images/circ.png",
+                                      width: 69,
+                                      height: 81,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(
+                                          selection == 0 ? 8.0 : 0,
+                                        ),
+                                        child: Image.asset(
+                                          "assets/images/circ.png",
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(15),
+                                  RawMaterialButton(
+                                    splashColor: Colors.transparent,
+                                    onPressed:
+                                        () => setState(() {
+                                          selection = 1;
+                                        }),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                        color:
+                                            selection == 1
+                                                ? Colors.deepPurple[100]
+                                                : null,
+                                      ),
+                                      width: 69,
+                                      height: 81,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(
+                                          selection == 1 ? 8.0 : 0,
+                                        ),
+                                        child: Image.asset(
+                                          "assets/images/tri.png",
+                                        ),
                                       ),
                                     ),
-                                    width: 69,
-                                    height: 81,
-                                    child: Image.asset("assets/images/tri.png"),
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(15),
+                                  RawMaterialButton(
+                                    splashColor: Colors.transparent,
+                                    onPressed:
+                                        () => setState(() {
+                                          selection = 2;
+                                        }),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                        color:
+                                            selection == 2
+                                                ? Colors.deepPurple[100]
+                                                : null,
                                       ),
-                                    ),
-                                    width: 69,
-                                    height: 81,
-                                    child: Image.asset(
-                                      "assets/images/circ.png",
+                                      width: 69,
+                                      height: 81,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(
+                                          selection == 2 ? 8.0 : 0,
+                                        ),
+                                        child: Image.asset(
+                                          "assets/images/circ.png",
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -248,173 +277,6 @@ class VisualProcessText1 extends StatelessWidget {
   }
 
   // // Scrollable Child Selection
-  // Widget _buildChildSelection() {
-  //   return Container(
-  //     height: 30,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: children.length,
-  //       itemBuilder: (context, index) {
-  //         return Padding(
-  //           padding: EdgeInsets.symmetric(horizontal: 8.0),
-  //           child: ElevatedButton(
-  //             onPressed: () {},
-  //             style: ElevatedButton.styleFrom(
-  //               backgroundColor: Colors.white,
-  //               elevation: 0,
-  //               shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20),
-  //               ),
-  //             ),
-  //             child: Text(
-  //               children[index],
-  //               style: TextStyle(color: Colors.black),
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // // Performance Section with Line Chart
-  // Widget _buildPerformanceSection() {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 16.0),
-  //     child: Column(
-  //       children: [
-  //         Container(
-  //           padding: EdgeInsets.all(12),
-  //           decoration: BoxDecoration(
-  //             color: Colors.white,
-  //             borderRadius: BorderRadius.circular(18),
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 color: Colors.grey.withOpacity(0.2),
-  //                 spreadRadius: 1,
-  //                 blurRadius: 5,
-  //               ),
-  //             ],
-  //           ),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             spacing: 5,
-  //             children: [
-  //               Padding(padding: EdgeInsets.only(left: 10, right: 10)),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Text(
-  //                         'Statistics',
-  //                         style: TextStyle(
-  //                           fontSize: 18,
-  //                           fontWeight: FontWeight.normal,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         'Game Name',
-  //                         style: TextStyle(
-  //                           fontSize: 16,
-  //                           color: Colors.black,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.end,
-  //                     children: [
-  //                       Text(
-  //                         '1,027',
-  //                         style: TextStyle(
-  //                           fontSize: 20,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         '+12.75%',
-  //                         style: TextStyle(color: Colors.green, fontSize: 14),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //               Padding(padding: EdgeInsets.only(top: 10)),
-  //               LineChartWidget(chartData: performanceData),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // // Manage Children Section
-  // Widget _buildManageChildrenSection(BuildContext context) {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 16.0),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text(
-  //               "Manage Children",
-  //               style: TextStyle(
-  //                 fontSize: 18,
-  //                 fontWeight: FontWeight.bold,
-  //                 color: Colors.black,
-  //               ),
-  //             ),
-  //             IconButton(
-  //               icon: Icon(
-  //                 Icons.add_circle_outline,
-  //                 size: 24,
-  //                 color: Colors.black,
-  //               ),
-  //               onPressed: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => RegisterChooseForChild(),
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         SizedBox(height: 10),
-  //         ChildCardSliderDashboard(
-  //           childData: [
-  //             {
-  //               "name": "Child 1",
-  //               "level": "Level 02",
-  //               "lastLogged": "12 Feb 2024 - 12:30pm",
-  //               "image": "assets/images/child.png",
-  //             },
-  //             {
-  //               "name": "Child 2",
-  //               "level": "Level 03",
-  //               "lastLogged": "10 Feb 2024 - 11:45am",
-  //               "image": "assets/images/child.png",
-  //             },
-  //             {
-  //               "name": "Child 3",
-  //               "level": "Level 01",
-  //               "lastLogged": "08 Feb 2024 - 02:15pm",
-  //               "image": "assets/images/child.png",
-  //             },
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
     return Container(
       // decoration: BoxDecoration(
