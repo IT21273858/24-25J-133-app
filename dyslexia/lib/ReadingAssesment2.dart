@@ -5,12 +5,12 @@ import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
-class ReadCheckpointOne extends StatefulWidget {
+class UnderstandSound extends StatefulWidget {
   @override
-  State<ReadCheckpointOne> createState() => _ReadCheckpointOneState();
+  State<UnderstandSound> createState() => _UnderstandSoundState();
 }
 
-class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
+class _UnderstandSoundState extends State<UnderstandSound> {
   // audio recoridnf
   final recorder = AudioRecorderService();
 
@@ -26,8 +26,9 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    String displayText = "Bamboo";
-    String textinstruction = "press the mic icon & speak the word displayed ";
+    String displayText = "/Sh/";
+    String hintText = "Shoe";
+    String textinstruction = "Choose the correct pronounciation";
 
     Future<void> startRecording() async {
       await recorder.startRecording();
@@ -90,8 +91,9 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Spell the word", style: rCheckpointTitle),
-                              Text("Level 1", style: rCheckpointLv),
+                              Text("Understand", style: rCheckpointTitle),
+                              Text("the Sound", style: rCheckpointTitle),
+                              // Text("Level 1", style: rCheckpointLv),
                             ],
                           ),
                         ],
@@ -100,13 +102,14 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              "assets/images/test123.png",
-                              width: screenWidth * 0.6,
-                            ),
+                            // Image.asset(
+                            //   "assets/images/rabi.png",
+                            //   width: screenWidth * 0.6,
+                            // ),
                             Container(
                               width: screenWidth * 0.8,
-                              height: screenHeight * 0.25,
+                              height: screenHeight * 0.3,
+                              padding: const EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(17),
@@ -117,9 +120,22 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  Row(
+                                    children: [
+                                      Text("Symbol", style: rCheckpointInst),
+                                    ],
+                                  ),
                                   Text(
                                     displayText,
                                     style: rCheckpointtxtDisplay,
+                                  ),
+                                  Text(
+                                    "Hint :$hintText",
+                                    style: rCheckpointInst,
+                                  ),
+                                  Image.asset(
+                                    "assets/images/rabi2.png",
+                                    width: screenWidth * 0.2,
                                   ),
                                 ],
                               ),
@@ -127,33 +143,113 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
                           ],
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0, bottom: 8),
+                        child: Center(
+                          child: SizedBox(
+                            width: screenWidth * 0.6,
+                            child: Column(
+                              spacing: 5,
+                              children: [
+                                // Container(
+                                //   decoration: BoxDecoration(
+                                //     color: pointsBackgroundColor,
+                                //     borderRadius: BorderRadius.all(
+                                //       Radius.circular(40),
+                                //     ),
+                                //   ),
+                                //   child: IconButton(
+                                //     onPressed: handleRecording,
+                                //     icon: Icon(
+                                //       !isrecording
+                                //           ? FeatherIcons.mic
+                                //           : FeatherIcons.pause,
+                                //       color: Colors.white,
+                                //     ),
+                                //   ),
+                                // ),
+                                Text(
+                                  textinstruction,
+                                  style: rCheckpointInst,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       Center(
-                        child: SizedBox(
-                          width: screenWidth * 0.6,
-                          child: Column(
-                            spacing: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0, top: 12),
+                          child: Row(
+                            spacing: 12,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
+                                width: screenWidth * 0.2,
+                                height: screenHeight * 0.1,
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                  color: pointsBackgroundColor,
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(40),
+                                    Radius.circular(17),
                                   ),
+                                  color: Color.fromRGBO(166, 159, 204, 0.31),
                                 ),
                                 child: IconButton(
-                                  onPressed: handleRecording,
+                                  onPressed: () {},
+                                  iconSize: 32,
+
                                   icon: Icon(
                                     !isrecording
-                                        ? FeatherIcons.mic
-                                        : FeatherIcons.pause,
+                                        ? FeatherIcons.volume1
+                                        : FeatherIcons.volume2,
                                     color: Colors.white,
                                   ),
                                 ),
                               ),
-                              Text(
-                                isrecording ? "Recording..." : textinstruction,
-                                style: rCheckpointInst,
-                                textAlign: TextAlign.center,
+                              Container(
+                                width: screenWidth * 0.2,
+                                height: screenHeight * 0.1,
+                                padding: const EdgeInsets.all(15.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(17),
+                                  ),
+                                  color: Color.fromRGBO(166, 159, 204, 0.31),
+                                ),
+                                child: IconButton(
+                                  onPressed: () {},
+                                  iconSize: 32,
+
+                                  icon: Icon(
+                                    !isrecording
+                                        ? FeatherIcons.volume1
+                                        : FeatherIcons.volume2,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: screenWidth * 0.2,
+                                height: screenHeight * 0.1,
+                                padding: const EdgeInsets.all(15.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(17),
+                                  ),
+                                  color: Color.fromRGBO(166, 159, 204, 0.31),
+                                ),
+                                child: IconButton(
+                                  onPressed: () {},
+                                  iconSize: 32,
+
+                                  icon: Icon(
+                                    !isrecording
+                                        ? FeatherIcons.volume1
+                                        : FeatherIcons.volume2,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -168,14 +264,14 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
                               isLoading: false,
                               onPressed: () {},
                             ),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Skip Word",
-                                style: rCheckpointSkip,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
+                            // TextButton(
+                            //   onPressed: () {},
+                            //   child: Text(
+                            //     "Skip Word",
+                            //     style: rCheckpointSkip,
+                            //     textAlign: TextAlign.center,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

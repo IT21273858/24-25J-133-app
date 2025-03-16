@@ -174,3 +174,15 @@ final TextStyle rCheckpointtxtDisplayH = GoogleFonts.lilyScriptOne(
   fontWeight: FontWeight.w300,
   color: readingTitleColor,
 );
+
+final TextStyle cardtxtValidate = GoogleFonts.poppins(
+  fontSize: 32,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle cardtxtdisplay = GoogleFonts.poppins(
+  fontSize: 46,
+  fontWeight: FontWeight.w500,
+  color: readingTitleColor,
+);

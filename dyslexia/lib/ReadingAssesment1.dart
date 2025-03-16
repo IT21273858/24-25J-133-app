@@ -1,19 +1,17 @@
-import 'package:dyslexia/RegisterChooseForChild.dart';
-import 'package:dyslexia/serviceprovider/audio_recorder.dart';
-import 'package:dyslexia/serviceprovider/timer.dart';
-import 'package:dyslexia/variables.dart';
-import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:provider/provider.dart';
+import 'package:dyslexia/serviceprovider/audio_recorder.dart';
+import 'package:dyslexia/variables.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
-class ReadCheckpointTwo extends StatefulWidget {
+class ReadPronounceWord extends StatefulWidget {
   @override
-  State<ReadCheckpointTwo> createState() => _ReadCheckpointTwoState();
+  State<ReadPronounceWord> createState() => _ReadPronounceWordState();
 }
 
-class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
+class _ReadPronounceWordState extends State<ReadPronounceWord> {
+  // audio recoridnf
   final recorder = AudioRecorderService();
 
   bool isrecording = false;
@@ -28,15 +26,11 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    final timer = Provider.of<TimerService>(context);
-
-    String displayText =
-        "Reading a paragraph is like reading a imagination of a writer. We can immerse through the writers thought, emotion when the writer writting the para and the word that he thinks next";
+    String displayText = "Bamboo";
     String textinstruction = "press the mic icon & speak the word displayed ";
 
     Future<void> startRecording() async {
       await recorder.startRecording();
-      timer.startTimer();
       setState(() {
         isrecording = true;
       });
@@ -44,8 +38,6 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
 
     Future<void> stopRecording() async {
       String? outputpath = await recorder.stopRecording();
-      timer.stopTimer();
-      timer.resetTimer();
       setState(() {
         isrecording = false;
       });
@@ -61,12 +53,6 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
         //stop record here
         await stopRecording();
       }
-    }
-
-    Future<void> handleReStart() async {
-      //stop record here
-      await stopRecording();
-      timer.resetTimer();
     }
 
     return Scaffold(
@@ -100,35 +86,13 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Read the Para", style: rCheckpointTitle),
-                              Text("Level 2", style: rCheckpointLv),
+                              Text("Repeat the Word", style: rCheckpointTitle),
+                              // Text("Level 1", style: rCheckpointLv),
                             ],
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: cardBordercolor,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                spacing: 3,
-                                children: [
-                                  Icon(Icons.circle, color: Colors.white),
-                                  Text(
-                                    timer.getFormattedTime(),
-                                    style: timeClock,
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
                         ],
                       ),
@@ -136,9 +100,13 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            Image.asset(
+                              "assets/images/rabi.png",
+                              width: screenWidth * 0.6,
+                            ),
                             Container(
                               width: screenWidth * 0.8,
-                              height: screenHeight * 0.5,
+                              height: screenHeight * 0.25,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(17),
@@ -147,14 +115,29 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Text(
-                                      displayText,
-                                      style: rCheckpointParaDisplay,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: pointsBackgroundColor,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(40),
+                                        ),
+                                      ),
+                                      child: IconButton(
+                                        onPressed: handleRecording,
+                                        icon: Icon(
+                                          FeatherIcons.volume2,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
+                                  ),
+                                  Text(
+                                    displayText,
+                                    style: rCheckpointtxtDisplay,
                                   ),
                                 ],
                               ),
@@ -176,18 +159,20 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                                   ),
                                 ),
                                 child: IconButton(
-                                  onPressed: handleReStart,
+                                  onPressed: handleRecording,
                                   icon: Icon(
-                                    Icons.refresh,
+                                    !isrecording
+                                        ? FeatherIcons.mic
+                                        : FeatherIcons.pause,
                                     color: Colors.white,
                                   ),
                                 ),
                               ),
-                              // Text(
-                              //   textinstruction,
-                              //   style: rCheckpointInst,
-                              //   textAlign: TextAlign.center,
-                              // ),
+                              Text(
+                                isrecording ? "Recording..." : textinstruction,
+                                style: rCheckpointInst,
+                                textAlign: TextAlign.center,
+                              ),
                             ],
                           ),
                         ),
@@ -197,21 +182,18 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                           spacing: 9,
                           children: [
                             CustomButton(
-                              text:
-                                  isrecording
-                                      ? "Check Fluency"
-                                      : "Start Reading",
+                              text: "Check Spelling",
                               isLoading: false,
-                              onPressed: handleRecording,
-                            ),
-                            TextButton(
                               onPressed: () {},
-                              child: Text(
-                                "Skip Paragraph",
-                                style: rCheckpointSkip,
-                                textAlign: TextAlign.center,
-                              ),
                             ),
+                            // TextButton(
+                            //   onPressed: () {},
+                            //   child: Text(
+                            //     "Skip Word",
+                            //     style: rCheckpointSkip,
+                            //     textAlign: TextAlign.center,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -267,7 +249,6 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
     );
   }
 
-  // Scrollable Child Selection
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
     return Container(
       // decoration: BoxDecoration(
