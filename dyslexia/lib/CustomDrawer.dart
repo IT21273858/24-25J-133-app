@@ -5,6 +5,8 @@ import 'package:dyslexia/LevelUnlocker.dart';
 import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/ProfileChild.dart';
 import 'package:dyslexia/ReadingAssesment5F.dart';
+import 'package:dyslexia/ReadingAssesment6P.dart';
+import 'package:dyslexia/ReadingAssesment7P.dart';
 import 'package:dyslexia/ReadingCheckpoint2.dart';
 import 'package:dyslexia/ReadingCheckpoint3.dart';
 import 'package:dyslexia/ScoresPage.dart';
@@ -43,8 +45,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
     },
     {
       "icon": FeatherIcons.barChart2,
-      "label": "Assesment5",
-      "page": RapidWords(),
+      "label": "Assesment7",
+      "page": WriteSound(),
     },
     {
       "icon": FeatherIcons.barChart2,

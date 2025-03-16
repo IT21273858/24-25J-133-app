@@ -54,38 +54,6 @@ class _RapidWordsState extends State<RapidWords> {
     setState(() {});
   }
 
-  Future<void> startRecording() async {
-    // await recorder.startRecording();
-    speechtxt.listen(
-      onResult: (result) async {
-        bool response = result.recognizedWords
-            .toLowerCase()
-            .split(" ")
-            .contains(displayText.toLowerCase());
-        // print("result.recognizedWords");
-        // print(result.recognizedWords);
-        if (response) {
-          print("✅");
-          setState(() {
-            isCorrect = true;
-          });
-          await stopRecording();
-        } else {
-          // print("not spelled");
-        }
-      },
-      listenFor: Duration(minutes: 5),
-      pauseFor: Duration(seconds: 5),
-      listenOptions: SpeechListenOptions(
-        partialResults: true,
-        cancelOnError: false,
-      ),
-    );
-    setState(() {
-      isrecording = true;
-    });
-  }
-
   Future<void> stopRecording() async {
     // String? outputpath = await recorder.stopRecording();
     speechtxt.stop();
@@ -277,7 +245,7 @@ class _RapidWordsState extends State<RapidWords> {
                                             ),
                                           ),
                                           child: IconButton(
-                                            onPressed: handleRecording,
+                                            onPressed: () {},
                                             icon: Icon(
                                               FeatherIcons.volume2,
                                               color: Colors.white,
@@ -310,7 +278,9 @@ class _RapidWordsState extends State<RapidWords> {
                             spacing: 5,
                             children: [
                               Text(
-                                "Time Remaining",
+                                isGameStarted
+                                    ? "Time Remaining"
+                                    : "Time for Each Word",
                                 style: rCheckpointInst,
                                 textAlign: TextAlign.center,
                               ),
@@ -332,7 +302,9 @@ class _RapidWordsState extends State<RapidWords> {
                                         color: Colors.white,
                                       ),
                                       Text(
-                                        timer.getFormattedTime(),
+                                        isGameStarted
+                                            ? timer.getFormattedTime()
+                                            : gametime.toString() + " seconds",
                                         style: timeClock,
                                       ),
                                     ],
