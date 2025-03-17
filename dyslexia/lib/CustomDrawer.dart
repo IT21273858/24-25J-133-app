@@ -8,6 +8,8 @@ import 'package:dyslexia/ProfileParent.dart';
 import 'package:dyslexia/ReadingAssesment4F.dart';
 import 'package:dyslexia/ReadingAssesment5F.dart';
 import 'package:dyslexia/ReadingAssesment7P.dart';
+import 'package:dyslexia/ReadingAssesment8C.dart';
+import 'package:dyslexia/ReadingAssesment8C2.dart';
 import 'package:dyslexia/ReadingCheckpoint2.dart';
 import 'package:dyslexia/ReadingCheckpoint3.dart';
 import 'package:dyslexia/ScoresPage.dart';
@@ -54,11 +56,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "label": "Game Score",
       "page": Gamescorepage(),
     },
-    {
-      "icon": FeatherIcons.barChart2,
-      "label": "Assesment7",
-      "page": WriteSound(),
-    },
+    {"icon": FeatherIcons.barChart2, "label": "Assesment7", "page": Quiz()},
     {
       "icon": FeatherIcons.barChart2,
       "label": "CheckpointTwo",
