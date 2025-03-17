@@ -23,11 +23,10 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder:
-            (context) => VideoSplashScreen(
-              nextScreen:
-                  RegisterChoose(), // Navigate to RegisterChoose after video
-            ),
+        builder: (context) => VideoSplashScreen(
+          nextScreen:
+              RegisterChoose(), // Navigate to RegisterChoose after video
+        ),
       ),
     );
   }
