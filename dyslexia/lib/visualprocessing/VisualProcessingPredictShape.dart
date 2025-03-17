@@ -102,245 +102,248 @@ class _VisualprocessingpredictshapeState
       backgroundColor: Color(0xFFF0EFF4),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        child: ListView(
-          children: [
-            Column(
-              spacing: 20,
-              children: [
-                _buildHeader(context),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   children: [
-                //     Text(
-                //       'Your Child Performance this week',
-                //       style: TextStyle(color: Colors.black, fontSize: 16),
-                //     ),
-                //     Padding(padding: EdgeInsets.all(10)),
-                //   ],
-                // ),
-                // _buildChildSelection(),
-                // _buildPerformanceSection(),
-                // _buildManageChildrenSection(context),
-                // Padding(padding: EdgeInsets.only(bottom: 10)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Column(
-                    spacing: 1,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Predict Shape", style: rCheckpointTitle),
-                              // Text("Level 1", style: rCheckpointLv),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+        child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Column(
+                spacing: 20,
+                children: [
+                  _buildHeader(context),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     Text(
+                  //       'Your Child Performance this week',
+                  //       style: TextStyle(color: Colors.black, fontSize: 16),
+                  //     ),
+                  //     Padding(padding: EdgeInsets.all(10)),
+                  //   ],
+                  // ),
+                  // _buildChildSelection(),
+                  // _buildPerformanceSection(),
+                  // _buildManageChildrenSection(context),
+                  // Padding(padding: EdgeInsets.only(bottom: 10)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Column(
+                      spacing: 1,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
-                            Container(
-                              width: screenWidth * 0.8,
-                              height: screenHeight * 0.25,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(17),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Predict Shape", style: rCheckpointTitle),
+                                // Text("Level 1", style: rCheckpointLv),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: screenWidth * 0.8,
+                                height: screenHeight * 0.25,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(17),
+                                  ),
+                                  // color: Color.fromRGBO(166, 159, 204, 0.31),
                                 ),
-                                // color: Color.fromRGBO(166, 159, 204, 0.31),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: cardBordercolor,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: cardBordercolor,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              spacing: 3,
+                                              children: [
+                                                Icon(
+                                                  Icons.circle,
+                                                  color: Colors.white,
+                                                ),
+                                                Text(
+                                                  timer.getFormattedTime(),
+                                                  style: timeClock,
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                        SizedBox(
+                                          // width: screenWidth * 0.7,
                                           child: Row(
-                                            spacing: 3,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
                                             children: [
-                                              Icon(
-                                                Icons.circle,
-                                                color: Colors.white,
-                                              ),
-                                              Text(
-                                                timer.getFormattedTime(),
-                                                style: timeClock,
+                                              Image.asset(
+                                                "assets/images/beec.png",
+                                                width: screenWidth * 0.25,
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        // width: screenWidth * 0.7,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Image.asset(
-                                              "assets/images/beec.png",
-                                              width: screenWidth * 0.25,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    displayText,
-                                    style: rCheckpointtxtDisplayH,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Center(
-                        child: SizedBox(
-                          width: screenWidth * 0.6,
-                          child: Column(
-                            spacing: 5,
-                            children: [
-                              // Container(
-                              //   decoration: BoxDecoration(
-                              //     color: pointsBackgroundColor,
-                              //     borderRadius: BorderRadius.all(
-                              //       Radius.circular(40),
-                              //     ),
-                              //   ),
-                              //   child: IconButton(
-                              //     onPressed: () {},
-                              //     icon: Icon(Icons.mic, color: Colors.white),
-                              //   ),
-                              // ),
-                              Text(
-                                textinstruction,
-                                style: rCheckpointInst,
-                                textAlign: TextAlign.center,
+                                      ],
+                                    ),
+                                    Text(
+                                      displayText,
+                                      style: rCheckpointtxtDisplayH,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
-                          child: Column(
-                            spacing: 9,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                  color: cardBackgroundcolor,
+                        Center(
+                          child: SizedBox(
+                            width: screenWidth * 0.6,
+                            child: Column(
+                              spacing: 5,
+                              children: [
+                                // Container(
+                                //   decoration: BoxDecoration(
+                                //     color: pointsBackgroundColor,
+                                //     borderRadius: BorderRadius.all(
+                                //       Radius.circular(40),
+                                //     ),
+                                //   ),
+                                //   child: IconButton(
+                                //     onPressed: () {},
+                                //     icon: Icon(Icons.mic, color: Colors.white),
+                                //   ),
+                                // ),
+                                Text(
+                                  textinstruction,
+                                  style: rCheckpointInst,
+                                  textAlign: TextAlign.center,
                                 ),
-                                width: screenWidth * 0.8,
-                                height: screenHeight * 0.3,
-                                child: RepaintBoundary(
-                                  key: _globalKey,
-                                  child: Container(
-                                    color: Colors.black,
-                                    child: GestureDetector(
-                                      onPanUpdate: (details) {
-                                        RenderBox renderBox =
-                                            _globalKey.currentContext!
-                                                    .findRenderObject()
-                                                as RenderBox;
-                                        Offset localPosition = renderBox
-                                            .globalToLocal(
-                                              details.globalPosition,
-                                            );
+                              ],
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20.0),
+                            child: Column(
+                              spacing: 9,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                    color: cardBackgroundcolor,
+                                  ),
+                                  width: screenWidth * 0.8,
+                                  height: screenHeight * 0.3,
+                                  child: RepaintBoundary(
+                                    key: _globalKey,
+                                    child: Container(
+                                      color: Colors.black,
+                                      child: GestureDetector(
+                                        onPanUpdate: (details) {
+                                          RenderBox renderBox =
+                                              _globalKey.currentContext!
+                                                      .findRenderObject()
+                                                  as RenderBox;
+                                          Offset localPosition = renderBox
+                                              .globalToLocal(
+                                                details.globalPosition,
+                                              );
 
-                                        Size containerSize = renderBox.size;
-                                        if (localPosition.dx >= 0 &&
-                                            localPosition.dx <=
-                                                containerSize.width &&
-                                            localPosition.dy >= 0 &&
-                                            localPosition.dy <=
-                                                containerSize.height) {
-                                          setState(() {
-                                            _points.add(localPosition);
-                                          });
-                                        }
-                                      },
-                                      onPanEnd: (details) {
-                                        _points.add(null);
-                                      },
-                                      child: CustomPaint(
-                                        painter: Drawing(_points),
-                                        child: Container(
-                                          width: screenWidth * 0.8,
-                                          height: screenHeight * 0.3,
+                                          Size containerSize = renderBox.size;
+                                          if (localPosition.dx >= 0 &&
+                                              localPosition.dx <=
+                                                  containerSize.width &&
+                                              localPosition.dy >= 0 &&
+                                              localPosition.dy <=
+                                                  containerSize.height) {
+                                            setState(() {
+                                              _points.add(localPosition);
+                                            });
+                                          }
+                                        },
+                                        onPanEnd: (details) {
+                                          _points.add(null);
+                                        },
+                                        child: CustomPaint(
+                                          painter: Drawing(_points),
+                                          child: Container(
+                                            width: screenWidth * 0.8,
+                                            height: screenHeight * 0.3,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: pointsBackgroundColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(40),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: pointsBackgroundColor,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(40),
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _points.clear();
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.refresh,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                                child: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _points.clear();
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Column(
+                            spacing: 9,
+                            children: [
+                              CustomButton(
+                                text: "Validate Sketch",
+                                isLoading: false,
+                                onPressed: saveSketch,
                               ),
+                              // TextButton(
+                              //   onPressed: () {},
+                              //   child: Text(
+                              //     "Skip Shape",
+                              //     style: rCheckpointSkip,
+                              //     textAlign: TextAlign.center,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
-                      ),
-                      Center(
-                        child: Column(
-                          spacing: 9,
-                          children: [
-                            CustomButton(
-                              text: "Validate Sketch",
-                              isLoading: false,
-                              onPressed: saveSketch,
-                            ),
-                            // TextButton(
-                            //   onPressed: () {},
-                            //   child: Text(
-                            //     "Skip Shape",
-                            //     style: rCheckpointSkip,
-                            //     textAlign: TextAlign.center,
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
