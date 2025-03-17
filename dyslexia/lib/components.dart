@@ -695,9 +695,9 @@ class GameCardSlider extends StatelessWidget {
   final List<Map<String, String>> gameData;
 
   const GameCardSlider({super.key, required this.gameData});
-
   @override
   Widget build(BuildContext context) {
+    print(gameData);
     return SizedBox(
       height: 172, // Adjusted height for better spacing
       child: ListView.builder(
@@ -729,7 +729,7 @@ class GameCardSlider extends StatelessWidget {
                     topRight: Radius.circular(18),
                   ),
                   child: Image.asset(
-                    game['image']!,
+                    game['image'].toString(),
                     width: double.infinity,
                     height: 120,
                     fit: BoxFit.cover,
@@ -755,7 +755,7 @@ class GameCardSlider extends StatelessWidget {
                         ),
                         SizedBox(width: 4),
                         Text(
-                          game['points']!,
+                          game['score'].toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
@@ -784,13 +784,13 @@ class GameCardSlider extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          game['name']!,
+                          game['name'].toString(),
                           style: TextStyle(fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: 2),
                         Text(
-                          game['level']!,
+                          game['level'].toString(),
                           style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),
                       ],

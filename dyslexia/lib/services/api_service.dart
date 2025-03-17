@@ -213,7 +213,6 @@ class ApiService {
   }
 
   /// Store Children Details in SharedPreferences
-
   static Future<void> storeChildrenDetails(List<dynamic> children) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -242,6 +241,87 @@ class ApiService {
       print("Children List: $childrenList");
     } catch (e) {
       print("❌ Error in storeChildrenDetails: $e");
+    }
+  }
+
+  // fetch and store child details Using user_id
+  static Future<void> fetchAndStoreChildDetails() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // String? childId = prefs.getString('user_id'); // Get stored child ID
+      String? childId = '674c6844b809c21b9d948786'; // Get stored child ID
+
+      String? token = prefs.getString('auth_token');
+
+      if (childId == null || token == null) {
+        print("❌ Child ID or Token not found.");
+        return;
+      }
+
+      String url = '$childBaseUrl/get/$childId';
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {"Authorization": "Bearer $token"},
+      );
+
+      if (response.statusCode == 200) {
+        final childData = jsonDecode(response.body);
+
+        if (childData == null || childData['child'] == null) {
+          print("❌ Invalid API response.");
+          return;
+        }
+
+        // Store child details in SharedPreferences safely
+        await prefs.setString(
+          'child_name',
+          childData['child']['name'] ?? "Unknown",
+        );
+        await prefs.setString(
+          'child_email',
+          childData['child']['email'] ?? "No Email",
+        );
+        await prefs.setString(
+          'child_image',
+          childData['child']['profile_img'] ?? "assets/images/user.png",
+        );
+        await prefs.setString(
+          'child_address',
+          childData['child']['address'] ?? "No Address",
+        );
+        await prefs.setString(
+          'child_phone',
+          childData['child']['phoneNumber'] ?? "No Phone",
+        );
+        await prefs.setString(
+          'child_level',
+          childData['child']['level'] ?? "N/A",
+        );
+
+        // Store game scores safely
+        List<dynamic>? gameScores = childData['child']['GameScore'];
+        print("***************");
+        print(gameScores);
+        if (gameScores != null && gameScores.isNotEmpty) {
+          List<String> gameScoreList =
+              gameScores.map((score) {
+                return jsonEncode({
+                  "name": score['name'] ?? "Unknown Game",
+                  "score": score['score']?.toString() ?? "0",
+                  "updatedAt": score['updatedAt'] ?? "N/A",
+                });
+              }).toList();
+
+          await prefs.setStringList('game_scores', gameScoreList);
+        }
+
+        print("✅ Child details stored successfully.");
+      } else {
+        print("⚠️ Failed to fetch child details: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("❌ Error in fetchAndStoreChildDetails: $e");
     }
   }
 
