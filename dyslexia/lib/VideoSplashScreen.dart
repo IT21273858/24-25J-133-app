@@ -7,6 +7,7 @@ import 'package:dyslexia/Digitspan4.dart';
 import 'package:dyslexia/Recallshape1.dart';
 import 'package:dyslexia/Recallshape2.dart';
 import 'package:dyslexia/Recallshape3.dart';
+import 'package:dyslexia/Recallshape4.dart';
 
 class VideoSplashScreen extends StatefulWidget {
   final Widget nextScreen;
@@ -34,18 +35,18 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
     // Listen for when the video ends
     _controller.addListener(() {
       if (_controller.value.position == _controller.value.duration) {
-        _navigateToRecallshape3();
+        _navigateToRecallshape4();
         //_navigateToNextScreen();
       }
     });
   }
 
-  void _navigateToRecallshape3() {
+  void _navigateToRecallshape4() {
     if (mounted) {
       Navigator.of(
         context,
       ).pushReplacement(
-          MaterialPageRoute(builder: (context) => RecallShape3Screen()));
+          MaterialPageRoute(builder: (context) => RecallShape4Screen()));
     }
   }
 

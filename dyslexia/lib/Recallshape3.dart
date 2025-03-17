@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class RecallShape3Screen extends StatefulWidget {
   @override
@@ -6,7 +7,8 @@ class RecallShape3Screen extends StatefulWidget {
 }
 
 class _RecallShape3ScreenState extends State<RecallShape3Screen> {
-  List<String> _selectedShapes = []; // To hold the selected shapes
+  String shapeToFind = ''; // The shape that needs to be found
+  List<Widget> _selectedShapes = []; // List to hold selected shape widgets
 
   // Define the shape options
   List<String> shapeOptions = [
@@ -16,14 +18,91 @@ class _RecallShape3ScreenState extends State<RecallShape3Screen> {
     'star',
   ];
 
-  // Map shape names to asset paths
-  Map<String, String> shapeImages = {
-    'circle': 'assets/images/circle.png', // Replace with your circle image path
-    'triangle':
-        'assets/images/triangle.png', // Replace with your triangle image path
-    'square': 'assets/images/square.png', // Replace with your square image path
-    'star': 'assets/images/star.png', // Replace with your star image path
-  };
+  // Shuffle the shape options to display randomly
+  List<String> get shuffledShapes {
+    List<String> shuffled = List.from(shapeOptions);
+    shuffled.shuffle(Random());
+    return shuffled;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Randomly select the shape to find
+    shapeToFind = shapeOptions[Random().nextInt(shapeOptions.length)];
+  }
+
+  // Function to create a shape widget based on shape type
+  Widget getShapeWidget(String shapeName) {
+    switch (shapeName) {
+      case 'circle':
+        return Container(
+          width: 100, // Increased size
+          height: 100, // Increased size
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blue, // Circle color
+          ),
+        );
+      case 'triangle':
+        return CustomPaint(
+          size: Size(100, 100), // Increased size
+          painter: TrianglePainter(),
+        );
+      case 'square':
+        return Container(
+          width: 100, // Increased size
+          height: 100, // Increased size
+          color: Colors.green, // Square color
+        );
+      case 'star':
+        return Icon(
+          Icons.star,
+          color: Colors.yellow,
+          size: 100, // Increased size
+        );
+      default:
+        return Container();
+    }
+  }
+
+  void _submitAnswer() {
+    // Show dialog or handle logic to check the answer
+    if (_selectedShapes.isNotEmpty &&
+        _selectedShapes[0] == getShapeWidget(shapeToFind)) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Correct!'),
+          content: Text('You found the correct shape: $shapeToFind'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Incorrect!'),
+          content: Text('Try again.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,13 +167,9 @@ class _RecallShape3ScreenState extends State<RecallShape3Screen> {
                           color: Colors.black,
                         ),
                       )
-                    : Text(
-                        _selectedShapes.join(', '),
-                        style: const TextStyle(
-                          fontSize: 100, // Set font size to 100
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: _selectedShapes, // Show visual shapes here
                       ),
               ),
             ),
@@ -111,7 +186,8 @@ class _RecallShape3ScreenState extends State<RecallShape3Screen> {
                 ),
                 itemCount: shapeOptions.length,
                 itemBuilder: (context, index) {
-                  final shapeName = shapeOptions[index];
+                  final shapeName =
+                      shuffledShapes[index]; // Get the randomly shuffled shape
                   return ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors
@@ -122,14 +198,12 @@ class _RecallShape3ScreenState extends State<RecallShape3Screen> {
                     ),
                     onPressed: () {
                       setState(() {
-                        _selectedShapes.add(shapeName);
+                        // Add shape widget instead of shape name to list
+                        _selectedShapes.add(getShapeWidget(shapeName));
                       });
                     },
-                    child: Image.asset(
-                      shapeImages[shapeName]!,
-                      width: 50,
-                      height: 50,
-                    ),
+                    child:
+                        getShapeWidget(shapeName), // Display the shape widget
                   );
                 },
               ),
@@ -147,9 +221,7 @@ class _RecallShape3ScreenState extends State<RecallShape3Screen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              onPressed: () {
-                // Add submit functionality here
-              },
+              onPressed: _submitAnswer, // Check the user's selection
               child: const Text(
                 'Submit',
                 style:
@@ -163,9 +235,31 @@ class _RecallShape3ScreenState extends State<RecallShape3Screen> {
   }
 }
 
+class TrianglePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.orange // Triangle color
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(size.width / 2, 0)
+      ..lineTo(0, size.height)
+      ..lineTo(size.width, size.height)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+}
+
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: RecallShape3Screen(),
+    home: RecallShape3Screen(), // No shapeToFind argument passed
   ));
 }
