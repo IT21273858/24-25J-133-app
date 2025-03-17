@@ -1,10 +1,10 @@
-import 'package:dyslexia/DashboardChild.dart';
-import 'package:dyslexia/DashboardParent.dart';
+import 'package:dyslexia/child/DashboardChild.dart';
+import 'package:dyslexia/parent/DashboardParent.dart';
 import 'package:dyslexia/GameScorePage.dart';
 import 'package:dyslexia/LevelUnlocker.dart';
 import 'package:dyslexia/LoginPage.dart';
-import 'package:dyslexia/ProfileChild.dart';
-import 'package:dyslexia/ProfileParent.dart';
+import 'package:dyslexia/child/ProfileChild.dart';
+import 'package:dyslexia/parent/ProfileParent.dart';
 import 'package:dyslexia/ReadingAssesment4F.dart';
 import 'package:dyslexia/ReadingAssesment5F.dart';
 import 'package:dyslexia/ReadingAssesment7P.dart';

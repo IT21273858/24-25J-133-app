@@ -1,20 +1,19 @@
 import 'package:dyslexia/LoginPage.dart';
-import 'package:dyslexia/RegisterDiseaseSelect.dart';
+import 'package:dyslexia/parent/ProfileParent.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
 
-class RegisterChooseChild extends StatefulWidget {
+class RegisterChooseParent extends StatefulWidget {
   @override
-  _RegisterChooseChildState createState() => _RegisterChooseChildState();
+  _RegisterChooseParentState createState() => _RegisterChooseParentState();
 }
 
-class _RegisterChooseChildState extends State<RegisterChooseChild> {
+class _RegisterChooseParentState extends State<RegisterChooseParent> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
-  List<bool> isSelected = [true, false]; // Initial selection state
 
   void _handleRegister() {
     setState(() {
@@ -28,7 +27,7 @@ class _RegisterChooseChildState extends State<RegisterChooseChild> {
       print("Registering with ${emailController.text}");
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => RegisterDiseaseSelect()),
+        MaterialPageRoute(builder: (context) => ProfileParent()),
       );
     });
   }
@@ -69,7 +68,7 @@ class _RegisterChooseChildState extends State<RegisterChooseChild> {
                     color: appTextColor,
                   ),
                   Text('Continue as ', style: registerbodyStyle),
-                  Text('Child', style: registerbodyboldStyle),
+                  Text('Parent', style: registerbodyboldStyle),
                 ],
               ),
               const SizedBox(height: 20),
@@ -88,7 +87,7 @@ class _RegisterChooseChildState extends State<RegisterChooseChild> {
                   ),
                   const SizedBox(height: 15),
                   CustomTextField(
-                    hintText: "Enter Parent Email",
+                    hintText: "Enter Email",
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                   ),
@@ -104,7 +103,7 @@ class _RegisterChooseChildState extends State<RegisterChooseChild> {
 
               // Register Button
               CustomButton(
-                text: "Register as Child",
+                text: "Register as Parent",
                 isLoading: isLoading,
                 onPressed: _handleRegister,
               ),

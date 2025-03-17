@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dyslexia/DashboardParent.dart';
-import 'package:dyslexia/DashboardChild.dart';
+import 'package:dyslexia/parent/DashboardParent.dart';
+import 'package:dyslexia/child/DashboardChild.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/VideoSplashScreen.dart';

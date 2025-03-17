@@ -697,6 +697,7 @@ class GameCardSlider extends StatelessWidget {
   const GameCardSlider({super.key, required this.gameData});
   @override
   Widget build(BuildContext context) {
+    print("^^^^^^^^^");
     print(gameData);
     return SizedBox(
       height: 172, // Adjusted height for better spacing
@@ -785,13 +786,28 @@ class GameCardSlider extends StatelessWidget {
                       children: [
                         Text(
                           game['name'].toString(),
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: 2),
-                        Text(
-                          game['level'].toString(),
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        Row(
+                          spacing: 5,
+                          children: [
+                            Text(
+                              'Level',
+                              style: TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                            Text(
+                              game['level'] ?? "01",
+                              style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

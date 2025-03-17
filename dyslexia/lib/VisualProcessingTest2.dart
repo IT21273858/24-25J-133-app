@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:dyslexia/RegisterChooseForChild.dart';
+import 'package:dyslexia/signup/RegisterChooseForChild.dart';
 import 'package:dyslexia/serviceprovider/drawing.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
