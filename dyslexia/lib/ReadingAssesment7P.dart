@@ -1,20 +1,16 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-
-import 'package:dyslexia/RegisterChooseForChild.dart';
+import 'dart:ui' as ui;
+import 'package:dyslexia/CustomDrawer.dart';
+import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/Sketch.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
-import 'package:dyslexia/CustomDrawer.dart';
-import 'package:dyslexia/components.dart';
-import 'dart:ui' as ui;
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 
 class WriteSound extends StatefulWidget {
   @override
@@ -73,12 +69,15 @@ class _WriteSoundState extends State<WriteSound> {
       await file.writeAsBytes(pngBytes);
 
       //validate with Google-ML
-      final inputImage = InputImage.fromFilePath(file.path);
-      final textRecognizer = TextRecognizer();
+      final inputImage = InputImage.fromFile(file);
+      final textRecognizer = TextRecognizer(
+        script: TextRecognitionScript.latin,
+      );
       final RecognizedText recognizedText = await textRecognizer.processImage(
         inputImage,
       );
       String extractedText = recognizedText.text.trim();
+      await textRecognizer.close();
       print("extxt $extractedText");
 
       //validate with tesserat
@@ -103,276 +102,286 @@ class _WriteSoundState extends State<WriteSound> {
       backgroundColor: Color(0xFFF0EFF4),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        child: ListView(
-          children: [
-            Column(
-              spacing: 20,
-              children: [
-                _buildHeader(context),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   children: [
-                //     Text(
-                //       'Your Child Performance this week',
-                //       style: TextStyle(color: Colors.black, fontSize: 16),
-                //     ),
-                //     Padding(padding: EdgeInsets.all(10)),
-                //   ],
-                // ),
-                // _buildChildSelection(),
-                // _buildPerformanceSection(),
-                // _buildManageChildrenSection(context),
-                // Padding(padding: EdgeInsets.only(bottom: 10)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Column(
-                    spacing: 1,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Write the Sound", style: rCheckpointTitle),
-                              // Text("Level 1", style: rCheckpointLv),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+        child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Column(
+                spacing: 20,
+                children: [
+                  _buildHeader(context),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     Text(
+                  //       'Your Child Performance this week',
+                  //       style: TextStyle(color: Colors.black, fontSize: 16),
+                  //     ),
+                  //     Padding(padding: EdgeInsets.all(10)),
+                  //   ],
+                  // ),
+                  // _buildChildSelection(),
+                  // _buildPerformanceSection(),
+                  // _buildManageChildrenSection(context),
+                  // Padding(padding: EdgeInsets.only(bottom: 10)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Column(
+                      spacing: 1,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
-                            Container(
-                              width: screenWidth * 0.8,
-                              height: screenHeight * 0.25,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(17),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Write the Sound",
+                                  style: rCheckpointTitle,
                                 ),
-                                // color: Color.fromRGBO(166, 159, 204, 0.31),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: readingTitleColoropaHalf,
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(40),
-                                            ),
-                                          ),
-                                          child: IconButton(
-                                            onPressed: () {},
-                                            icon: Icon(
-                                              FeatherIcons.gift,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: screenWidth * 0.7,
-                                        child: Row(
-                                          spacing: 12,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                    8.0,
-                                                  ),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                          readingTitleColoropaHalf,
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                            Radius.circular(40),
-                                                          ),
-                                                    ),
-                                                    child: IconButton(
-                                                      onPressed: () {},
-                                                      icon: Icon(
-                                                        FeatherIcons.volume2,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "Let",
-                                                  style: rCheckpointInst,
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                Text(
-                                                  "Sound",
-                                                  style: rCheckpointInst,
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ],
-                                            ),
-                                            Image.asset(
-                                              "assets/images/teddy.png",
-                                              width: screenWidth * 0.25,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                // Text("Level 1", style: rCheckpointLv),
+                              ],
                             ),
                           ],
                         ),
-                      ),
-                      Center(
-                        child: SizedBox(
-                          width: screenWidth * 0.6,
+                        Center(
                           child: Column(
-                            spacing: 5,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              // Container(
-                              //   decoration: BoxDecoration(
-                              //     color: pointsBackgroundColor,
-                              //     borderRadius: BorderRadius.all(
-                              //       Radius.circular(40),
-                              //     ),
-                              //   ),
-                              //   child: IconButton(
-                              //     onPressed: () {},
-                              //     icon: Icon(Icons.mic, color: Colors.white),
-                              //   ),
-                              // ),
-                              Text(
-                                textinstruction,
-                                style: rCheckpointInst,
-                                textAlign: TextAlign.center,
+                              Container(
+                                width: screenWidth * 0.8,
+                                height: screenHeight * 0.25,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(17),
+                                  ),
+                                  // color: Color.fromRGBO(166, 159, 204, 0.31),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: readingTitleColoropaHalf,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(40),
+                                              ),
+                                            ),
+                                            child: IconButton(
+                                              onPressed: () {},
+                                              icon: Icon(
+                                                FeatherIcons.gift,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: screenWidth * 0.7,
+                                          child: Row(
+                                            spacing: 12,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          8.0,
+                                                        ),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            readingTitleColoropaHalf,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                              Radius.circular(
+                                                                40,
+                                                              ),
+                                                            ),
+                                                      ),
+                                                      child: IconButton(
+                                                        onPressed: () {},
+                                                        icon: Icon(
+                                                          FeatherIcons.volume2,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Let",
+                                                    style: rCheckpointInst,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  Text(
+                                                    "Sound",
+                                                    style: rCheckpointInst,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              ),
+                                              Image.asset(
+                                                "assets/images/teddy.png",
+                                                width: screenWidth * 0.25,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
-                          child: Column(
-                            spacing: 9,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                  color: cardBackgroundcolor,
+                        Center(
+                          child: SizedBox(
+                            width: screenWidth * 0.6,
+                            child: Column(
+                              spacing: 5,
+                              children: [
+                                // Container(
+                                //   decoration: BoxDecoration(
+                                //     color: pointsBackgroundColor,
+                                //     borderRadius: BorderRadius.all(
+                                //       Radius.circular(40),
+                                //     ),
+                                //   ),
+                                //   child: IconButton(
+                                //     onPressed: () {},
+                                //     icon: Icon(Icons.mic, color: Colors.white),
+                                //   ),
+                                // ),
+                                Text(
+                                  textinstruction,
+                                  style: rCheckpointInst,
+                                  textAlign: TextAlign.center,
                                 ),
-                                width: screenWidth * 0.8,
-                                height: screenHeight * 0.3,
-                                child: RepaintBoundary(
-                                  key: _globalKey,
-                                  child: Container(
-                                    color: Colors.white,
-                                    child: GestureDetector(
-                                      onPanUpdate: (details) {
-                                        RenderBox renderBox =
-                                            _globalKey.currentContext!
-                                                    .findRenderObject()
-                                                as RenderBox;
-                                        Offset localPosition = renderBox
-                                            .globalToLocal(
-                                              details.globalPosition,
-                                            );
+                              ],
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20.0),
+                            child: Column(
+                              spacing: 9,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                    color: cardBackgroundcolor,
+                                  ),
+                                  width: screenWidth * 0.8,
+                                  height: screenHeight * 0.3,
+                                  child: RepaintBoundary(
+                                    key: _globalKey,
+                                    child: Container(
+                                      color: Colors.white,
+                                      child: GestureDetector(
+                                        onPanUpdate: (details) {
+                                          RenderBox renderBox =
+                                              _globalKey.currentContext!
+                                                      .findRenderObject()
+                                                  as RenderBox;
+                                          Offset localPosition = renderBox
+                                              .globalToLocal(
+                                                details.globalPosition,
+                                              );
 
-                                        Size containerSize = renderBox.size;
-                                        if (localPosition.dx >= 0 &&
-                                            localPosition.dx <=
-                                                containerSize.width &&
-                                            localPosition.dy >= 0 &&
-                                            localPosition.dy <=
-                                                containerSize.height) {
-                                          setState(() {
-                                            _points.add(localPosition);
-                                          });
-                                        }
-                                      },
-                                      onPanEnd: (details) {
-                                        _points.add(null);
-                                      },
-                                      child: CustomPaint(
-                                        painter: Drawing(_points),
-                                        child: Container(
-                                          width: screenWidth * 0.8,
-                                          height: screenHeight * 0.3,
+                                          Size containerSize = renderBox.size;
+                                          if (localPosition.dx >= 0 &&
+                                              localPosition.dx <=
+                                                  containerSize.width &&
+                                              localPosition.dy >= 0 &&
+                                              localPosition.dy <=
+                                                  containerSize.height) {
+                                            setState(() {
+                                              _points.add(localPosition);
+                                            });
+                                          }
+                                        },
+                                        onPanEnd: (details) {
+                                          _points.add(null);
+                                        },
+                                        child: CustomPaint(
+                                          painter: Drawing(_points),
+                                          child: Container(
+                                            width: screenWidth * 0.8,
+                                            height: screenHeight * 0.3,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: pointsBackgroundColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(40),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: pointsBackgroundColor,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(40),
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _points.clear();
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.refresh,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                                child: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _points.clear();
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Column(
+                            spacing: 9,
+                            children: [
+                              CustomButton(
+                                text: "Validate Sketch",
+                                isLoading: false,
+                                onPressed: validateSketch,
                               ),
+                              // TextButton(
+                              //   onPressed: () {},
+                              //   child: Text(
+                              //     "Skip Shape",
+                              //     style: rCheckpointSkip,
+                              //     textAlign: TextAlign.center,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
-                      ),
-                      Center(
-                        child: Column(
-                          spacing: 9,
-                          children: [
-                            CustomButton(
-                              text: "Validate Sketch",
-                              isLoading: false,
-                              onPressed: validateSketch,
-                            ),
-                            // TextButton(
-                            //   onPressed: () {},
-                            //   child: Text(
-                            //     "Skip Shape",
-                            //     style: rCheckpointSkip,
-                            //     textAlign: TextAlign.center,
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
