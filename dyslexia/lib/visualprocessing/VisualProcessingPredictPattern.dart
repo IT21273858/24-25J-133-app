@@ -5,12 +5,14 @@ import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class VisualProcessText1 extends StatefulWidget {
+class Visualprocessingpredictpattern extends StatefulWidget {
   @override
-  State<VisualProcessText1> createState() => _VisualProcessText1State();
+  State<Visualprocessingpredictpattern> createState() =>
+      _VisualprocessingpredictpatternState();
 }
 
-class _VisualProcessText1State extends State<VisualProcessText1> {
+class _VisualprocessingpredictpatternState
+    extends State<Visualprocessingpredictpattern> {
   int selection = -1;
 
   final List<Map<String, double>> sizeConfig = [
