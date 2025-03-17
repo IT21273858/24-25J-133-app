@@ -2,6 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+  <!-- audio recording  -->
+  <key>NSMicrophoneUsageDescription</key>
+  <string>To get the Clients voice and check is the read/prononce the word correctly</string>
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>Give a wordhighlighting to instract the child read words and missed words</string>
+
+  
   <key>CFBundleDevelopmentRegion</key>
   <string>en</string>
   <key>CFBundleExecutable</key>

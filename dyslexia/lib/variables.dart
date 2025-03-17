@@ -36,7 +36,10 @@ const Color linechartbodyColor = Color(0xFF6D3AFF);
 const Color childcardbodyColor = Color(0xFFCFCAFF);
 const Color pointsBackgroundColor = Color(0xFF9370DB);
 const Color pointsTextColor = Color(0xFFF0EFF4);
-
+const Color readingTitleColor = Color.fromRGBO(79, 75, 101, 1);
+const Color readingTitleColoropaHalf = Color.fromRGBO(79, 75, 101, 0.5);
+const Color wordhighlight = Color.fromRGBO(147, 112, 210, 1);
+const Color sucess = Color.fromRGBO(75, 205, 140, 48);
 // Font styles using Poppins
 final TextStyle headingStyle = GoogleFonts.poppins(
   fontSize: 36,
@@ -124,4 +127,77 @@ final TextStyle gamescoresubHeadingStyle = GoogleFonts.poppins(
   fontSize: 20,
   fontWeight: FontWeight.normal,
   color: HeadingColor,
+);
+
+final TextStyle rCheckpointTitle = GoogleFonts.poppins(
+  fontSize: 24,
+  fontWeight: FontWeight.w500,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointLv = GoogleFonts.poppins(
+  fontSize: 20,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointtxtDisplay = GoogleFonts.lilyScriptOne(
+  fontSize: 46,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointParaDisplay = GoogleFonts.lobsterTwo(
+  fontSize: 24,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle readWordHighlighter = GoogleFonts.lobsterTwo(
+  fontSize: 24,
+  fontWeight: FontWeight.w300,
+  color: wordhighlight,
+);
+
+final TextStyle rCheckpointInst = GoogleFonts.poppins(
+  fontSize: 16,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointInst2 = GoogleFonts.poppins(
+  fontSize: 24,
+  fontWeight: FontWeight.w400,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointSkip = GoogleFonts.poppins(
+  fontSize: 16,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+  decoration: TextDecoration.underline,
+);
+
+final TextStyle timeClock = GoogleFonts.poppins(
+  fontSize: 20,
+  fontWeight: FontWeight.w300,
+  color: Colors.white,
+);
+
+final TextStyle rCheckpointtxtDisplayH = GoogleFonts.lilyScriptOne(
+  fontSize: 52,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle cardtxtValidate = GoogleFonts.poppins(
+  fontSize: 32,
+  fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle cardtxtdisplay = GoogleFonts.poppins(
+  fontSize: 46,
+  fontWeight: FontWeight.w500,
+  color: readingTitleColor,
 );
