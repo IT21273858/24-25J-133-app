@@ -5,6 +5,8 @@ import 'package:dyslexia/LevelUnlocker.dart';
 import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/ProfileChild.dart';
 import 'package:dyslexia/ProfileParent.dart';
+import 'package:dyslexia/ReadingAssesment4F.dart';
+import 'package:dyslexia/ReadingAssesment5F.dart';
 import 'package:dyslexia/ReadingAssesment7P.dart';
 import 'package:dyslexia/ReadingCheckpoint2.dart';
 import 'package:dyslexia/ReadingCheckpoint3.dart';
@@ -51,6 +53,36 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "icon": FeatherIcons.barChart2,
       "label": "Game Score",
       "page": Gamescorepage(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Assesment7",
+      "page": WriteSound(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "CheckpointTwo",
+      "page": ReadwithGuidance(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Checkpointhree",
+      "page": ReadCheckpointThree(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Rapid words",
+      "page": RapidWords(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Predict Shape",
+      "page": VisualProcessText2(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Predict pattern",
+      "page": VisualProcessText1(),
     },
   ];
 
@@ -198,49 +230,67 @@ class _CustomDrawerState extends State<CustomDrawer> {
           SizedBox(height: 10),
 
           // Menu Items
-          Column(
-            children: List.generate(menuItems.length, (index) {
-              bool isSelected = index == selectedIndex;
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = index;
-                    });
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  Column(
+                    children: List.generate(menuItems.length, (index) {
+                      bool isSelected = index == selectedIndex;
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedIndex = index;
+                            });
 
-                    // Navigate using MaterialPageRoute
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => menuItems[index]["page"],
-                      ),
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 4),
-                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color:
-                          isSelected
-                              ? Colors.purple.withOpacity(0.2)
-                              : Colors.transparent,
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(menuItems[index]["icon"], color: menuColor),
-                        SizedBox(width: 10),
-                        Text(
-                          menuItems[index]["label"],
-                          style: TextStyle(fontSize: 16, color: Colors.black),
+                            // Navigate using MaterialPageRoute
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => menuItems[index]["page"],
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 4),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color:
+                                  isSelected
+                                      ? Colors.purple.withOpacity(0.2)
+                                      : Colors.transparent,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  menuItems[index]["icon"],
+                                  color: menuColor,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  menuItems[index]["label"],
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ],
-                    ),
+                      );
+                    }),
                   ),
-                ),
-              );
-            }),
+                ],
+              ),
+            ),
           ),
 
           Spacer(), // Push Logout to Bottom
