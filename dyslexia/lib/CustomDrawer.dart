@@ -13,6 +13,7 @@ import 'package:dyslexia/ReadingCheckpoint3.dart';
 import 'package:dyslexia/ScoresPage.dart';
 import 'package:dyslexia/VisualProcessTest1.dart';
 import 'package:dyslexia/VisualProcessingTest2.dart';
+import 'package:dyslexia/parent/ParentAllGameScoresPage.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -44,6 +45,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "page": ProfileParent(),
     },
     {"icon": FeatherIcons.barChart2, "label": "Insights", "page": ScoresPage()},
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Insights_Parent",
+      "page": ParentAllScoresPage(),
+    },
     {
       "icon": FeatherIcons.barChart2,
       "label": "LevelUnlock",
