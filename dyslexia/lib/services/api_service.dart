@@ -89,13 +89,13 @@ class ApiService {
       await prefs.setString('user_image', img);
 
       // Print for debugging
-      print("=========== Decoded User Data ===========");
+      print("^^^^^^^^^^^ Decoded User Data ^^^^^^^^^^^");
       print("Token: $token");
       print("Decoded User ID: $userId");
       print("Role: $role");
       print("Name: $name");
       print("Image URL: $img");
-      print("====================================");
+      print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 
       // Fetch and store parent details
       await ApiService.fetchAndStoreParentDetails();

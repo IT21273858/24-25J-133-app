@@ -15,6 +15,7 @@ import 'package:dyslexia/VisualProcessTest1.dart';
 import 'package:dyslexia/VisualProcessingTest2.dart';
 import 'package:dyslexia/parent/ParentAllGameScoresPage.dart';
 import 'package:dyslexia/variables.dart';
+import 'package:dyslexia/visualprocessing/VisualProcessingPredictShape.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -87,6 +88,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
     },
     {
       "icon": FeatherIcons.barChart2,
+      "label": "Predict Shape Time",
+      "page": Visualprocessingpredictshape(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
       "label": "Predict pattern",
       "page": VisualProcessText1(),
     },
@@ -102,10 +108,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
     });
 
     // Print details in the terminal
-    print("=========== User Details from Storage ===========");
+    print("# User Details from Storage #");
     print("User Name: $userName");
     print("User Image: $userImage");
-    print("====================================");
+    print("#");
   }
 
   Future<void> logoutUser(BuildContext context) async {
@@ -113,9 +119,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear(); // Clears all stored data
 
-      print("=========== User Logged Out ===========");
+      print("@ User Logged Out @");
       print("Storage Cleared Successfully");
-      print("====================================");
+      print("@");
 
       // Navigate to the Login Page
       Navigator.pushAndRemoveUntil(

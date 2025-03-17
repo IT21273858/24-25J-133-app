@@ -36,11 +36,11 @@ class _DashboardParentState extends State<DashboardParent> {
     });
 
     // Print details in the terminal
-    print("=========== User Details from Storage ===========");
+    print("@ User Details from Storage @");
     print("User Name: $userName");
     print("User Image: $userImage");
     print("User ID: $userId");
-    print("====================================");
+    print("@");
   }
 
   @override
