@@ -74,6 +74,7 @@ class ApiService {
       final String userId = decodedToken['user']?.toString() ?? '';
       final String name = decodedToken['name'] ?? 'User';
       final String img = decodedToken['img'] ?? '';
+      final String level = decodedToken['level'] ?? '';
 
       if (userId.isEmpty) {
         print("Invalid JWT Token: Missing user_id");
@@ -87,6 +88,7 @@ class ApiService {
       await prefs.setString('user_role', role);
       await prefs.setString('user_name', name);
       await prefs.setString('user_image', img);
+      await prefs.setString('level', level);
 
       // Print for debugging
       print("^^^^^^^^^^^ Decoded User Data ^^^^^^^^^^^");
@@ -95,6 +97,7 @@ class ApiService {
       print("Role: $role");
       print("Name: $name");
       print("Image URL: $img");
+      print("Level: $level");
       print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 
       // Fetch and store parent details
@@ -106,6 +109,7 @@ class ApiService {
         "user_id": userId,
         "name": name,
         "img": img,
+        "level": level,
       };
     } catch (e) {
       print("Error in _handleLoginResponse: $e");

@@ -22,44 +22,60 @@ class _LoginPageState extends State<LoginPage> {
       isLoading = true;
     });
 
-    final response = await ApiService.loginUser(
-      emailController.text.trim(),
-      passwordController.text.trim(),
-    );
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please Provide email or password")),
+      );
+    } else {
+      final response = await ApiService.loginUser(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
 
-    setState(() {
-      isLoading = false;
-    });
+      setState(() {
+        isLoading = false;
+      });
 
-    if (response != null) {
-      print("*****************************User role: ${response["role"]}");
-      print("*****************************User: ${response["name"]}");
+      if (response != null) {
+        print("*****************************User role: ${response["role"]}");
+        print("*****************************User: ${response}");
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      // Use default values if API response contains null
-      await prefs.setString('auth_token', response['token'] ?? '');
-      await prefs.setString('user_role', response['role'] ?? 'unknown');
-      await prefs.setString('user_name', response['name'] ?? 'User');
-      await prefs.setString('user_image', response['img'] ?? '');
+        // Use default values if API response contains null
+        await prefs.setString('auth_token', response['token'] ?? '');
+        await prefs.setString('user_role', response['role'] ?? 'unknown');
+        await prefs.setString('user_name', response['name'] ?? 'User');
+        await prefs.setString('user_image', response['img'] ?? '');
 
-      // Show video splash before navigating
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder:
-              (context) => VideoSplashScreen(
-                nextScreen:
+        // Show video splash before navigating
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) =>
                     response["role"] == "parent"
                         ? DashboardParent()
                         : DashboardChild(),
-              ),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Invalid email or password")));
+          ),
+          // MaterialPageRoute(
+          //   builder:
+          //       (context) => VideoSplashScreen(
+          //         nextScreen:
+          //             response["role"] == "parent"
+          //                 ? DashboardParent()
+          //                 : DashboardChild(),
+          //       ),
+          // ),
+        );
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Invalid email or password")));
+      }
     }
   }
 

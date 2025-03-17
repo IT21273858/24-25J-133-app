@@ -88,4 +88,29 @@ class GameService {
       return "Invalid Date"; // Fallback in case of errors
     }
   }
+
+  static Future<Map<String, dynamic>?> generateShape(String level) async {
+    print("Income to generate shapes function");
+    try {
+      final shapeResponse = await http.post(
+        Uri.parse('$baseUrl/predict-pattern'),
+        body: jsonEncode({"difficulty": level}),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      print("Shape response status: ${shapeResponse.statusCode}");
+      print("Shape response body: ${shapeResponse.body}"); // Debugging
+
+      if (shapeResponse.statusCode == 200) {
+        final responseData = jsonDecode(shapeResponse.body);
+        print("####(((())))");
+        print(responseData);
+        return responseData; // Returns {status: true, patternPrediction: {...}}
+      }
+    } catch (e) {
+      print("Error in Getting Shapes: $e");
+      return null;
+    }
+    return null;
+  }
 }

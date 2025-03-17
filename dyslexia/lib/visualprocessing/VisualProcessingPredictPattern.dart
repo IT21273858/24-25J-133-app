@@ -1,9 +1,13 @@
+import 'package:dyslexia/serviceprovider/timer.dart';
+import 'package:dyslexia/services/game_service.dart';
 import 'package:dyslexia/signup/RegisterChooseForChild.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Visualprocessingpredictpattern extends StatefulWidget {
   @override
@@ -13,28 +17,110 @@ class Visualprocessingpredictpattern extends StatefulWidget {
 
 class _VisualprocessingpredictpatternState
     extends State<Visualprocessingpredictpattern> {
-  int selection = -1;
+  int selection = -1; // Index of selected shape
+  String level = "medium"; // Default level
+  List<Map<String, String>> pattern = []; // Stores shapes from API
+  String? nextShape; // Stores the correct next shape
 
-  final List<Map<String, double>> sizeConfig = [
-    {'count': 3, 'height': 148, 'width': 127},
-    {'count': 4, 'height': 117, 'width': 100},
-    {'count': 5, 'height': 92, 'width': 79},
-  ];
+  Future<void> _loadShapeData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      level = prefs.getString('level') ?? "hard";
+    });
+
+    print("Level is $level");
+
+    final response = await GameService.generateShape(level);
+
+    if (response != null && response["status"] == true) {
+      setState(() {
+        nextShape =
+            response["patternPrediction"]["next_shape"]
+                as String; // Explicit cast to String
+        pattern =
+            (response["patternPrediction"]["pattern"] as List<dynamic>)
+                .map<Map<String, String>>(
+                  (shape) => {
+                    "shape": shape.toString(), // Convert dynamic to String
+                    "shapeurl": getShapeImage(
+                      shape.toString(),
+                    ), // Ensure shape is a String
+                  },
+                )
+                .toList();
+      });
+
+      print("Next Shape: $nextShape");
+      print("Pattern: $pattern");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final timer = Provider.of<TimerService>(context, listen: false);
+      timer.resetTimer();
+      timer.startTimer();
+    });
+    _loadShapeData();
+  }
+
+  // Function to get shape image path
+  String getShapeImage(String shapeName) {
+    switch (shapeName.toLowerCase()) {
+      case "circle":
+        return 'assets/images/circ.png';
+      case "triangle":
+        return 'assets/images/tri.png';
+      case "square":
+        return 'assets/images/sqr.png';
+      default:
+        return 'assets/images/unknown.png';
+    }
+  }
+
+  Future<void> handleConfirm() async {
+    final timer = Provider.of<TimerService>(context, listen: false);
+    timer.stopTimer();
+    int totalSeconds = timer.getFormattedTimeInSeconds();
+
+    print("Time taken: $totalSeconds seconds");
+
+    // Validation logic
+    if (selection == -1) {
+      print("No shape selected");
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Please select a shape")));
+      return;
+    }
+
+    String selectedShape =
+        selection == 0
+            ? "square"
+            : selection == 1
+            ? "triangle"
+            : "circle";
+
+    if (selectedShape == nextShape) {
+      print("✅ Correct! User selected: $selectedShape");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("✅ Correct! You selected $selectedShape")),
+      );
+    } else {
+      print("❌ Wrong! Expected: $nextShape, but user selected: $selectedShape");
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("❌ Wrong! Expected $nextShape")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final timer = Provider.of<TimerService>(context);
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    String displayText = "Bamboo";
-    String textinstruction = "choose next shape";
-
-    List<Map<String, String>> pattern = [
-      {'shape': "circle", 'shapeurl': 'assets/images/circ.png'},
-      {'shape': "triangle", 'shapeurl': 'assets/images/tri.png'},
-      {'shape': "circle", 'shapeurl': 'assets/images/circ.png'},
-      {'shape': "triangle", 'shapeurl': 'assets/images/tri.png'},
-      {'shape': "circle", 'shapeurl': 'assets/images/circ.png'},
-    ];
 
     return Scaffold(
       backgroundColor: Color(0xFFF0EFF4),
@@ -43,188 +129,120 @@ class _VisualprocessingpredictpatternState
         child: ListView(
           children: [
             Column(
-              spacing: 20,
               children: [
                 _buildHeader(context),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   children: [
-                //     Text(
-                //       'Your Child Performance this week',
-                //       style: TextStyle(color: Colors.black, fontSize: 16),
-                //     ),
-                //     Padding(padding: EdgeInsets.all(10)),
-                //   ],
-                // ),
-                // _buildChildSelection(),
-                // _buildPerformanceSection(),
-                // _buildManageChildrenSection(context),
-                // Padding(padding: EdgeInsets.only(bottom: 10)),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Column(
-                    spacing: 24,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 20,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Predict Pattern", style: rCheckpointTitle),
-                              // Text("Level 3", style: rCheckpointLv),
-                            ],
+                          Text("Predict Pattern", style: rCheckpointTitle),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: cardBordercolor,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.circle, color: Colors.white),
+                                  Text(
+                                    timer.getFormattedTime(),
+                                    style: timeClock,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),
                       Center(
-                        child: SizedBox(
-                          width: screenWidth * 0.8,
-                          height: screenHeight * 0.53,
-                          child: ListView.builder(
-                            itemCount: pattern.length,
-                            itemBuilder: (context, index) {
-                              final dimentions = sizeConfig.firstWhere(
-                                (element) => element['count'] == pattern.length,
-                              );
-
-                              return Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
-                                  ),
-                                ),
-                                // margin: EdgeInsets.only(bottom: 5),
-                                width: dimentions['width'],
-                                height: dimentions['height'],
-                                child: Image.asset(pattern[index]['shapeurl']!),
-                              );
-                            },
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/patternprediction.png",
+                              width: screenWidth * 0.9,
+                            ),
+                            // Container(
+                            //   width: screenWidth * 0.8,
+                            //   height: screenHeight * 0.25,
+                            //   decoration: BoxDecoration(
+                            //     borderRadius: BorderRadius.all(
+                            //       Radius.circular(17),
+                            //     ),
+                            //     color: Color.fromRGBO(166, 159, 204, 0.31),
+                            //   ),
+                            //   child: Column(
+                            //     crossAxisAlignment: CrossAxisAlignment.center,
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       Text(
+                            //         displayText,
+                            //         style: rCheckpointtxtDisplay,
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                          ],
                         ),
                       ),
                       Center(
-                        child: SizedBox(
-                          width: screenWidth * 0.8,
-                          child: Column(
-                            spacing: 5,
-                            children: [
-                              // Container(
-                              //   decoration: BoxDecoration(
-                              //     color: pointsBackgroundColor,
-                              //     borderRadius: BorderRadius.all(
-                              //       Radius.circular(40),
-                              //     ),
-                              //   ),
-                              //   child: IconButton(
-                              //     onPressed: () {},
-                              //     icon: Icon(Icons.mic, color: Colors.white),
-                              //   ),
-                              // ),
-                              Text(
-                                textinstruction,
-                                style: rCheckpointInst,
-                                textAlign: TextAlign.center,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                spacing: 8,
-                                children: [
-                                  RawMaterialButton(
-                                    splashColor: Colors.transparent,
-                                    onPressed: () {
-                                      setState(() {
-                                        selection = 0;
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
+                        child: Column(
+                          spacing: 10,
+                          children: [
+                            // Display the pattern
+                            Wrap(
+                              spacing: 10,
+                              children:
+                                  pattern
+                                      .map(
+                                        (shape) => Image.asset(
+                                          shape['shapeurl']!,
+                                          width: 60,
+                                          height: 60,
                                         ),
-                                        color:
-                                            selection == 0
-                                                ? Colors.deepPurple[100]
-                                                : null,
-                                      ),
-                                      width: 69,
-                                      height: 81,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(
-                                          selection == 0 ? 8.0 : 0,
-                                        ),
-                                        child: Image.asset(
-                                          "assets/images/circ.png",
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  RawMaterialButton(
-                                    splashColor: Colors.transparent,
-                                    onPressed:
-                                        () => setState(() {
-                                          selection = 1;
-                                        }),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        color:
-                                            selection == 1
-                                                ? Colors.deepPurple[100]
-                                                : null,
-                                      ),
-                                      width: 69,
-                                      height: 81,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(
-                                          selection == 1 ? 8.0 : 0,
-                                        ),
-                                        child: Image.asset(
-                                          "assets/images/tri.png",
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  RawMaterialButton(
-                                    splashColor: Colors.transparent,
-                                    onPressed:
-                                        () => setState(() {
-                                          selection = 2;
-                                        }),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        color:
-                                            selection == 2
-                                                ? Colors.deepPurple[100]
-                                                : null,
-                                      ),
-                                      width: 69,
-                                      height: 81,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(
-                                          selection == 2 ? 8.0 : 0,
-                                        ),
-                                        child: Image.asset(
-                                          "assets/images/circ.png",
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                      )
+                                      .toList(),
+                            ),
+                            SizedBox(height: 30),
+                            Text(
+                              "Choose the next shape",
+                              style: rCheckpointInst2,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                shapeButton(
+                                  0,
+                                  "square",
+                                  "assets/images/sqr.png",
+                                ),
+                                shapeButton(
+                                  1,
+                                  "triangle",
+                                  "assets/images/tri.png",
+                                ),
+                                shapeButton(
+                                  2,
+                                  "circle",
+                                  "assets/images/circ.png",
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                       CustomButton(
                         text: "Confirm",
                         isLoading: false,
-                        onPressed: () {},
+                        onPressed: handleConfirm,
                       ),
                     ],
                   ),
@@ -237,66 +255,55 @@ class _VisualprocessingpredictpatternState
     );
   }
 
-  // Header Section
+  // Shape Selection Button
+  Widget shapeButton(int index, String shape, String imagePath) {
+    return RawMaterialButton(
+      splashColor: Colors.transparent,
+      onPressed: () {
+        setState(() {
+          selection = index;
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          color: selection == index ? Colors.deepPurple[100] : null,
+        ),
+        width: 69,
+        height: 81,
+        child: Padding(
+          padding: EdgeInsets.all(selection == index ? 8.0 : 0),
+          child: Image.asset(imagePath),
+        ),
+      ),
+    );
+  }
+
   Widget _buildHeader(BuildContext context) {
     return Container(
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   borderRadius: BorderRadius.only(
-      //     bottomLeft: Radius.circular(42),
-      //     bottomRight: Radius.circular(42),
-      //   ),
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.grey.withOpacity(0.2),
-      //       spreadRadius: 2,
-      //       blurRadius: 10,
-      //       offset: Offset(0, 4),
-      //     ),
-      //   ],
-      // ),
-      padding: EdgeInsets.all(16),
-      child: Column(
+      padding: EdgeInsets.all(12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildIconButton(Icons.menu, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CustomDrawer()),
-                );
-              }),
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage('assets/images/user.png'),
-              ),
-            ],
+          _buildIconButton(Icons.menu, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CustomDrawer()),
+            );
+          }),
+          CircleAvatar(
+            radius: 20,
+            backgroundImage: AssetImage('assets/images/user.png'),
           ),
         ],
       ),
     );
   }
 
-  // // Scrollable Child Selection
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
-    return Container(
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   shape: BoxShape.circle,
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.grey.withOpacity(0.2),
-      //       spreadRadius: 1,
-      //       blurRadius: 5,
-      //       offset: Offset(0, 2),
-      //     ),
-      //   ],
-      // ),
-      child: IconButton(
-        icon: Icon(icon, color: Colors.black),
-        onPressed: onPressed,
-      ),
+    return IconButton(
+      icon: Icon(icon, color: Colors.black),
+      onPressed: onPressed,
     );
   }
 }
