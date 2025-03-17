@@ -357,9 +357,46 @@ class ChildCardSlider extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundImage: AssetImage(child['image']!),
+                          // User Icon with Shadow
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: SizedBox(
+                                width: 60,
+                                height: 60,
+                                child:
+                                    child['image']!.startsWith('http')
+                                        ? Image.network(
+                                          child['image']!,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (
+                                            context,
+                                            error,
+                                            stackTrace,
+                                          ) {
+                                            return Image.asset(
+                                              'assets/images/user.png',
+                                            );
+                                          },
+                                        )
+                                        : Image.asset(
+                                          child['image']!,
+                                          fit: BoxFit.cover,
+                                        ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -368,7 +405,7 @@ class ChildCardSlider extends StatelessWidget {
                           Expanded(
                             child: Text(
                               child['name']!,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: cardheadingStyle,
                               overflow:
                                   TextOverflow.ellipsis, // Prevent overflow
                             ),
@@ -658,9 +695,9 @@ class GameCardSlider extends StatelessWidget {
   final List<Map<String, String>> gameData;
 
   const GameCardSlider({super.key, required this.gameData});
-
   @override
   Widget build(BuildContext context) {
+    print(gameData);
     return SizedBox(
       height: 172, // Adjusted height for better spacing
       child: ListView.builder(
@@ -692,7 +729,7 @@ class GameCardSlider extends StatelessWidget {
                     topRight: Radius.circular(18),
                   ),
                   child: Image.asset(
-                    game['image']!,
+                    game['image'].toString(),
                     width: double.infinity,
                     height: 120,
                     fit: BoxFit.cover,
@@ -718,7 +755,7 @@ class GameCardSlider extends StatelessWidget {
                         ),
                         SizedBox(width: 4),
                         Text(
-                          game['points']!,
+                          game['score'].toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
@@ -747,13 +784,13 @@ class GameCardSlider extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          game['name']!,
+                          game['name'].toString(),
                           style: TextStyle(fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: 2),
                         Text(
-                          game['level']!,
+                          game['level'].toString(),
                           style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),
                       ],
