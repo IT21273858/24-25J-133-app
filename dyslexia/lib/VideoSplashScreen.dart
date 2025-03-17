@@ -8,6 +8,10 @@ import 'package:dyslexia/Recallshape1.dart';
 import 'package:dyslexia/Recallshape2.dart';
 import 'package:dyslexia/Recallshape3.dart';
 import 'package:dyslexia/Recallshape4.dart';
+import 'package:dyslexia/Wordrecall1.dart';
+import 'package:dyslexia/Wordrecall2.dart';
+import 'package:dyslexia/Wordrecall3.dart';
+import 'package:dyslexia/Wordrecall4.dart';
 
 class VideoSplashScreen extends StatefulWidget {
   final Widget nextScreen;
@@ -35,18 +39,18 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
     // Listen for when the video ends
     _controller.addListener(() {
       if (_controller.value.position == _controller.value.duration) {
-        _navigateToRecallshape4();
+        _navigateToWordrecall4();
         //_navigateToNextScreen();
       }
     });
   }
 
-  void _navigateToRecallshape4() {
+  void _navigateToWordrecall4() {
     if (mounted) {
       Navigator.of(
         context,
       ).pushReplacement(
-          MaterialPageRoute(builder: (context) => RecallShape4Screen()));
+          MaterialPageRoute(builder: (context) => WordRecallTaskLevel4()));
     }
   }
 
