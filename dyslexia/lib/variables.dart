@@ -201,3 +201,9 @@ final TextStyle cardtxtdisplay = GoogleFonts.poppins(
   fontWeight: FontWeight.w500,
   color: readingTitleColor,
 );
+
+final TextStyle quizzanswers = GoogleFonts.poppins(
+  fontSize: 20,
+  fontWeight: FontWeight.w400,
+  color: readingTitleColor,
+);
