@@ -12,8 +12,11 @@ import 'package:dyslexia/parent/ParentAllGameScoresPage.dart';
 import 'package:dyslexia/parent/ProfileParent.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
-import 'package:dyslexia/visualprocessing/VisualProcessingPredictPattern.dart';
-import 'package:dyslexia/visualprocessing/VisualProcessingPredictShape.dart';
+import 'package:dyslexia/visualprocessing/practice/VisualProcessingPredictPattern.dart';
+import 'package:dyslexia/visualprocessing/VisualProcessingDrawShape.dart';
+import 'package:dyslexia/visualprocessing/exam/VisualProcessingDrawShapes.dart';
+import 'package:dyslexia/visualprocessing/practice/VisualProcessingDrawShapeLearning.dart';
+import 'package:dyslexia/visualprocessing/practice/VisualProcessingShapeLearing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,9 +78,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "page": VisualprocessingGameselect(),
     },
     {
+      "icon": FeatherIcons.bookOpen,
+      "label": "Learn Shape",
+      "page": Visualprocessingshapelearing(),
+    },
+    {
       "icon": FeatherIcons.barChart2,
-      "label": "Predict Shape Time",
-      "page": Visualprocessingpredictshape(),
+      "label": "Draw Shape Time",
+      "page": VisualprocessingDrawshapes(),
+    },
+    {
+      "icon": FeatherIcons.bookOpen,
+      "label": "Learn to Draw Shape",
+      "page": VisualprocessingDrawshapeLearning(),
     },
     {
       "icon": FeatherIcons.barChart2,

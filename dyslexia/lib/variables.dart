@@ -207,3 +207,9 @@ final TextStyle quizzanswers = GoogleFonts.poppins(
   fontWeight: FontWeight.w400,
   color: readingTitleColor,
 );
+
+final TextStyle gamescardHeading = GoogleFonts.poppins(
+  fontSize: 12,
+  fontWeight: FontWeight.bold,
+  color: HeadingColor,
+);

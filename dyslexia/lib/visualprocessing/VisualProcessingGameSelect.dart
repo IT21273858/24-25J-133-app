@@ -1,6 +1,10 @@
 import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:dyslexia/services/game_service.dart';
 import 'package:dyslexia/variables.dart';
+import 'package:dyslexia/visualprocessing/exam/VisualProcessingDrawShapes.dart';
+import 'package:dyslexia/visualprocessing/practice/VisualProcessingPredictPattern.dart';
+import 'package:dyslexia/visualprocessing/exam/VisualProcessingPredictPatterns.dart';
+import 'package:dyslexia/visualprocessing/exam/VisualProcessingPredictShapes.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
@@ -18,7 +22,7 @@ class _VisualprocessingGameselectState
   int selection = -1; // Index of selected shape
   String level = "medium"; // Default level
   String uId = '';
-  List<Map<String, String>> pattern = []; // Stores shapes from API
+  List<Map<String, dynamic>> games = []; // Change String to dynamic
   String? nextShape; // Stores the correct next shape
 
   Future<void> _loadShapeData() async {
@@ -30,28 +34,45 @@ class _VisualprocessingGameselectState
 
     print("Level is $level");
 
-    final response = await GameService.generateShape(level);
+    final response = await GameService.getAllGames();
 
     if (response != null && response["status"] == true) {
       setState(() {
-        nextShape =
-            response["patternPrediction"]["next_shape"]
-                as String; // Explicit cast to String
-        pattern =
-            (response["patternPrediction"]["pattern"] as List<dynamic>)
-                .map<Map<String, String>>(
-                  (shape) => {
-                    "shape": shape.toString(), // Convert dynamic to String
-                    "shapeurl": getShapeImage(
-                      shape.toString(),
-                    ), // Ensure shape is a String
+        games =
+            (response["games"] as List<dynamic>)
+                .map<Map<String, dynamic>>(
+                  (game) => {
+                    "gameid": game['id'], // Keep as int (no .toString())
+                    "level": game['level'] ?? "Unknown Level",
+                    "name": game['name'] ?? "Unknown Game",
+                    "model_type": game['model_type'] ?? "Unknown Type",
+                    "shapeurl": getGameImage(game['model_type'].toString()),
                   },
                 )
                 .toList();
       });
 
-      print("Next Shape: $nextShape");
-      print("Pattern: $pattern");
+      print("Pattern: $games");
+    }
+  }
+
+  void _navigateToGame(BuildContext context, String modelType, String gameId) {
+    if (modelType == "shape") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VisualProcessingPredictShapes(gameId: gameId),
+        ),
+      );
+    } else if (modelType == "pattern") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Visualprocessingpredictpatterns(gameId: gameId),
+        ),
+      );
+    } else {
+      print("❌ Unknown game model type: $modelType");
     }
   }
 
@@ -67,14 +88,12 @@ class _VisualprocessingGameselectState
   }
 
   // Function to get shape image path
-  String getShapeImage(String shapeName) {
-    switch (shapeName.toLowerCase()) {
-      case "circle":
-        return 'assets/images/circ.png';
-      case "triangle":
-        return 'assets/images/tri.png';
-      case "square":
-        return 'assets/images/sqr.png';
+  String getGameImage(String gameName) {
+    switch (gameName.toLowerCase()) {
+      case "shape":
+        return 'assets/images/shape_gif1.gif';
+      case "pattern":
+        return 'assets/images/pattern_gif.gif';
       default:
         return 'assets/images/unknown.png';
     }
@@ -103,7 +122,7 @@ class _VisualprocessingGameselectState
             ? "triangle"
             : "circle";
 
-    if (selectedShape == nextShape) {
+    if (selectedShape == "shape") {
       print("✅ Correct! User selected: $selectedShape");
       final data = {
         "childId": uId,
@@ -142,12 +161,12 @@ class _VisualprocessingGameselectState
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Column(
-                    spacing: 20,
+                    spacing: 10,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Predict Pattern", style: rCheckpointTitle),
+                          Text("Play Your Game", style: rCheckpointTitle),
                         ],
                       ),
                       Center(
@@ -155,83 +174,149 @@ class _VisualprocessingGameselectState
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Image.asset(
-                              "assets/images/patternprediction.png",
+                              "assets/images/Shapes_gif.gif",
                               width: screenWidth * 0.9,
                             ),
-                            // Container(
-                            //   width: screenWidth * 0.8,
-                            //   height: screenHeight * 0.25,
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.all(
-                            //       Radius.circular(17),
-                            //     ),
-                            //     color: Color.fromRGBO(166, 159, 204, 0.31),
-                            //   ),
-                            //   child: Column(
-                            //     crossAxisAlignment: CrossAxisAlignment.center,
-                            //     mainAxisAlignment: MainAxisAlignment.center,
-                            //     children: [
-                            //       Text(
-                            //         displayText,
-                            //         style: rCheckpointtxtDisplay,
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
+                      Column(
+                        children: [
+                          SizedBox(
+                            width:
+                                double
+                                    .infinity, // Makes the card take full width
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            VisualprocessingDrawshapes(),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  Card(
+                                    elevation: 5,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(
+                                        12.0,
+                                      ), // Add some padding
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            child: Image.asset(
+                                              'assets/images/square-loader.gif',
+                                              height: 200,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            'Draw And Predict Shape',
+                                            style: TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.deepPurple,
+                                            ),
+                                            textAlign:
+                                                TextAlign
+                                                    .center, // Centered text
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
                       Center(
                         child: Column(
                           spacing: 10,
                           children: [
                             // Display the pattern
-                            Wrap(
-                              spacing: 10,
-                              children:
-                                  pattern
-                                      .map(
-                                        (shape) => Image.asset(
-                                          shape['shapeurl']!,
-                                          width: 60,
-                                          height: 60,
-                                        ),
-                                      )
-                                      .toList(),
-                            ),
-                            SizedBox(height: 30),
-                            Text(
-                              "Choose the next shape",
-                              style: rCheckpointInst2,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                shapeButton(
-                                  0,
-                                  "square",
-                                  "assets/images/sqr.png",
-                                ),
-                                shapeButton(
-                                  1,
-                                  "triangle",
-                                  "assets/images/tri.png",
-                                ),
-                                shapeButton(
-                                  2,
-                                  "circle",
-                                  "assets/images/circ.png",
-                                ),
-                              ],
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics:
+                                  NeverScrollableScrollPhysics(), // Prevents scrolling inside ListView
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2, // 2 cards per row
+                                    crossAxisSpacing:
+                                        5, // Space between columns
+                                    mainAxisSpacing: 5, // Space between rows
+                                    childAspectRatio:
+                                        0.9, // Controls card height
+                                  ),
+                              itemCount: games.length,
+                              itemBuilder: (context, index) {
+                                final game = games[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    _navigateToGame(
+                                      context,
+                                      game['model_type'],
+                                      game['gameid'],
+                                    );
+                                  },
+                                  child: Card(
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    color: wordhighlight,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(2),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            game['name'] ?? "Unknown Game",
+                                            style: gamescardHeading,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 5),
+                                          Text(
+                                            game['level'] ?? "Unknown Level",
+                                            style: gamescardHeading,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Image.asset(
+                                            game['shapeurl'] ??
+                                                "assets/images/placeholder.png",
+                                            width: 80,
+                                            height: 80,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
                       ),
-                      CustomButton(
-                        text: "Confirm",
-                        isLoading: false,
-                        onPressed: handleConfirm,
-                      ),
+                      SizedBox(height: 30),
                     ],
                   ),
                 ),

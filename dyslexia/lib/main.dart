@@ -44,8 +44,10 @@ class _MyAppState extends State<MyApp> {
     // }
     if (role == "parent") {
       _startScreen = DashboardParent();
+      // _startScreen = VideoSplashScreen(nextScreen: DashboardParent());
     } else if (role == "child") {
       _startScreen = DashboardChild();
+      // _startScreen = VideoSplashScreen(nextScreen: DashboardChild());
     } else {
       _startScreen = LoginPage();
     }

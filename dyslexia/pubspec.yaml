@@ -48,6 +48,8 @@ dependencies:
   provider: ^6.1.2
   speech_to_text: ^7.0.0
   google_mlkit_text_recognition: ^0.14.0
+  flutter_swiper_view: ^1.1.8
+  flutter_tts: ^4.2.2
 
   # speech_to_text_continuous: ^6.5.4
 
@@ -107,6 +109,22 @@ flutter:
     - assets/images/dinowalk.gif
     - assets/images/doglder.gif
     - assets/images/medie.png
+    - assets/images/Shapes_gif.gif
+    - assets/images/circle_shape.gif
+    - assets/images/square_shape.gif
+    - assets/images/triangle_shape.gif
+    - assets/images/shape_gif1.gif
+    - assets/images/pattern_gif.gif
+    - assets/images/circle_practice.jpg
+    - assets/images/square_practice.jpg
+    - assets/images/triangle_practice.jpg
+    - assets/images/speak_word.png
+    - assets/images/passed.jpg
+    - assets/images/pass-learning.gif
+    - assets/images/pass-exam.gif
+    - assets/images/square-loader.gif
+    - assets/images/circle-loader.gif
+    - assets/images/triangle-loader.gif
     - assets/images/gogflat.gif
 
     #   - images/a_dot_burr.jpeg
