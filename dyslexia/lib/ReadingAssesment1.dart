@@ -1,6 +1,7 @@
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
+import 'package:dyslexia/textToSpeech/TextToSpeechHelper.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -13,6 +14,7 @@ class ReadPronounceWord extends StatefulWidget {
 class _ReadPronounceWordState extends State<ReadPronounceWord> {
   // audio recoridnf
   final recorder = AudioRecorderService();
+  final TextToSpeechHelper tts = TextToSpeechHelper();
 
   bool isrecording = false;
 
@@ -127,7 +129,9 @@ class _ReadPronounceWordState extends State<ReadPronounceWord> {
                                         ),
                                       ),
                                       child: IconButton(
-                                        onPressed: handleRecording,
+                                        onPressed: () {
+                                          tts.speak(displayText);
+                                        },
                                         icon: Icon(
                                           FeatherIcons.volume2,
                                           color: Colors.white,
