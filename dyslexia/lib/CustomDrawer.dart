@@ -152,6 +152,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Drawer(
       backgroundColor: Color(0xFFF0EFF4), // Background Color
       child: Column(
@@ -252,7 +254,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
           SizedBox(height: 10),
 
           // Menu Items
-          Expanded(
+          Container(
+            height: screenHeight * 0.5,
             child: SingleChildScrollView(
               child: Column(
                 children: [
