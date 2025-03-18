@@ -1,3 +1,4 @@
+import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/child/ProfileChild.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
@@ -28,7 +29,7 @@ class _RegisterDiseaseSelectState extends State<RegisterDiseaseSelect> {
       Navigator.push(
         context,
         // MaterialPageRoute(builder: (context) => DashboardParent()
-        MaterialPageRoute(builder: (context) => ProfileChild()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       );
     });
   }

@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:dyslexia/signup/RegisterChooseForChild.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dyslexia/services/api_service.dart';
 
 class DashboardParent extends StatefulWidget {
   @override
@@ -19,34 +22,48 @@ class _DashboardParentState extends State<DashboardParent> {
     FlSpot(4, 6),
     FlSpot(5, 4),
   ];
-  // Sample Data
-  final List<String> children = ["Child 1", "Child 2", "Child 3", "Child 4"];
-  String userName = "Loading...";
-  String userImage = "assets/images/user.png"; // Default image
-  String userId = "Unknown"; // Store User ID as well
 
-  /// Fetch stored user details from SharedPreferences
+  // Store fetched data
+  String userName = "Loading...";
+  String userImage = "assets/images/user.png";
+  String userId = "Unknown";
+  List<Map<String, dynamic>> children = [];
+
+  /// Fetch Parent and Child Data from SharedPreferences
   Future<void> _loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      userName = prefs.getString('user_name') ?? "Unknown User";
-      userImage = prefs.getString('user_image') ?? "assets/images/user.png";
-      userId = prefs.getString('user_id') ?? "Unknown ID"; // Fetch user_id
+      userName = prefs.getString('parent_name') ?? "Unknown User";
+      userImage = prefs.getString('parent_image') ?? "assets/images/user.png";
+      userId = prefs.getString('user_id') ?? "Unknown ID";
     });
 
-    // Print details in the terminal
-    print("@ User Details from Storage @");
-    print("User Name: $userName");
-    print("User Image: $userImage");
-    print("User ID: $userId");
-    print("@");
+    // Fetch Parent & Child Details from API
+    final parentData = await ApiService.fetchParentById();
+    if (parentData != null) {
+      List<String>? storedChildren = prefs.getStringList('children_list');
+
+      if (storedChildren != null) {
+        setState(() {
+          children =
+              storedChildren.map((child) {
+                return Map<String, dynamic>.from(jsonDecode(child));
+              }).toList();
+        });
+
+        print("((((((Child details))))))");
+        print(children);
+      }
+    }
+
+    print("✅ User & Children Data Loaded");
   }
 
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // Fetch and print user details
+    _loadUserData();
   }
 
   @override
@@ -58,7 +75,7 @@ class _DashboardParentState extends State<DashboardParent> {
         child: ListView(
           children: [
             Column(
-              spacing: 20,
+              spacing: 5,
               children: [
                 _buildHeader(context),
                 Row(
@@ -83,7 +100,7 @@ class _DashboardParentState extends State<DashboardParent> {
     );
   }
 
-  // Header Section
+  // **Header Section**
   Widget _buildHeader(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -101,7 +118,7 @@ class _DashboardParentState extends State<DashboardParent> {
           ),
         ],
       ),
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(10),
       child: Column(
         children: [
           Row(
@@ -118,7 +135,12 @@ class _DashboardParentState extends State<DashboardParent> {
                 backgroundImage:
                     userImage.startsWith('http')
                         ? NetworkImage(userImage)
-                        : AssetImage(userImage) as ImageProvider,
+                        : AssetImage('assets/images/user.png'),
+                onBackgroundImageError: (_, __) {
+                  setState(() {
+                    userImage = "assets/images/user.png";
+                  });
+                },
               ),
             ],
           ),
@@ -145,7 +167,7 @@ class _DashboardParentState extends State<DashboardParent> {
     );
   }
 
-  // Scrollable Child Selection
+  // **Scrollable Child Selection**
   Widget _buildChildSelection() {
     return Container(
       height: 30,
@@ -165,7 +187,7 @@ class _DashboardParentState extends State<DashboardParent> {
                 ),
               ),
               child: Text(
-                children[index],
+                children[index]["name"] ?? "Child ${index + 1}",
                 style: TextStyle(color: Colors.black),
               ),
             ),
@@ -175,7 +197,7 @@ class _DashboardParentState extends State<DashboardParent> {
     );
   }
 
-  // Performance Section with Line Chart
+  // **Performance Section with Line Chart**
   Widget _buildPerformanceSection() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -196,27 +218,18 @@ class _DashboardParentState extends State<DashboardParent> {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 5,
               children: [
-                Padding(padding: EdgeInsets.only(left: 10, right: 10)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Statistics',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
+                        Text('Statistics', style: TextStyle(fontSize: 18)),
                         Text(
                           'Game Name',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -240,7 +253,7 @@ class _DashboardParentState extends State<DashboardParent> {
                     ),
                   ],
                 ),
-                Padding(padding: EdgeInsets.only(top: 10)),
+                SizedBox(height: 10),
                 LineChartWidget(chartData: performanceData),
               ],
             ),
@@ -250,7 +263,7 @@ class _DashboardParentState extends State<DashboardParent> {
     );
   }
 
-  // Manage Children Section
+  // **Manage Children Section**
   Widget _buildManageChildrenSection(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -262,18 +275,10 @@ class _DashboardParentState extends State<DashboardParent> {
             children: [
               Text(
                 "Manage Children",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               IconButton(
-                icon: Icon(
-                  Icons.add_circle_outline,
-                  size: 24,
-                  color: Colors.black,
-                ),
+                icon: Icon(Icons.add_circle_outline, size: 24),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -287,26 +292,21 @@ class _DashboardParentState extends State<DashboardParent> {
           ),
           SizedBox(height: 10),
           ChildCardSliderDashboard(
-            childData: [
-              {
-                "name": "Child 1",
-                "level": "Level 02",
-                "lastLogged": "12 Feb 2024 - 12:30pm",
-                "image": "assets/images/child.png",
-              },
-              {
-                "name": "Child 2",
-                "level": "Level 03",
-                "lastLogged": "10 Feb 2024 - 11:45am",
-                "image": "assets/images/child.png",
-              },
-              {
-                "name": "Child 3",
-                "level": "Level 01",
-                "lastLogged": "08 Feb 2024 - 02:15pm",
-                "image": "assets/images/child.png",
-              },
-            ],
+            childData:
+                children.map((child) {
+                  return {
+                    "name": child["name"]?.toString() ?? "Unknown",
+                    "level": child["level"]?.toString() ?? "N/A",
+                    "lastLogged": child["updatedAt"]?.toString() ?? "No Data",
+                    "image":
+                        child["profile_img"] != null &&
+                                child["profile_img"].toString().startsWith(
+                                  "http",
+                                )
+                            ? child["profile_img"].toString()
+                            : "assets/images/user.png",
+                  };
+                }).toList(),
           ),
         ],
       ),
@@ -314,23 +314,9 @@ class _DashboardParentState extends State<DashboardParent> {
   }
 
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: Colors.black),
-        onPressed: onPressed,
-      ),
+    return IconButton(
+      icon: Icon(icon, color: Colors.black),
+      onPressed: onPressed,
     );
   }
 }

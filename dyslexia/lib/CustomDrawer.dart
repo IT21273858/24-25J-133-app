@@ -87,24 +87,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "page": Visualprocessingshapelearing(),
     },
     {
-      "icon": FeatherIcons.barChart2,
-      "label": "Draw Shape Time",
-      "page": VisualprocessingDrawshapes(),
-    },
-    {
       "icon": FeatherIcons.bookOpen,
       "label": "Learn to Draw Shape",
       "page": VisualprocessingDrawshapeLearning(),
-    },
-    {
-      "icon": FeatherIcons.barChart2,
-      "label": "Predict pattern Time",
-      "page": Visualprocessingpredictpattern(),
-    },
-    {
-      "icon": FeatherIcons.barChart2,
-      "label": "Predict pattern",
-      "page": VisualProcessText1(),
     },
     {
       "icon": FeatherIcons.barChart2,

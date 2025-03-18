@@ -20,7 +20,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Widget _startScreen;
+  Widget? _startScreen; // Make it nullable to prevent crashes
 
   @override
   void initState() {
@@ -35,24 +35,15 @@ class _MyAppState extends State<MyApp> {
 
     print("User role: $role");
 
-    // if (role == "parent") {
-    //   _startScreen = VideoSplashScreen(nextScreen: DashboardParent());
-    // } else if (role == "child") {
-    //   _startScreen = VideoSplashScreen(nextScreen: DashboardChild());
-    // } else {
-    //   _startScreen = LoginPage();
-    // }
-    if (role == "parent") {
-      _startScreen = DashboardParent();
-      // _startScreen = VideoSplashScreen(nextScreen: DashboardParent());
-    } else if (role == "child") {
-      _startScreen = DashboardChild();
-      // _startScreen = VideoSplashScreen(nextScreen: DashboardChild());
-    } else {
-      _startScreen = LoginPage();
-    }
-
-    setState(() {});
+    setState(() {
+      if (role == "parent") {
+        _startScreen = VideoSplashScreen(nextScreen: DashboardParent());
+      } else if (role == "child") {
+        _startScreen = VideoSplashScreen(nextScreen: DashboardChild());
+      } else {
+        _startScreen = LoginPage();
+      }
+    });
   }
 
   @override
@@ -68,7 +59,11 @@ class _MyAppState extends State<MyApp> {
           foregroundColor: Colors.white,
         ),
       ),
-      home: _startScreen,
+      home:
+          _startScreen ??
+          Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          ), // Show loader while determining the screen
     );
   }
 }
@@ -85,6 +80,7 @@ class VideoSplashScreen extends StatefulWidget {
 
 class _VideoSplashScreenState extends State<VideoSplashScreen> {
   late VideoPlayerController _controller;
+  bool _videoCompleted = false; // Track if video finished playing
 
   @override
   void initState() {
@@ -97,18 +93,33 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
         _controller.play(); // Start video playback
       });
 
-    // Listen for when the video ends
-    _controller.addListener(() {
-      if (_controller.value.position == _controller.value.duration) {
+    // Add listener for video completion
+    _controller.addListener(_checkVideoCompletion);
+  }
+
+  void _checkVideoCompletion() {
+    if (_controller.value.position >=
+        _controller.value.duration - Duration(milliseconds: 500)) {
+      if (!_videoCompleted) {
+        _videoCompleted = true;
         _navigateToNextScreen();
       }
-    });
+    }
   }
 
   void _navigateToNextScreen() {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => widget.nextScreen),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(
+      _checkVideoCompletion,
+    ); // Remove listener to avoid memory leak
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -132,15 +143,9 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
           else
             Center(
               child: CircularProgressIndicator(),
-            ), // Show loading indicator
+            ), // Show loader while video loads
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

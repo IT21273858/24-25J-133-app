@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:dyslexia/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardChild extends StatefulWidget {
   @override
@@ -12,13 +16,88 @@ class _DashboardChildState extends State<DashboardChild> {
   final List<Map<String, String>> emotions = [
     {"emoji": "😀", "label": "Happy"},
     {"emoji": "😊", "label": "Calm"},
-    {"emoji": "😡", "label": "Angry"},
     {"emoji": "😢", "label": "Sad"},
     {"emoji": "😴", "label": "Tired"},
     {"emoji": "😰", "label": "Stressed"},
+    {"emoji": "😡", "label": "Angry"},
   ];
 
   String selectedEmotion = "Happy"; // Default selected emotion
+
+  String childName = "Loading...";
+  String childEmail = "Loading...";
+  String childImage = "assets/images/user.png";
+  String childLevel = "Loading...";
+  String childAddress = "Loading...";
+  List<Map<String, String>> gameScores = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadChildData();
+  }
+
+  /// **Load stored child data & fetch updated details from API**
+  Future<void> _loadChildData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      childName = prefs.getString('child_name') ?? "Unknown";
+      childEmail = prefs.getString('child_email') ?? "No Email";
+      childImage = prefs.getString('child_image') ?? "assets/images/user.png";
+      childLevel = prefs.getString('child_level') ?? "N/A";
+      childAddress = prefs.getString('child_address') ?? "No Address";
+
+      // Load stored game scores safely
+      List<String>? storedScores = prefs.getStringList('game_scores');
+      if (storedScores != null && storedScores.isNotEmpty) {
+        gameScores =
+            storedScores.map((score) {
+              Map<String, dynamic> decoded = jsonDecode(score);
+
+              return {
+                "name": decoded["name"]?.toString() ?? "Unknown Game",
+                "score": decoded["score"]?.toString() ?? "0",
+                "updatedAt": decoded["updatedAt"]?.toString() ?? "N/A",
+                "image": "assets/images/games_background.jpg",
+                // "level": decoded["game"]["level"].toString(),
+              };
+            }).toList();
+      } else {
+        gameScores = []; // Avoid null reference error
+      }
+    });
+
+    // Fetch updated data from API
+    await ApiService.fetchAndStoreChildDetails();
+
+    // Reload stored data after API call
+    setState(() {
+      childName = prefs.getString('child_name') ?? childName;
+      childEmail = prefs.getString('child_email') ?? childEmail;
+      childImage = prefs.getString('child_image') ?? childImage;
+      childLevel = prefs.getString('child_level') ?? childLevel;
+      childAddress = prefs.getString('child_address') ?? childAddress;
+
+      List<String>? updatedScores = prefs.getStringList('game_scores');
+      if (updatedScores != null && updatedScores.isNotEmpty) {
+        gameScores =
+            updatedScores.map((score) {
+              Map<String, dynamic> decoded = jsonDecode(score);
+
+              return {
+                "name": decoded["name"].toString(),
+                "score": decoded["score"].toString(),
+                "updatedAt": decoded["updatedAt"]?.toString() ?? "N/A",
+                "image": "assets/images/games_background.jpg",
+                // "level": decoded["game"]["level"].toString(),
+              };
+            }).toList();
+      } else {
+        gameScores = []; // Avoid null reference error
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +286,7 @@ class _DashboardChildState extends State<DashboardChild> {
                   style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Star Shangeeth',
+                  childName,
                   style: TextStyle(fontSize: 36, fontWeight: FontWeight.normal),
                 ),
                 SizedBox(height: 5),
