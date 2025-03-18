@@ -1,6 +1,11 @@
+import 'package:dyslexia/shorttermmemory/wordrecall/Wordrecall4.dart';
 import 'package:flutter/material.dart';
 
 class WordRecallTaskScreen3 extends StatefulWidget {
+  final String? wordToShow;
+
+  const WordRecallTaskScreen3({super.key, required this.wordToShow});
+
   @override
   _WordRecallTaskScreenState createState() => _WordRecallTaskScreenState();
 }
@@ -8,11 +13,32 @@ class WordRecallTaskScreen3 extends StatefulWidget {
 class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
   List<String> _selectedWords = []; // To hold the selected words
   final List<String> _wordOptions = [
+    'AN',
     'AT',
-    'ON',
+    'BY',
+    'DO',
+    'GO',
+    'HE',
+    'IF',
     'IN',
+    'IS',
+    'IT',
+    'ME',
+    'NO',
+    'OF',
+    'ON',
+    'OR',
     'TO',
+    'UP',
+    'WE',
+    'YE',
   ]; // Word options
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.wordToShow); // Debugging log
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +58,9 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
               radius: screenWidth * 0.07,
-              backgroundImage:
-                  AssetImage('assets/images/user.png'), // Profile image
+              backgroundImage: AssetImage(
+                'assets/images/user.png',
+              ), // Profile image
             ),
           ),
         ],
@@ -58,36 +85,31 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
               height: screenHeight * 0.2,
             ),
             SizedBox(height: screenHeight * 0.02),
+
+            SizedBox(height: screenHeight * 0.02),
+
+            // Box displaying selected words
             Container(
               height: screenHeight * 0.15, // Size of the box
               width: double.infinity,
               margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               decoration: BoxDecoration(
-                color:
-                    Colors.deepPurple.shade50, // Light deep purple background
+                color: Colors.deepPurple.shade100, // Slightly darker background
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
-                child: _selectedWords.isEmpty
-                    ? const Text(
-                        '---',
-                        style: TextStyle(
-                          fontSize: 100, // Set font size to 100
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      )
-                    : Text(
-                        _selectedWords.join(', '),
-                        style: const TextStyle(
-                          fontSize: 100, // Set font size to 100
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
+                child: Text(
+                  _selectedWords.isEmpty ? "---" : _selectedWords.join(', '),
+                  style: const TextStyle(
+                    fontSize: 40, // Set font size
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: screenHeight * 0.02),
+
             // Make sure the GridView takes up available space but doesn't overflow
             Expanded(
               child: GridView.builder(
@@ -102,8 +124,10 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
                 itemBuilder: (context, index) {
                   return ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors
-                          .deepPurple.shade200, // Light deep purple button
+                      backgroundColor:
+                          Colors
+                              .deepPurple
+                              .shade200, // Light deep purple button
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -126,7 +150,10 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
                 },
               ),
             ),
+
             SizedBox(height: screenHeight * 0.02),
+
+            // Submit Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor:
@@ -140,24 +167,40 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
                 ),
               ),
               onPressed: () {
-                // Add submit functionality here
+                _checkSuccess(context);
               },
               child: const Text(
                 'Submit',
-                style:
-                    TextStyle(fontSize: 18, color: Colors.white), // White text
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ), // White text
               ),
             ),
+
+            SizedBox(height: screenHeight * 0.02),
           ],
         ),
       ),
     );
   }
-}
 
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: WordRecallTaskScreen3(),
-  ));
+  // Function to check if user selected the correct word
+  void _checkSuccess(BuildContext context) {
+    if (_selectedWords.contains(widget.wordToShow)) {
+      // Navigate to Success Screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => WordRecallTaskLevel4()),
+      );
+    } else {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Incorrect! Try Again."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 }

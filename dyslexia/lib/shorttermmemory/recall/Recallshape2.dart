@@ -1,30 +1,38 @@
+import 'package:dyslexia/services/memory_service.dart';
+import 'package:dyslexia/shorttermmemory/recall/Recallshape3.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
-class DigitSpanTaskScreen2 extends StatefulWidget {
+class RecallShapeScreen2 extends StatefulWidget {
   @override
-  _DigitSpanTaskScreen2State createState() => _DigitSpanTaskScreen2State();
+  _RecallShapeScreen2State createState() => _RecallShapeScreen2State();
 }
 
-class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
-  int _remainingSeconds = 3; // Set initial countdown seconds
+class _RecallShapeScreen2State extends State<RecallShapeScreen2> {
+  int _remainingSeconds = 3;
   Timer? _timer;
-  String _digitToShow = ""; // Digit that will be displayed
+  String? _predictedShape;
+  Uint8List? _imageData;
 
   @override
   void initState() {
     super.initState();
-    _generateDigit();
-    _startCountdown();
+    _fetchShapeFromAPI();
   }
 
-  void _generateDigit() {
-    setState(() {
-      _digitToShow =
-          (1 + (9 * (DateTime.now().millisecondsSinceEpoch % 10) / 10))
-              .toInt()
-              .toString();
-    });
+  Future<void> _fetchShapeFromAPI() async {
+    var response = await MemoryService.identifyShape();
+    if (response != null && response['status'] == true) {
+      setState(() {
+        _predictedShape = response['identifiedShape']['predicted_shape'];
+        _imageData = base64Decode(response['identifiedShape']['image_base64']);
+        _remainingSeconds = response['identifiedShape']['hide_after'];
+      });
+
+      _startCountdown();
+    }
   }
 
   void _startCountdown() {
@@ -32,13 +40,23 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
     _timer = Timer.periodic(oneSecond, (Timer timer) {
       if (_remainingSeconds <= 0) {
         timer.cancel();
-        // Proceed to next step (e.g., asking user input or next digit)
+        _navigateToNextScreen();
       } else {
         setState(() {
           _remainingSeconds--;
         });
       }
     });
+  }
+
+  void _navigateToNextScreen() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => RecallShape3Screen(shapeToFind: _predictedShape ?? ""),
+      ),
+    );
   }
 
   @override
@@ -53,7 +71,7 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Color(0xFFFAF4FF), // Updated background color
+      backgroundColor: Color(0xFFFAF4FF),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -61,53 +79,48 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _buildHeader(context), // Header with profile and menu
+                _buildHeader(context),
                 SizedBox(height: screenHeight * 0.02),
                 Text(
-                  'Digit Span Task',
+                  'Recall Shape',
                   style: TextStyle(
                     fontSize: screenWidth * 0.08,
                     fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple, // Updated color
+                    color: Colors.deepPurple,
                     fontFamily: 'Risque',
                   ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 Container(
-                  width: screenWidth * 0.8, // 80% of screen width
-                  height: screenHeight * 0.3, // 30% of screen height
+                  width: screenWidth * 0.8,
+                  height: screenHeight * 0.3,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/panda.png'),
+                      image: AssetImage('assets/images/bunny1.png'),
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.03),
-                // Make the digit display more prominent
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurple[100], // Updated color
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Text(
-                    _digitToShow,
-                    style: TextStyle(
-                      fontSize: screenWidth *
-                          0.2, // Increased font size for visibility
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple, // Updated color
+                // Display fetched image
+                if (_imageData != null)
+                  Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.deepPurple, width: 2),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ),
-                ),
+                    child: Image.memory(_imageData!, fit: BoxFit.contain),
+                  )
+                else
+                  CircularProgressIndicator(),
                 SizedBox(height: screenHeight * 0.02),
-                // Countdown Timer
                 Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.deepPurple[100], // Updated color
+                    color: Colors.deepPurple[100],
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Text(
@@ -115,7 +128,7 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
                     style: TextStyle(
                       fontSize: screenWidth * 0.08,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple, // Updated color
+                      color: Colors.deepPurple,
                     ),
                   ),
                 ),
@@ -128,7 +141,6 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
     );
   }
 
-  // Header Section with Profile and Menu
   Widget _buildHeader(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Padding(
@@ -136,9 +148,7 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildIconButton(Icons.menu, () {
-            // Add functionality for menu button
-          }),
+          _buildIconButton(Icons.menu, () {}),
           CircleAvatar(
             radius: screenWidth * 0.07,
             backgroundImage: AssetImage('assets/images/user.png'),
@@ -148,18 +158,10 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
     );
   }
 
-  // Icon button for menu
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
     return IconButton(
       icon: Icon(icon, color: Colors.black),
       onPressed: onPressed,
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: DigitSpanTaskScreen2(),
-  ));
 }

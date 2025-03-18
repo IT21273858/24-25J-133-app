@@ -1,6 +1,8 @@
+import 'package:dyslexia/CustomDrawer.dart';
+import 'package:dyslexia/shorttermmemory/digitspan/Digitspan2.dart';
 import 'package:flutter/material.dart';
 
-class WordRecallTaskLevel4 extends StatelessWidget {
+class DigitSpanTaskLevel4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -18,7 +20,7 @@ class WordRecallTaskLevel4 extends StatelessWidget {
                 _buildHeader(context),
                 SizedBox(height: screenHeight * 0.02),
                 Text(
-                  "Word Recall Task",
+                  "Digit Span Task",
                   style: TextStyle(
                     fontSize: screenWidth * 0.09,
                     fontWeight: FontWeight.bold,
@@ -29,7 +31,7 @@ class WordRecallTaskLevel4 extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Text(
-                  "Great Job!",
+                  "Well Done!",
                   style: TextStyle(
                     fontSize: screenWidth * 0.08,
                     fontWeight: FontWeight.bold,
@@ -40,7 +42,7 @@ class WordRecallTaskLevel4 extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 Text(
-                  "You Passed Level 1",
+                  "You Passed Level 4",
                   style: TextStyle(
                     fontSize: screenWidth * 0.07,
                     fontWeight: FontWeight.bold,
@@ -55,7 +57,7 @@ class WordRecallTaskLevel4 extends StatelessWidget {
                   height: screenHeight * 0.4, // 40% of screen height
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/quin1.png'),
+                      image: AssetImage('assets/images/panda.png'),
                       fit: BoxFit.contain, // Fits the panda image
                     ),
                   ),
@@ -63,7 +65,12 @@ class WordRecallTaskLevel4 extends StatelessWidget {
                 SizedBox(height: screenHeight * 0.05),
                 ElevatedButton(
                   onPressed: () {
-                    // Add functionality for Next Level button
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DigitSpanTaskScreen2(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
@@ -102,12 +109,16 @@ class WordRecallTaskLevel4 extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildIconButton(context, Icons.menu, () {
-            // Add functionality for menu button
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CustomDrawer()),
+            );
           }),
           CircleAvatar(
             radius: screenWidth * 0.07,
-            backgroundImage:
-                AssetImage('assets/images/user.png'), // User profile image
+            backgroundImage: AssetImage(
+              'assets/images/user.png',
+            ), // User profile image
           ),
         ],
       ),
@@ -116,7 +127,10 @@ class WordRecallTaskLevel4 extends StatelessWidget {
 
   // Icon button for menu
   Widget _buildIconButton(
-      BuildContext context, IconData icon, VoidCallback onPressed) {
+    BuildContext context,
+    IconData icon,
+    VoidCallback onPressed,
+  ) {
     return IconButton(
       iconSize: MediaQuery.of(context).size.width * 0.07, // Adjust size
       icon: Icon(icon, color: Colors.black),
@@ -126,8 +140,7 @@ class WordRecallTaskLevel4 extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: WordRecallTaskLevel4(),
-  ));
+  runApp(
+    MaterialApp(debugShowCheckedModeBanner: false, home: DigitSpanTaskLevel4()),
+  );
 }

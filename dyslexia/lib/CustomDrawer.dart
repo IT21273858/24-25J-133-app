@@ -5,11 +5,15 @@ import 'package:dyslexia/ReadingAssesment1.dart';
 import 'package:dyslexia/ScoresPage.dart';
 import 'package:dyslexia/VisualProcessTest1.dart';
 import 'package:dyslexia/VisualProcessingTest2.dart';
+import 'package:dyslexia/shorttermmemory/digitspan/Digitspan1.dart';
+import 'package:dyslexia/shorttermmemory/recall/Recallshape1.dart';
+import 'package:dyslexia/shorttermmemory/wordrecall/Wordrecall1.dart';
 import 'package:dyslexia/child/DashboardChild.dart';
 import 'package:dyslexia/child/ProfileChild.dart';
 import 'package:dyslexia/parent/DashboardParent.dart';
 import 'package:dyslexia/parent/ParentAllGameScoresPage.dart';
 import 'package:dyslexia/parent/ProfileParent.dart';
+import 'package:dyslexia/shorttermmemory/wordsrecall/WordRecallScreen1.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
 import 'package:dyslexia/visualprocessing/practice/VisualProcessingPredictPattern.dart';
@@ -101,6 +105,26 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "icon": FeatherIcons.barChart2,
       "label": "Predict pattern",
       "page": VisualProcessText1(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Word call",
+      "page": WordRecallTaskScreen(),
+    },
+    {
+      "icon": FeatherIcons.disc,
+      "label": "Digits call",
+      "page": DigitSpanTaskScreen(),
+    },
+    {
+      "icon": FeatherIcons.disc,
+      "label": "Recall call",
+      "page": RecallShape1Screen(),
+    },
+    {
+      "icon": FeatherIcons.disc,
+      "label": "Words recall",
+      "page": WordRecallScreen1(),
     },
   ];
 

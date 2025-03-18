@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:dyslexia/Digitspan1.dart';
-import 'package:dyslexia/Digitspan2.dart';
-import 'package:dyslexia/Digitspan3.dart';
-import 'package:dyslexia/Digitspan4.dart';
-import 'package:dyslexia/Recallshape1.dart';
-import 'package:dyslexia/Recallshape2.dart';
-import 'package:dyslexia/Recallshape3.dart';
-import 'package:dyslexia/Recallshape4.dart';
-import 'package:dyslexia/Wordrecall1.dart';
-import 'package:dyslexia/Wordrecall2.dart';
-import 'package:dyslexia/Wordrecall3.dart';
-import 'package:dyslexia/Wordrecall4.dart';
+import 'package:dyslexia/shorttermmemory/wordrecall/Wordrecall4.dart';
 
 class VideoSplashScreen extends StatefulWidget {
   final Widget nextScreen;
@@ -39,18 +28,17 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
     // Listen for when the video ends
     _controller.addListener(() {
       if (_controller.value.position == _controller.value.duration) {
-        _navigateToWordrecall4();
-        //_navigateToNextScreen();
+        // _navigateToWordrecall4();
+        _navigateToNextScreen();
       }
     });
   }
 
   void _navigateToWordrecall4() {
     if (mounted) {
-      Navigator.of(
-        context,
-      ).pushReplacement(
-          MaterialPageRoute(builder: (context) => WordRecallTaskLevel4()));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => WordRecallTaskLevel4()),
+      );
     }
   }
 
@@ -64,18 +52,19 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: _controller.value.isInitialized
-          ? SizedBox.expand(
-              child: FittedBox(
-                fit: BoxFit.cover, // Ensures the video fills the screen
-                child: SizedBox(
-                  width: _controller.value.size.width,
-                  height: _controller.value.size.height,
-                  child: VideoPlayer(_controller),
+      body:
+          _controller.value.isInitialized
+              ? SizedBox.expand(
+                child: FittedBox(
+                  fit: BoxFit.cover, // Ensures the video fills the screen
+                  child: SizedBox(
+                    width: _controller.value.size.width,
+                    height: _controller.value.size.height,
+                    child: VideoPlayer(_controller),
+                  ),
                 ),
-              ),
-            )
-          : Center(child: CircularProgressIndicator()),
+              )
+              : Center(child: CircularProgressIndicator()),
     );
   }
 

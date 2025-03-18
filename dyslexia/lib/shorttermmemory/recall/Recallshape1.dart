@@ -1,6 +1,8 @@
+import 'package:dyslexia/CustomDrawer.dart';
+import 'package:dyslexia/shorttermmemory/recall/Recallshape2.dart';
 import 'package:flutter/material.dart';
 
-class RecallShape4Screen extends StatelessWidget {
+class RecallShape1Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -18,52 +20,45 @@ class RecallShape4Screen extends StatelessWidget {
                 _buildHeader(context),
                 SizedBox(height: screenHeight * 0.02),
                 Text(
-                  "Recall Shape Task",
+                  "Recall Shape", // Changed heading
                   style: TextStyle(
                     fontSize: screenWidth * 0.09,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
-                    fontFamily: 'Risque', // Custom font
+                    fontFamily: 'Risque', // Risque font applied
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: screenHeight * 0.03),
-                Text(
-                  "Well Done!",
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.08,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontFamily: 'Risque',
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: screenHeight * 0.01),
-                Text(
-                  "You Passed Level 4",
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.07,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontFamily: 'Risque',
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: screenHeight * 0.03),
+                SizedBox(height: screenHeight * 0.02),
                 Container(
                   width: screenWidth * 0.8, // 80% of screen width
                   height: screenHeight * 0.4, // 40% of screen height
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/bunny1.png'),
-                      fit: BoxFit.contain, // Fits the panda image
+                      fit: BoxFit.contain, // Ensures it fits well
                     ),
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.05),
+                SizedBox(height: screenHeight * 0.03),
+                Text(
+                  'Level 1',
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.08,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontFamily: 'Risque',
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.07),
                 ElevatedButton(
                   onPressed: () {
-                    // Add functionality for Next Level button
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RecallShapeScreen2(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
@@ -76,11 +71,10 @@ class RecallShape4Screen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'Next Level',
+                    'Start Game',
                     style: TextStyle(
                       fontSize: screenWidth * 0.05,
                       color: Colors.white,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -101,13 +95,15 @@ class RecallShape4Screen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildIconButton(context, Icons.menu, () {
-            // Add functionality for menu button
+          _buildIconButton(Icons.menu, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CustomDrawer()),
+            );
           }),
           CircleAvatar(
             radius: screenWidth * 0.07,
-            backgroundImage:
-                AssetImage('assets/images/user.png'), // User profile image
+            backgroundImage: AssetImage('assets/images/user.png'),
           ),
         ],
       ),
@@ -115,10 +111,8 @@ class RecallShape4Screen extends StatelessWidget {
   }
 
   // Icon button for menu
-  Widget _buildIconButton(
-      BuildContext context, IconData icon, VoidCallback onPressed) {
+  Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
     return IconButton(
-      iconSize: MediaQuery.of(context).size.width * 0.07, // Adjust size
       icon: Icon(icon, color: Colors.black),
       onPressed: onPressed,
     );
@@ -126,8 +120,10 @@ class RecallShape4Screen extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: RecallShape4Screen(),
-  ));
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: RecallShape1Screen(), // Updated to RecallShape1Screen
+    ),
+  );
 }

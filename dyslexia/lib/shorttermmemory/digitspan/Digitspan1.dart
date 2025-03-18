@@ -1,6 +1,8 @@
+import 'package:dyslexia/CustomDrawer.dart';
+import 'package:dyslexia/shorttermmemory/digitspan/Digitspan2.dart';
 import 'package:flutter/material.dart';
 
-class RecallShape1Screen extends StatelessWidget {
+class DigitSpanTaskScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -18,23 +20,23 @@ class RecallShape1Screen extends StatelessWidget {
                 _buildHeader(context),
                 SizedBox(height: screenHeight * 0.02),
                 Text(
-                  "Recall Shape", // Changed heading
+                  "Digit Span Task",
                   style: TextStyle(
                     fontSize: screenWidth * 0.09,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
-                    fontFamily: 'Risque', // Risque font applied
+                    fontFamily: 'Risque', // 👈 Risque font applied
                   ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 Container(
-                  width: screenWidth * 0.8, // 80% of screen width
-                  height: screenHeight * 0.4, // 40% of screen height
+                  width: screenWidth * 0.8, // 👈 80% of screen width
+                  height: screenHeight * 0.4, // 👈 40% of screen height
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/bunny1.png'),
-                      fit: BoxFit.contain, // Ensures it fits well
+                      image: AssetImage('assets/images/panda.png'),
+                      fit: BoxFit.contain, // 👈 Ensures it fits well
                     ),
                   ),
                 ),
@@ -51,7 +53,12 @@ class RecallShape1Screen extends StatelessWidget {
                 SizedBox(height: screenHeight * 0.07),
                 ElevatedButton(
                   onPressed: () {
-                    // Add functionality for Start Game button
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DigitSpanTaskScreen2(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
@@ -89,7 +96,10 @@ class RecallShape1Screen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildIconButton(Icons.menu, () {
-            // Add functionality for menu button
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CustomDrawer()),
+            );
           }),
           CircleAvatar(
             radius: screenWidth * 0.07,
@@ -110,8 +120,7 @@ class RecallShape1Screen extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: RecallShape1Screen(), // Updated to RecallShape1Screen
-  ));
+  runApp(
+    MaterialApp(debugShowCheckedModeBanner: false, home: DigitSpanTaskScreen()),
+  );
 }

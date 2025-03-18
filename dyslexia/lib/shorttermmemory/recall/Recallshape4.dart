@@ -1,6 +1,8 @@
+import 'package:dyslexia/CustomDrawer.dart';
+import 'package:dyslexia/shorttermmemory/recall/Recallshape2.dart';
 import 'package:flutter/material.dart';
 
-class WordRecallTaskScreen extends StatelessWidget {
+class RecallShape4Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -18,41 +20,57 @@ class WordRecallTaskScreen extends StatelessWidget {
                 _buildHeader(context),
                 SizedBox(height: screenHeight * 0.02),
                 Text(
-                  "Word Recall",
+                  "Recall Shape Task",
                   style: TextStyle(
                     fontSize: screenWidth * 0.09,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
-                    fontFamily: 'Risque', // 👈 Risque font applied
+                    fontFamily: 'Risque', // Custom font
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: screenHeight * 0.02),
-                Container(
-                  width: screenWidth * 0.8, // 👈 80% of screen width
-                  height: screenHeight * 0.4, // 👈 40% of screen height
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          'assets/images/quin1.png'), // Update to appropriate image
-                      fit: BoxFit.contain, // 👈 Ensures it fits well
-                    ),
-                  ),
-                ),
                 SizedBox(height: screenHeight * 0.03),
                 Text(
-                  'Level 1',
+                  "Well Done!",
                   style: TextStyle(
                     fontSize: screenWidth * 0.08,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     fontFamily: 'Risque',
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: screenHeight * 0.07),
+                SizedBox(height: screenHeight * 0.01),
+                Text(
+                  "You Passed Level 4",
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.07,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontFamily: 'Risque',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: screenHeight * 0.03),
+                Container(
+                  width: screenWidth * 0.8, // 80% of screen width
+                  height: screenHeight * 0.4, // 40% of screen height
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/bunny1.png'),
+                      fit: BoxFit.contain, // Fits the panda image
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.05),
                 ElevatedButton(
                   onPressed: () {
-                    // Add functionality for Start Game button
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RecallShapeScreen2(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
@@ -65,10 +83,11 @@ class WordRecallTaskScreen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'Start Game',
+                    'Next Level',
                     style: TextStyle(
                       fontSize: screenWidth * 0.05,
                       color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -89,12 +108,17 @@ class WordRecallTaskScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildIconButton(Icons.menu, () {
-            // Add functionality for menu button
+          _buildIconButton(context, Icons.menu, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CustomDrawer()),
+            );
           }),
           CircleAvatar(
             radius: screenWidth * 0.07,
-            backgroundImage: AssetImage('assets/images/user.png'),
+            backgroundImage: AssetImage(
+              'assets/images/user.png',
+            ), // User profile image
           ),
         ],
       ),
@@ -102,8 +126,13 @@ class WordRecallTaskScreen extends StatelessWidget {
   }
 
   // Icon button for menu
-  Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
+  Widget _buildIconButton(
+    BuildContext context,
+    IconData icon,
+    VoidCallback onPressed,
+  ) {
     return IconButton(
+      iconSize: MediaQuery.of(context).size.width * 0.07, // Adjust size
       icon: Icon(icon, color: Colors.black),
       onPressed: onPressed,
     );
@@ -111,8 +140,7 @@ class WordRecallTaskScreen extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: WordRecallTaskScreen(),
-  ));
+  runApp(
+    MaterialApp(debugShowCheckedModeBanner: false, home: RecallShape4Screen()),
+  );
 }

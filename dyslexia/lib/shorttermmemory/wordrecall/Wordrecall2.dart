@@ -1,34 +1,62 @@
+import 'package:dyslexia/CustomDrawer.dart';
+import 'package:dyslexia/shorttermmemory/wordrecall/Wordrecall3.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:math';
 
-class RecallShapeScreen2 extends StatefulWidget {
-  @override
-  _RecallShapeScreen2State createState() => _RecallShapeScreen2State();
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: WordRecallTaskScreen2(),
+    ),
+  );
 }
 
-class _RecallShapeScreen2State extends State<RecallShapeScreen2> {
+class WordRecallTaskScreen2 extends StatefulWidget {
+  @override
+  _WordRecallTaskScreen2State createState() => _WordRecallTaskScreen2State();
+}
+
+class _WordRecallTaskScreen2State extends State<WordRecallTaskScreen2> {
   int _remainingSeconds = 3; // Set initial countdown seconds
   Timer? _timer;
-  String _shapeToShow = ""; // Shape that will be displayed
+  String _wordToShow = ""; // Word that will be displayed
 
-  final List<String> _shapes = [
-    'Circle',
-    'Square',
-    'Triangle'
-  ]; // Shape options
+  final List<String> _words = [
+    'AN',
+    'AT',
+    'BY',
+    'DO',
+    'GO',
+    'HE',
+    'IF',
+    'IN',
+    'IS',
+    'IT',
+    'ME',
+    'NO',
+    'OF',
+    'ON',
+    'OR',
+    'TO',
+    'UP',
+    'WE',
+    'YE',
+  ]; // List of 2-letter meaningful words
 
   @override
   void initState() {
     super.initState();
-    _generateShape();
+    _generateWord();
     _startCountdown();
   }
 
-  void _generateShape() {
+  void _generateWord() {
     setState(() {
-      // Randomly select a shape from the list
-      _shapeToShow = _shapes[Random().nextInt(_shapes.length)];
+      // Randomly pick a word from the list
+      _wordToShow =
+          _words[(DateTime.now().millisecondsSinceEpoch % _words.length)
+              .toInt()];
     });
   }
 
@@ -37,7 +65,14 @@ class _RecallShapeScreen2State extends State<RecallShapeScreen2> {
     _timer = Timer.periodic(oneSecond, (Timer timer) {
       if (_remainingSeconds <= 0) {
         timer.cancel();
-        // Proceed to the next step (e.g., user input or next shape)
+        // Navigate to the next screen when the timer ends
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => WordRecallTaskScreen3(wordToShow: _wordToShow),
+          ),
+        );
       } else {
         setState(() {
           _remainingSeconds--;
@@ -69,7 +104,7 @@ class _RecallShapeScreen2State extends State<RecallShapeScreen2> {
                 _buildHeader(context), // Header with profile and menu
                 SizedBox(height: screenHeight * 0.02),
                 Text(
-                  'Recall Shape',
+                  'Word Recall',
                   style: TextStyle(
                     fontSize: screenWidth * 0.08,
                     fontWeight: FontWeight.bold,
@@ -79,27 +114,34 @@ class _RecallShapeScreen2State extends State<RecallShapeScreen2> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: screenHeight * 0.02),
-                // Stack widget to overlay bunny image on top of the shape
                 Container(
                   width: screenWidth * 0.8, // 80% of screen width
                   height: screenHeight * 0.3, // 30% of screen height
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(
-                          'assets/images/bunny1.png'), // Updated to bunny1.png
+                      image: AssetImage('assets/images/quin1.png'),
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.03),
-                // Display the random shape below the image
+                // Make the word display more prominent
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
                   decoration: BoxDecoration(
                     color: Colors.deepPurple[100], // Updated color
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: _buildShapeWidget(_shapeToShow),
+                  child: Text(
+                    _wordToShow,
+                    style: TextStyle(
+                      fontSize:
+                          screenWidth *
+                          0.2, // Increased font size for visibility
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple, // Updated color
+                    ),
+                  ),
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 // Countdown Timer
@@ -136,12 +178,14 @@ class _RecallShapeScreen2State extends State<RecallShapeScreen2> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildIconButton(Icons.menu, () {
-            // Add functionality for menu button
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CustomDrawer()),
+            );
           }),
           CircleAvatar(
             radius: screenWidth * 0.07,
-            backgroundImage:
-                AssetImage('assets/images/user.png'), // User profile image
+            backgroundImage: AssetImage('assets/images/user.png'),
           ),
         ],
       ),
@@ -155,62 +199,4 @@ class _RecallShapeScreen2State extends State<RecallShapeScreen2> {
       onPressed: onPressed,
     );
   }
-
-  // Function to build the shape widget based on the selected shape
-  Widget _buildShapeWidget(String shape) {
-    switch (shape) {
-      case 'Circle':
-        return Container(
-          width: 150,
-          height: 150,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.deepPurple,
-          ),
-        );
-      case 'Square':
-        return Container(
-          width: 150,
-          height: 150,
-          color: Colors.deepPurple,
-        );
-      case 'Triangle':
-        return CustomPaint(
-          size: Size(150, 150),
-          painter: TrianglePainter(),
-        );
-      default:
-        return Container();
-    }
-  }
-}
-
-// CustomPainter for drawing a triangle
-class TrianglePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.deepPurple
-      ..style = PaintingStyle.fill;
-
-    Path path = Path();
-    path.moveTo(size.width / 2, 0);
-    path.lineTo(0, size.height);
-    path.lineTo(size.width, size.height);
-    path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: RecallShapeScreen2(),
-  ));
 }
