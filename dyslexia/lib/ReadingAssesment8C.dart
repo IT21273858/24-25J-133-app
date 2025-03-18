@@ -1,4 +1,3 @@
-import 'package:dyslexia/RegisterChooseForChild.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
 import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:dyslexia/variables.dart';
