@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dyslexia/LoginPage.dart';
-import 'package:dyslexia/DashboardParent.dart';
-import 'package:dyslexia/DashboardChild.dart';
+import 'package:dyslexia/parent/DashboardParent.dart';
+import 'package:dyslexia/child/DashboardChild.dart';
 import 'package:dyslexia/variables.dart';
 
 void main() {

@@ -39,6 +39,10 @@ class TimerService extends ChangeNotifier {
     return '$minutes:$secs';
   }
 
+  int getFormattedTimeInSeconds() {
+    return _secondsElapsed;
+  }
+
   void startStopwatch() {
     if (_isRunning) return;
     _isRunning = true;

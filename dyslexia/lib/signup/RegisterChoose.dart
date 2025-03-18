@@ -1,6 +1,6 @@
 import 'package:dyslexia/LoginPage.dart';
-import 'package:dyslexia/RegisterChooseParent.dart';
-import 'package:dyslexia/RegisterChooseChild.dart';
+import 'package:dyslexia/signup/RegisterChooseParent.dart';
+import 'package:dyslexia/signup/RegisterChooseChild.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';

@@ -1,4 +1,4 @@
-import 'package:dyslexia/RegisterChooseForChild.dart';
+import 'package:dyslexia/signup/RegisterChooseForChild.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
@@ -36,11 +36,11 @@ class _DashboardParentState extends State<DashboardParent> {
     });
 
     // Print details in the terminal
-    print("=========== User Details from Storage ===========");
+    print("@ User Details from Storage @");
     print("User Name: $userName");
     print("User Image: $userImage");
     print("User ID: $userId");
-    print("====================================");
+    print("@");
   }
 
   @override

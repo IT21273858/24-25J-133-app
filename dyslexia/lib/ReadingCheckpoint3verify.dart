@@ -1,4 +1,4 @@
-import 'package:dyslexia/RegisterChooseForChild.dart';
+import 'package:dyslexia/signup/RegisterChooseForChild.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';

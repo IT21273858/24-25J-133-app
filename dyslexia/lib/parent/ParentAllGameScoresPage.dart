@@ -4,66 +4,73 @@ import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
-class ScoresPage extends StatefulWidget {
+class ParentAllScoresPage extends StatefulWidget {
   @override
-  State<ScoresPage> createState() => _ScoresPageState();
+  State<ParentAllScoresPage> createState() => _ParentAllScoresPageState();
 }
 
-class _ScoresPageState extends State<ScoresPage> {
-  List<Map<String, dynamic>> _gameScores = []; // Store fetched scores
+class _ParentAllScoresPageState extends State<ParentAllScoresPage> {
+  Map<String, List<Map<String, dynamic>>> _childScores =
+      {}; // Store scores grouped by child
   bool _isLoading = true; // Track loading state
 
   @override
   void initState() {
-    print("Income to Scores page");
+    print("Navigated to Scores Page");
     super.initState();
     _fetchGameScores();
   }
 
   Future<void> _fetchGameScores() async {
-    final response = await GameService.getScoresDetailsChild();
-    // Progress=( Child'sPlayedTime /Game'sPlayTime ) * clampedto(0.0,1.0)
+    final response = await GameService.getScoresDetails();
 
     if (response != null && response['status'] == true) {
-      List<dynamic>? gamesData = response['gamescore'];
+      List<dynamic>? gamesData = response['games'];
 
       if (gamesData != null) {
         setState(() {
-          _gameScores =
-              gamesData.map<Map<String, dynamic>>((game) {
-                int playedTime = int.tryParse(game["played_time"] ?? "0") ?? 0;
-                int gamePlayTime =
-                    int.tryParse(game["game"]?["play_time"] ?? "0") ??
-                    1; // Avoid divide by zero
+          _childScores.clear();
 
-                // Calculate progress ratio (clamped between 0.0 to 1.0)
-                double progress = (gamePlayTime / playedTime).clamp(0.0, 1.0);
+          for (var game in gamesData) {
+            String childName = game["children"]["name"] ?? "Unknown Child";
+            int playedTime = int.tryParse(game["played_time"] ?? "0") ?? 0;
+            int gamePlayTime =
+                int.tryParse(game["game"]?["play_time"] ?? "0") ??
+                1; // Avoid divide by zero
 
-                return {
-                  "image":
-                      "assets/images/games_background.jpg", // Default image
-                  "name": game["name"] ?? "Unknown Game",
-                  "description":
-                      game["game"]?["description"] ?? "No description",
-                  "points": game["score"] ?? 0,
-                  "played_time": "$playedTime min",
-                  "progress": progress,
-                };
-              }).toList();
+            // Calculate progress (clamped between 0.0 to 1.0)
+            double progress = (gamePlayTime / playedTime).clamp(0.0, 1.0);
+            Map<String, dynamic> gameData = {
+              "image": "assets/images/games_background.jpg",
+              "name": game["name"] ?? "Unknown Game",
+              "description": game["game"]?["description"] ?? "No description",
+              "points": game["score"] ?? 0,
+              "played_time": "$playedTime min",
+              "progress": progress,
+            };
+
+            // Group scores under each child
+            if (_childScores.containsKey(childName)) {
+              _childScores[childName]!.add(gameData);
+            } else {
+              _childScores[childName] = [gameData];
+            }
+          }
+
           _isLoading = false;
         });
       } else {
-        print(" 'games' key is missing or null.");
+        print("Error: 'games' key is missing or null.");
         setState(() {
           _isLoading = false;
-          _gameScores = [];
+          _childScores = {};
         });
       }
     } else {
-      print(" Error: API response is null or status is false.");
+      print("Error: API response is null or status is false.");
       setState(() {
         _isLoading = false;
-        _gameScores = [];
+        _childScores = {};
       });
     }
   }
@@ -96,7 +103,7 @@ class _ScoresPageState extends State<ScoresPage> {
                 Padding(padding: EdgeInsets.only(bottom: 10)),
               ],
             ),
-            SizedBox(child: _buildPastScoresSection(context)),
+            _buildPastScoresSection(context),
           ],
         ),
       ),
@@ -140,8 +147,8 @@ class _ScoresPageState extends State<ScoresPage> {
     );
   }
 
-  // Past Scores Section
-  Widget _buildPastScoresSection(context) {
+  // Past Scores Section grouped by child
+  Widget _buildPastScoresSection(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: SizedBox(
@@ -151,7 +158,7 @@ class _ScoresPageState extends State<ScoresPage> {
                 ? Center(
                   child: CircularProgressIndicator(),
                 ) // Show loader while fetching
-                : _gameScores.isEmpty
+                : _childScores.isEmpty
                 ? Center(
                   child: Text(
                     "No past scores found.",
@@ -161,17 +168,30 @@ class _ScoresPageState extends State<ScoresPage> {
                 : SingleChildScrollView(
                   child: Column(
                     children:
-                        _gameScores
-                            .map(
-                              (game) => GameScoreCard(
-                                image: game["image"],
-                                name: game["name"],
-                                description: game["description"],
-                                points: game["points"],
-                                progress: game["progress"],
+                        _childScores.keys.map((childName) {
+                          return ExpansionTile(
+                            title: Text(
+                              childName,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
-                            )
-                            .toList(),
+                            ),
+                            children:
+                                _childScores[childName]!.map((game) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 5),
+                                    child: GameScoreCard(
+                                      image: game["image"],
+                                      name: game["name"],
+                                      description: game["description"],
+                                      points: game["points"],
+                                      progress: game["progress"],
+                                    ),
+                                  );
+                                }).toList(),
+                          );
+                        }).toList(),
                   ),
                 ),
       ),
