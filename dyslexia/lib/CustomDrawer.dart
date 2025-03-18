@@ -18,7 +18,7 @@ import 'package:dyslexia/VisualProcessingTest2.dart';
 import 'package:dyslexia/parent/ParentAllGameScoresPage.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
-import 'package:dyslexia/visualprocessing/VisualProcessingPredictPattern.dart';
+import 'package:dyslexia/visualprocessing/practice/VisualProcessingPredictPattern.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingDrawShape.dart';
 import 'package:dyslexia/visualprocessing/exam/VisualProcessingDrawShapes.dart';
 import 'package:dyslexia/visualprocessing/practice/VisualProcessingDrawShapeLearning.dart';

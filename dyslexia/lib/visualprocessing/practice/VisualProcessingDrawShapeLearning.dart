@@ -348,6 +348,33 @@ class _VisualprocessingDrawshapeLearningState
                 ),
               ),
             ),
+
+          if (isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5), // Background blur effect
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        getLoaderGif(
+                          displayText,
+                        ), // Function to get appropriate GIF
+                        width: 200, // Adjust width of loader
+                        height: 200, // Adjust height of loader
+                        fit: BoxFit.contain,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Processing...",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -379,5 +406,18 @@ class _VisualprocessingDrawshapeLearningState
       icon: Icon(icon, color: Colors.black),
       onPressed: onPressed,
     );
+  }
+}
+
+String getLoaderGif(String shape) {
+  switch (shape.toLowerCase()) {
+    case "circle":
+      return 'assets/images/circle-loader.gif';
+    case "square":
+      return 'assets/images/square-loader.gif';
+    case "triangle":
+      return 'assets/images/triangle-loader.gif';
+    default:
+      return 'assets/images/triangle_shape.gif';
   }
 }

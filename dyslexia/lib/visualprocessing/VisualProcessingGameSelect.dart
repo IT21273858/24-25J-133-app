@@ -1,7 +1,8 @@
 import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:dyslexia/services/game_service.dart';
 import 'package:dyslexia/variables.dart';
-import 'package:dyslexia/visualprocessing/VisualProcessingPredictPattern.dart';
+import 'package:dyslexia/visualprocessing/exam/VisualProcessingDrawShapes.dart';
+import 'package:dyslexia/visualprocessing/practice/VisualProcessingPredictPattern.dart';
 import 'package:dyslexia/visualprocessing/exam/VisualProcessingPredictPatterns.dart';
 import 'package:dyslexia/visualprocessing/exam/VisualProcessingPredictShapes.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +161,7 @@ class _VisualprocessingGameselectState
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Column(
-                    spacing: 20,
+                    spacing: 10,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -179,6 +180,72 @@ class _VisualprocessingGameselectState
                           ],
                         ),
                       ),
+                      Column(
+                        children: [
+                          SizedBox(
+                            width:
+                                double
+                                    .infinity, // Makes the card take full width
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            VisualprocessingDrawshapes(),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  Card(
+                                    elevation: 5,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(
+                                        12.0,
+                                      ), // Add some padding
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            child: Image.asset(
+                                              'assets/images/square-loader.gif',
+                                              height: 200,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            'Draw And Predict Shape',
+                                            style: TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.deepPurple,
+                                            ),
+                                            textAlign:
+                                                TextAlign
+                                                    .center, // Centered text
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
                       Center(
                         child: Column(
                           spacing: 10,

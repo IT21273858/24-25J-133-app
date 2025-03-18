@@ -1,4 +1,8 @@
 import 'dart:convert';
+import 'package:dyslexia/ScoresPage.dart';
+import 'package:dyslexia/child/LearningSelectionPage.dart';
+import 'package:dyslexia/parent/ParentAllGameScoresPage.dart';
+import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -155,7 +159,7 @@ class _ProfileChildState extends State<ProfileChild> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 10),
 
                   // User Details
                   Row(
@@ -177,6 +181,13 @@ class _ProfileChildState extends State<ProfileChild> {
                                 Icon(FeatherIcons.mail, size: 20),
                                 SizedBox(width: 5),
                                 Text(childEmail),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(FeatherIcons.user, size: 20),
+                                SizedBox(width: 5),
+                                Text("Reading"),
                               ],
                             ),
                           ],
@@ -213,13 +224,161 @@ class _ProfileChildState extends State<ProfileChild> {
             ),
             SizedBox(height: 20),
 
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 5,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ScoresPage()),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.watch_later_outlined,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                      label: Text("View Past Scores"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          237,
+                          134,
+                          230,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VisualprocessingGameselect(),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.gas_meter,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                      label: Text("Play Games"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          237,
+                          134,
+                          230,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Learningselectionpage(),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        FeatherIcons.bookOpen,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                      label: Text("Learn Now"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          237,
+                          134,
+                          230,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+
             // Child Section
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Games Played",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 20)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Games Played",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VisualprocessingGameselect(),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.gamepad_sharp,
+                            size: 14,
+                            color: appButtonColor,
+                          ),
+                          SizedBox(
+                            width: 2,
+                          ), // Add spacing between icon and text
+                          Text(
+                            "Play",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                              color: appPrimaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 10),
 
