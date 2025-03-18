@@ -1,4 +1,4 @@
-import 'package:dyslexia/ProfileChild.dart';
+import 'package:dyslexia/child/ProfileChild.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';

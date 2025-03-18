@@ -1,11 +1,73 @@
+import 'dart:convert';
+
 import 'package:dyslexia/CustomDrawer.dart';
+import 'package:dyslexia/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfileParent extends StatelessWidget {
+class ProfileParent extends StatefulWidget {
+  @override
+  State<ProfileParent> createState() => _ProfileParentState();
+}
+
+class _ProfileParentState extends State<ProfileParent> {
+  String userName = "Loading...";
+  String userEmail = "Loading...";
+  String userImage = "assets/images/user.png"; // Default user image
+  String userPhone = "Loading...";
+  String userAddress = "Loading...";
+  List<Map<String, dynamic>> childrenList = []; // Store children details
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData(); // Load parent data when the page is created
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // ✅ Load from local storage first (to show existing data instantly)
+    setState(() {
+      userName = prefs.getString('parent_name') ?? "Unknown User";
+      userEmail = prefs.getString('parent_email') ?? "No Email";
+      userImage = prefs.getString('parent_image') ?? "assets/images/user.png";
+      userPhone = prefs.getString('parent_phone') ?? "No Phone";
+      userAddress = prefs.getString('parent_address') ?? "No Address";
+
+      // Load stored children data and cast properly
+      List<String>? storedChildren = prefs.getStringList('children_list');
+      if (storedChildren != null) {
+        childrenList =
+            storedChildren
+                .map((child) => jsonDecode(child) as Map<String, dynamic>)
+                .toList();
+      }
+    });
+
+    // ✅ Fetch latest data from API in the background and update UI
+    await ApiService.fetchAndStoreParentDetails();
+    _updateChildrenData(); // Reload UI after fetching
+  }
+
+  /// **Update UI after fetching API data**
+  Future<void> _updateChildrenData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      List<String>? storedChildren = prefs.getStringList('children_list');
+      if (storedChildren != null) {
+        childrenList =
+            storedChildren
+                .map((child) => jsonDecode(child) as Map<String, dynamic>)
+                .toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +142,10 @@ class ProfileParent extends StatelessWidget {
                         ),
                         child: CircleAvatar(
                           radius: 20,
-                          backgroundImage: AssetImage('assets/images/user.png'),
+                          backgroundImage:
+                              userImage.startsWith('http')
+                                  ? NetworkImage(userImage)
+                                  : AssetImage(userImage) as ImageProvider,
                         ),
                       ),
                     ],
@@ -95,7 +160,7 @@ class ProfileParent extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Navaratnam Sanjeevan',
+                              userName,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -112,7 +177,7 @@ class ProfileParent extends StatelessWidget {
                                 ),
                                 SizedBox(width: 5),
                                 Text(
-                                  'Shankarjeevan011@gmail.com',
+                                  userEmail,
                                   style: TextStyle(color: HeadingColor),
                                 ),
                               ],
@@ -246,6 +311,43 @@ class ProfileParent extends StatelessWidget {
                       SizedBox(height: 20),
 
                       // Child Section
+                      // Column(
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     Text(
+                      //       "Your Children",
+                      //       style: TextStyle(
+                      //         fontSize: 18,
+                      //         fontWeight: FontWeight.bold,
+                      //       ),
+                      //     ),
+                      //     SizedBox(height: 10),
+
+                      //     // Children Cards List (Slider)
+                      //     ChildCardSlider(
+                      //       childData: [
+                      //         {
+                      //           "name": "Child 1",
+                      //           "level": "Level 02",
+                      //           "lastLogged": "12 Feb 2024 - 12:30pm",
+                      //           "image": "assets/images/child.png",
+                      //         },
+                      //         {
+                      //           "name": "Child 2",
+                      //           "level": "Level 03",
+                      //           "lastLogged": "10 Feb 2024 - 11:45am",
+                      //           "image": "assets/images/child.png",
+                      //         },
+                      //         {
+                      //           "name": "Child 3",
+                      //           "level": "Level 01",
+                      //           "lastLogged": "08 Feb 2024 - 02:15pm",
+                      //           "image": "assets/images/child.png",
+                      //         },
+                      //       ],
+                      //     ),
+                      //   ],
+                      // ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -260,26 +362,36 @@ class ProfileParent extends StatelessWidget {
 
                           // Children Cards List (Slider)
                           ChildCardSlider(
-                            childData: [
-                              {
-                                "name": "Child 1",
-                                "level": "Level 02",
-                                "lastLogged": "12 Feb 2024 - 12:30pm",
-                                "image": "assets/images/child.png",
-                              },
-                              {
-                                "name": "Child 2",
-                                "level": "Level 03",
-                                "lastLogged": "10 Feb 2024 - 11:45am",
-                                "image": "assets/images/child.png",
-                              },
-                              {
-                                "name": "Child 3",
-                                "level": "Level 01",
-                                "lastLogged": "08 Feb 2024 - 02:15pm",
-                                "image": "assets/images/child.png",
-                              },
-                            ],
+                            childData:
+                                childrenList.isNotEmpty
+                                    ? childrenList.map((child) {
+                                      return {
+                                        "name":
+                                            child["name"]?.toString() ??
+                                            "Unknown Child",
+                                        "level":
+                                            child["level"]?.toString() ??
+                                            "No Level",
+                                        "lastLogged":
+                                            child["updatedAt"]?.toString() ??
+                                            "Not Available",
+                                        "image":
+                                            child["profile_img"]!
+                                                    .toString()
+                                                    .startsWith('http')
+                                                ? child["profile_img"]
+                                                    .toString() // Use NetworkImage
+                                                : "assets/images/child.png", // Use local default image
+                                      };
+                                    }).toList()
+                                    : [
+                                      {
+                                        "name": "No Children Found",
+                                        "level": "",
+                                        "lastLogged": "",
+                                        "image": "assets/images/child.png",
+                                      },
+                                    ],
                           ),
                         ],
                       ),

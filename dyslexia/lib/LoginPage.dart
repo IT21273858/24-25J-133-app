@@ -1,8 +1,11 @@
-import 'package:dyslexia/RegisterChoose.dart';
 import 'package:flutter/material.dart';
+import 'package:dyslexia/parent/DashboardParent.dart';
+import 'package:dyslexia/child/DashboardChild.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/components.dart';
-import 'package:dyslexia/VideoSplashScreen.dart'; // Import the video screen
+import 'package:dyslexia/VideoSplashScreen.dart';
+import 'package:dyslexia/services/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,21 +17,66 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
 
-  void _handleSignIn() {
+  void _handleSignIn() async {
     setState(() {
       isLoading = true;
     });
 
-    // Navigate to video splash screen before RegisterChoose()
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => VideoSplashScreen(
-          nextScreen:
-              RegisterChoose(), // Navigate to RegisterChoose after video
-        ),
-      ),
-    );
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please Provide email or password")),
+      );
+    } else {
+      final response = await ApiService.loginUser(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
+
+      setState(() {
+        isLoading = false;
+      });
+
+      if (response != null) {
+        print("*****************************User role: ${response["role"]}");
+        print("*****************************User: ${response}");
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        // Use default values if API response contains null
+        await prefs.setString('auth_token', response['token'] ?? '');
+        await prefs.setString('user_role', response['role'] ?? 'unknown');
+        await prefs.setString('user_name', response['name'] ?? 'User');
+        await prefs.setString('user_image', response['img'] ?? '');
+
+        // Show video splash before navigating
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) =>
+                    response["role"] == "parent"
+                        ? DashboardParent()
+                        : DashboardChild(),
+          ),
+          // MaterialPageRoute(
+          //   builder:
+          //       (context) => VideoSplashScreen(
+          //         nextScreen:
+          //             response["role"] == "parent"
+          //                 ? DashboardParent()
+          //                 : DashboardChild(),
+          //       ),
+          // ),
+        );
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Invalid email or password")));
+      }
+    }
   }
 
   @override
@@ -42,7 +90,6 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 SizedBox(height: 100),
-                // Heading Section
                 Text('Hello Again!', style: headingStyle),
                 const SizedBox(height: 10),
                 SizedBox(

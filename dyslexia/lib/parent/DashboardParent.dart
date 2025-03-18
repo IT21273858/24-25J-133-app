@@ -1,10 +1,16 @@
-import 'package:dyslexia/RegisterChooseForChild.dart';
+import 'package:dyslexia/signup/RegisterChooseForChild.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DashboardParent extends StatelessWidget {
+class DashboardParent extends StatefulWidget {
+  @override
+  State<DashboardParent> createState() => _DashboardParentState();
+}
+
+class _DashboardParentState extends State<DashboardParent> {
   final List<FlSpot> performanceData = [
     FlSpot(0, 2),
     FlSpot(1, 3),
@@ -12,9 +18,36 @@ class DashboardParent extends StatelessWidget {
     FlSpot(3, 4),
     FlSpot(4, 6),
     FlSpot(5, 4),
-  ]; // Sample Data
-
+  ];
+  // Sample Data
   final List<String> children = ["Child 1", "Child 2", "Child 3", "Child 4"];
+  String userName = "Loading...";
+  String userImage = "assets/images/user.png"; // Default image
+  String userId = "Unknown"; // Store User ID as well
+
+  /// Fetch stored user details from SharedPreferences
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      userName = prefs.getString('user_name') ?? "Unknown User";
+      userImage = prefs.getString('user_image') ?? "assets/images/user.png";
+      userId = prefs.getString('user_id') ?? "Unknown ID"; // Fetch user_id
+    });
+
+    // Print details in the terminal
+    print("@ User Details from Storage @");
+    print("User Name: $userName");
+    print("User Image: $userImage");
+    print("User ID: $userId");
+    print("@");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData(); // Fetch and print user details
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,8 +114,11 @@ class DashboardParent extends StatelessWidget {
                 );
               }),
               CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage('assets/images/user.png'),
+                radius: 25,
+                backgroundImage:
+                    userImage.startsWith('http')
+                        ? NetworkImage(userImage)
+                        : AssetImage(userImage) as ImageProvider,
               ),
             ],
           ),
@@ -97,7 +133,7 @@ class DashboardParent extends StatelessWidget {
                   style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Navaratnam Sajeevan',
+                  userName,
                   style: TextStyle(fontSize: 36, fontWeight: FontWeight.normal),
                 ),
                 SizedBox(height: 5),

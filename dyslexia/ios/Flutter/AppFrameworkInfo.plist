@@ -4,7 +4,9 @@
 <dict>
   <!-- audio recording  -->
   <key>NSMicrophoneUsageDescription</key>
-  <string>Some message to describe why you need this permission</string>
+  <string>To get the Clients voice and check is the read/prononce the word correctly</string>
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>Give a wordhighlighting to instract the child read words and missed words</string>
 
   
   <key>CFBundleDevelopmentRegion</key>

@@ -1,4 +1,4 @@
-import 'package:dyslexia/signup/RegisterChooseForChild.dart';
+import 'package:dyslexia/RegisterChooseForChild.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
 import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:dyslexia/variables.dart';
@@ -8,19 +8,25 @@ import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 
-class ReadCheckpointTwo extends StatefulWidget {
+class ReadnAnswer extends StatefulWidget {
   @override
-  State<ReadCheckpointTwo> createState() => _ReadCheckpointTwoState();
+  State<ReadnAnswer> createState() => _ReadnAnswerState();
 }
 
-class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
+class _ReadnAnswerState extends State<ReadnAnswer> {
   final recorder = AudioRecorderService();
+
+  String displayText =
+      " Reading a paragraph is like reading a imagination of a writer. We can immerse through the writers thought, emotion when the writer writting the para and the word that he thinks next";
+  List<String> readWords = [];
+  String textinstruction = "press the mic icon & speak the word displayed ";
 
   bool isrecording = false;
 
   @override
   void initState() {
     isrecording = false;
+
     super.initState();
   }
 
@@ -30,13 +36,10 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
     double screenHeight = MediaQuery.of(context).size.height;
     final timer = Provider.of<TimerService>(context);
 
-    String displayText =
-        "Reading a paragraph is like reading a imagination of a writer. We can immerse through the writers thought, emotion when the writer writting the para and the word that he thinks next";
-    String textinstruction = "press the mic icon & speak the word displayed ";
-
     Future<void> startRecording() async {
       await recorder.startRecording();
       timer.startTimer();
+
       setState(() {
         isrecording = true;
       });
@@ -50,7 +53,7 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
         isrecording = false;
       });
       print("audio stoped");
-      print(outputpath ?? "no path");
+      // print(outputpath ?? "no path");
     }
 
     Future<void> handleRecording() async {
@@ -66,7 +69,21 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
     Future<void> handleReStart() async {
       //stop record here
       await stopRecording();
+      // await speechHanlder.stop();
+      setState(() {
+        readWords = [];
+      });
       timer.resetTimer();
+    }
+
+    Future<void> playWordPronunciation(String word) async {
+      if (isrecording) {
+        timer.stopTimer();
+        // await speakWord(word);
+        print("word");
+        print(word);
+        timer.startTimer();
+      }
     }
 
     return Scaffold(
@@ -105,31 +122,31 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Read the Para", style: rCheckpointTitle),
-                              Text("Level 2", style: rCheckpointLv),
+                              Text("Read & Answer", style: rCheckpointTitle),
+                              // Text("Word Count : 123", style: rCheckpointLv),
                             ],
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: cardBordercolor,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                spacing: 3,
-                                children: [
-                                  Icon(Icons.circle, color: Colors.white),
-                                  Text(
-                                    timer.getFormattedTime(),
-                                    style: timeClock,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          // Container(
+                          //   decoration: BoxDecoration(
+                          //     color: cardBordercolor,
+                          //     borderRadius: BorderRadius.all(
+                          //       Radius.circular(10),
+                          //     ),
+                          //   ),
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.all(8.0),
+                          //     child: Row(
+                          //       spacing: 3,
+                          //       children: [
+                          //         Icon(Icons.circle, color: Colors.white),
+                          //         Text(
+                          //           timer.getFormattedTime(),
+                          //           style: timeClock,
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                       Center(
@@ -138,7 +155,7 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                           children: [
                             Container(
                               width: screenWidth * 0.8,
-                              height: screenHeight * 0.5,
+                              height: screenHeight * 0.6,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(17),
@@ -146,14 +163,33 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                                 color: Color.fromRGBO(166, 159, 204, 0.31),
                               ),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
-                                    child: Text(
-                                      displayText,
-                                      style: rCheckpointParaDisplay,
+                                    child: Wrap(
+                                      spacing: 8.0,
+                                      runSpacing: 4.0,
+                                      children:
+                                          displayText.split(" ").map((word) {
+                                            bool isRead = readWords.contains(
+                                              word.toLowerCase(),
+                                            );
+                                            return GestureDetector(
+                                              onTap:
+                                                  () => playWordPronunciation(
+                                                    word,
+                                                  ),
+                                              child: Text(
+                                                word,
+                                                style:
+                                                    isRead
+                                                        ? readWordHighlighter
+                                                        : rCheckpointParaDisplay,
+                                              ),
+                                            );
+                                          }).toList(),
                                     ),
                                   ),
                                 ],
@@ -162,47 +198,44 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                           ],
                         ),
                       ),
-                      Center(
-                        child: SizedBox(
-                          width: screenWidth * 0.6,
-                          child: Column(
-                            spacing: 5,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: pointsBackgroundColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(40),
-                                  ),
-                                ),
-                                child: IconButton(
-                                  onPressed: handleReStart,
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              // Text(
-                              //   textinstruction,
-                              //   style: rCheckpointInst,
-                              //   textAlign: TextAlign.center,
-                              // ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // Center(
+                      //   child: SizedBox(
+                      //     width: screenWidth * 0.6,
+                      //     child: Column(
+                      //       spacing: 5,
+                      //       children: [
+                      //         Container(
+                      //           decoration: BoxDecoration(
+                      //             color: pointsBackgroundColor,
+                      //             borderRadius: BorderRadius.all(
+                      //               Radius.circular(40),
+                      //             ),
+                      //           ),
+                      //           child: IconButton(
+                      //             onPressed: handleReStart,
+                      //             icon: Icon(
+                      //               Icons.refresh,
+                      //               color: Colors.white,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         // Text(
+                      //         //   textinstruction,
+                      //         //   style: rCheckpointInst,
+                      //         //   textAlign: TextAlign.center,
+                      //         // ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       Center(
                         child: Column(
                           spacing: 9,
                           children: [
                             CustomButton(
-                              text:
-                                  isrecording
-                                      ? "Check Fluency"
-                                      : "Start Reading",
+                              text: "Start Quiz",
                               isLoading: false,
-                              onPressed: handleRecording,
+                              onPressed: () {},
                             ),
                             TextButton(
                               onPressed: () {},

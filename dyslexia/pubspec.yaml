@@ -39,9 +39,17 @@ dependencies:
   flutter_feather_icons: ^2.0.0
   flutter_animate: ^4.5.2
   video_player: ^2.9.3
+  dio: ^5.8.0+1
+  shared_preferences: ^2.5.2
+  jwt_decoder: ^2.0.1
+  intl: ^0.18.0
   record: ^5.2.1
   path_provider: ^2.1.5
   provider: ^6.1.2
+  speech_to_text: ^7.0.0
+  google_mlkit_text_recognition: ^0.14.0
+
+  # speech_to_text_continuous: ^6.5.4
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +99,13 @@ flutter:
     - assets/images/rabi3.png
     - assets/images/rabi31.png
     - assets/images/rabi2.png
+    - assets/images/beare.png
+    - assets/images/teddy.png
+    - assets/images/cath.png
+    - assets/images/sqr.png
+    - assets/images/patternprediction.png
+    - assets/images/medie.png
+
     - assets/images/panda.png
     - assets/images/bunny1.png
     - assets/images/quin1.png
@@ -100,6 +115,10 @@ flutter:
 
     - assets/videos/splash.mp4
     - assets/videos/loading.mp4
+
+    # - assets/sounds/speech_to_text_listening.m4r
+    # - assets/sounds/speech_to_text_cancel.m4r
+    # - assets/sounds/speech_to_text_stop.m4r
 
 
   fonts:

@@ -2,7 +2,10 @@ import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dyslexia/LoginPage.dart';
+import 'package:dyslexia/parent/DashboardParent.dart';
+import 'package:dyslexia/child/DashboardChild.dart';
 import 'package:dyslexia/variables.dart';
 
 void main() {
@@ -11,7 +14,38 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Widget _startScreen;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUserLoginStatus();
+  }
+
+  Future<void> _checkUserLoginStatus() async {
+    print("Checking user login status...");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? role = prefs.getString('user_role');
+
+    print("User role: $role");
+
+    if (role == "parent") {
+      _startScreen = VideoSplashScreen(nextScreen: DashboardParent());
+    } else if (role == "child") {
+      _startScreen = VideoSplashScreen(nextScreen: DashboardChild());
+    } else {
+      _startScreen = LoginPage();
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,12 +59,17 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: VideoSplashScreen(), // Show splash screen first
+      home: _startScreen,
     );
   }
 }
 
+/// Video Splash Screen Component
 class VideoSplashScreen extends StatefulWidget {
+  final Widget nextScreen;
+
+  VideoSplashScreen({required this.nextScreen});
+
   @override
   _VideoSplashScreenState createState() => _VideoSplashScreenState();
 }
@@ -43,42 +82,37 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
     super.initState();
 
     // Initialize video controller
-    _controller =
-        VideoPlayerController.asset("assets/videos/splash.mp4")
-          ..initialize().then((_) {
-            setState(() {});
-            _controller.play();
-          })
-          ..setLooping(false); // Ensure video plays only once
+    _controller = VideoPlayerController.asset("assets/videos/splash.mp4")
+      ..initialize().then((_) {
+        setState(() {});
+        _controller.play(); // Start video playback
+      });
 
-    // Listen when the video ends
+    // Listen for when the video ends
     _controller.addListener(() {
-      if (_controller.value.position >=
-          (_controller.value.duration - Duration(milliseconds: 500))) {
-        _navigateToLogin();
+      if (_controller.value.position == _controller.value.duration) {
+        _navigateToNextScreen();
       }
     });
   }
 
-  void _navigateToLogin() {
-    if (mounted) {
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
-    }
+  void _navigateToNextScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => widget.nextScreen),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Ensure background remains black
+      backgroundColor: Colors.black,
       body: Stack(
-        fit: StackFit.expand, // Fullscreen video
+        fit: StackFit.expand,
         children: [
           if (_controller.value.isInitialized)
             Positioned.fill(
               child: FittedBox(
-                fit: BoxFit.cover, // Scale video to cover entire screen
+                fit: BoxFit.cover,
                 child: SizedBox(
                   width: _controller.value.size.width,
                   height: _controller.value.size.height,
@@ -89,7 +123,7 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
           else
             Center(
               child: CircularProgressIndicator(),
-            ), // Show loading while initializing
+            ), // Show loading indicator
         ],
       ),
     );

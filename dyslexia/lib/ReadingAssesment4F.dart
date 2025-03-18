@@ -8,19 +8,25 @@ import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 
-class ReadCheckpointTwo extends StatefulWidget {
+class ReadwithGuidance extends StatefulWidget {
   @override
-  State<ReadCheckpointTwo> createState() => _ReadCheckpointTwoState();
+  State<ReadwithGuidance> createState() => _ReadwithGuidanceState();
 }
 
-class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
+class _ReadwithGuidanceState extends State<ReadwithGuidance> {
   final recorder = AudioRecorderService();
+
+  String displayText =
+      " Reading a paragraph is like reading a imagination of a writer. We can immerse through the writers thought, emotion when the writer writting the para and the word that he thinks next";
+  List<String> readWords = [];
+  String textinstruction = "press the mic icon & speak the word displayed ";
 
   bool isrecording = false;
 
   @override
   void initState() {
     isrecording = false;
+
     super.initState();
   }
 
@@ -30,13 +36,10 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
     double screenHeight = MediaQuery.of(context).size.height;
     final timer = Provider.of<TimerService>(context);
 
-    String displayText =
-        "Reading a paragraph is like reading a imagination of a writer. We can immerse through the writers thought, emotion when the writer writting the para and the word that he thinks next";
-    String textinstruction = "press the mic icon & speak the word displayed ";
-
     Future<void> startRecording() async {
       await recorder.startRecording();
       timer.startTimer();
+
       setState(() {
         isrecording = true;
       });
@@ -50,7 +53,7 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
         isrecording = false;
       });
       print("audio stoped");
-      print(outputpath ?? "no path");
+      // print(outputpath ?? "no path");
     }
 
     Future<void> handleRecording() async {
@@ -66,7 +69,21 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
     Future<void> handleReStart() async {
       //stop record here
       await stopRecording();
+      // await speechHanlder.stop();
+      setState(() {
+        readWords = [];
+      });
       timer.resetTimer();
+    }
+
+    Future<void> playWordPronunciation(String word) async {
+      if (isrecording) {
+        timer.stopTimer();
+        // await speakWord(word);
+        print("word");
+        print(word);
+        timer.startTimer();
+      }
     }
 
     return Scaffold(
@@ -105,8 +122,8 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Read the Para", style: rCheckpointTitle),
-                              Text("Level 2", style: rCheckpointLv),
+                              Text("Guided Read", style: rCheckpointTitle),
+                              Text("Word Count : 123", style: rCheckpointLv),
                             ],
                           ),
                           Container(
@@ -146,14 +163,33 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                                 color: Color.fromRGBO(166, 159, 204, 0.31),
                               ),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
-                                    child: Text(
-                                      displayText,
-                                      style: rCheckpointParaDisplay,
+                                    child: Wrap(
+                                      spacing: 8.0,
+                                      runSpacing: 4.0,
+                                      children:
+                                          displayText.split(" ").map((word) {
+                                            bool isRead = readWords.contains(
+                                              word.toLowerCase(),
+                                            );
+                                            return GestureDetector(
+                                              onTap:
+                                                  () => playWordPronunciation(
+                                                    word,
+                                                  ),
+                                              child: Text(
+                                                word,
+                                                style:
+                                                    isRead
+                                                        ? readWordHighlighter
+                                                        : rCheckpointParaDisplay,
+                                              ),
+                                            );
+                                          }).toList(),
                                     ),
                                   ),
                                 ],

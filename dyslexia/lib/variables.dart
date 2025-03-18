@@ -37,6 +37,9 @@ const Color childcardbodyColor = Color(0xFFCFCAFF);
 const Color pointsBackgroundColor = Color(0xFF9370DB);
 const Color pointsTextColor = Color(0xFFF0EFF4);
 const Color readingTitleColor = Color.fromRGBO(79, 75, 101, 1);
+const Color readingTitleColoropaHalf = Color.fromRGBO(79, 75, 101, 0.5);
+const Color wordhighlight = Color.fromRGBO(147, 112, 210, 1);
+const Color sucess = Color.fromRGBO(75, 205, 140, 48);
 // Font styles using Poppins
 final TextStyle headingStyle = GoogleFonts.poppins(
   fontSize: 36,
@@ -111,7 +114,7 @@ final TextStyle menuAppLogoStyle = GoogleFonts.pacifico(
   color: menuColor,
 );
 final TextStyle menuAppHeadingStyle = GoogleFonts.poppins(
-  fontSize: 34,
+  fontSize: 36,
   color: menuColor,
 );
 
@@ -150,9 +153,21 @@ final TextStyle rCheckpointParaDisplay = GoogleFonts.lobsterTwo(
   color: readingTitleColor,
 );
 
+final TextStyle readWordHighlighter = GoogleFonts.lobsterTwo(
+  fontSize: 24,
+  fontWeight: FontWeight.w300,
+  color: wordhighlight,
+);
+
 final TextStyle rCheckpointInst = GoogleFonts.poppins(
   fontSize: 16,
   fontWeight: FontWeight.w300,
+  color: readingTitleColor,
+);
+
+final TextStyle rCheckpointInst2 = GoogleFonts.poppins(
+  fontSize: 24,
+  fontWeight: FontWeight.w400,
   color: readingTitleColor,
 );
 
@@ -184,5 +199,11 @@ final TextStyle cardtxtValidate = GoogleFonts.poppins(
 final TextStyle cardtxtdisplay = GoogleFonts.poppins(
   fontSize: 46,
   fontWeight: FontWeight.w500,
+  color: readingTitleColor,
+);
+
+final TextStyle quizzanswers = GoogleFonts.poppins(
+  fontSize: 20,
+  fontWeight: FontWeight.w400,
   color: readingTitleColor,
 );
