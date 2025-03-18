@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:dyslexia/shorttermmemory/wordrecall/Wordrecall4.dart';
 
 class VideoSplashScreen extends StatefulWidget {
   final Widget nextScreen;
@@ -27,9 +28,18 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
     // Listen for when the video ends
     _controller.addListener(() {
       if (_controller.value.position == _controller.value.duration) {
+        // _navigateToWordrecall4();
         _navigateToNextScreen();
       }
     });
+  }
+
+  void _navigateToWordrecall4() {
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => WordRecallTaskLevel4()),
+      );
+    }
   }
 
   void _navigateToNextScreen() {
