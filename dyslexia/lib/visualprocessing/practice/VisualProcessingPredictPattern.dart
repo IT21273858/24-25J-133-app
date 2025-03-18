@@ -20,6 +20,8 @@ class _VisualprocessingpredictpatternState
   String uId = '';
   List<Map<String, String>> pattern = []; // Stores shapes from API
   String? nextShape; // Stores the correct next shape
+  bool showSuccessGif = false;
+  String? predictedShape;
 
   Future<void> _loadShapeData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -104,6 +106,15 @@ class _VisualprocessingpredictpatternState
             : "circle";
 
     if (selectedShape == nextShape) {
+      setState(() {
+        showSuccessGif = true;
+      });
+      // generateNewShape();
+      Future.delayed(Duration(seconds: 3), () {
+        setState(() {
+          showSuccessGif = false;
+        });
+      });
       print("✅ Correct! User selected: $selectedShape");
       final data = {
         "childId": uId,
@@ -132,133 +143,147 @@ class _VisualprocessingpredictpatternState
 
     return Scaffold(
       backgroundColor: Color(0xFFF0EFF4),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        child: ListView(
-          children: [
-            Column(
-              children: [
-                _buildHeader(context),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Column(
-                    spacing: 20,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Pattern Next", style: rCheckpointTitle),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: cardBordercolor,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
+      body: Stack(
+        children: [
+          ListView(
+            children: [
+              Column(
+                children: [
+                  _buildHeader(context),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Column(
+                      spacing: 20,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Pattern Next", style: rCheckpointTitle),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: cardBordercolor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.circle, color: Colors.white),
+                                    Text(
+                                      timer.getFormattedTime(),
+                                      style: timeClock,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
+                          ],
+                        ),
+                        Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/patternprediction.png",
+                                width: screenWidth * 0.9,
+                              ),
+                              // Container(
+                              //   width: screenWidth * 0.8,
+                              //   height: screenHeight * 0.25,
+                              //   decoration: BoxDecoration(
+                              //     borderRadius: BorderRadius.all(
+                              //       Radius.circular(17),
+                              //     ),
+                              //     color: Color.fromRGBO(166, 159, 204, 0.31),
+                              //   ),
+                              //   child: Column(
+                              //     crossAxisAlignment: CrossAxisAlignment.center,
+                              //     mainAxisAlignment: MainAxisAlignment.center,
+                              //     children: [
+                              //       Text(
+                              //         displayText,
+                              //         style: rCheckpointtxtDisplay,
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
+                            ],
+                          ),
+                        ),
+                        Center(
+                          child: Column(
+                            spacing: 10,
+                            children: [
+                              // Display the pattern
+                              Wrap(
+                                spacing: 10,
+                                children:
+                                    pattern
+                                        .map(
+                                          (shape) => Image.asset(
+                                            shape['shapeurl']!,
+                                            width: 60,
+                                            height: 60,
+                                          ),
+                                        )
+                                        .toList(),
+                              ),
+                              SizedBox(height: 30),
+                              Text(
+                                "Choose the next shape",
+                                style: rCheckpointInst2,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.circle, color: Colors.white),
-                                  Text(
-                                    timer.getFormattedTime(),
-                                    style: timeClock,
+                                  shapeButton(
+                                    0,
+                                    "square",
+                                    "assets/images/sqr.png",
+                                  ),
+                                  shapeButton(
+                                    1,
+                                    "triangle",
+                                    "assets/images/tri.png",
+                                  ),
+                                  shapeButton(
+                                    2,
+                                    "circle",
+                                    "assets/images/circ.png",
                                   ),
                                 ],
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                      Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/images/patternprediction.png",
-                              width: screenWidth * 0.9,
-                            ),
-                            // Container(
-                            //   width: screenWidth * 0.8,
-                            //   height: screenHeight * 0.25,
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.all(
-                            //       Radius.circular(17),
-                            //     ),
-                            //     color: Color.fromRGBO(166, 159, 204, 0.31),
-                            //   ),
-                            //   child: Column(
-                            //     crossAxisAlignment: CrossAxisAlignment.center,
-                            //     mainAxisAlignment: MainAxisAlignment.center,
-                            //     children: [
-                            //       Text(
-                            //         displayText,
-                            //         style: rCheckpointtxtDisplay,
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
-                          ],
                         ),
-                      ),
-                      Center(
-                        child: Column(
-                          spacing: 10,
-                          children: [
-                            // Display the pattern
-                            Wrap(
-                              spacing: 10,
-                              children:
-                                  pattern
-                                      .map(
-                                        (shape) => Image.asset(
-                                          shape['shapeurl']!,
-                                          width: 60,
-                                          height: 60,
-                                        ),
-                                      )
-                                      .toList(),
-                            ),
-                            SizedBox(height: 30),
-                            Text(
-                              "Choose the next shape",
-                              style: rCheckpointInst2,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                shapeButton(
-                                  0,
-                                  "square",
-                                  "assets/images/sqr.png",
-                                ),
-                                shapeButton(
-                                  1,
-                                  "triangle",
-                                  "assets/images/tri.png",
-                                ),
-                                shapeButton(
-                                  2,
-                                  "circle",
-                                  "assets/images/circ.png",
-                                ),
-                              ],
-                            ),
-                          ],
+                        CustomButton(
+                          text: "Confirm",
+                          isLoading: false,
+                          onPressed: handleConfirm,
                         ),
-                      ),
-                      CustomButton(
-                        text: "Confirm",
-                        isLoading: false,
-                        onPressed: handleConfirm,
-                      ),
-                    ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          if (showSuccessGif && nextShape != null)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0),
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/pass-learning.gif",
+                    width: screenWidth * 0.8,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ],
+              ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
