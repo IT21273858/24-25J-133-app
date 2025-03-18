@@ -4,7 +4,6 @@ import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 
 class ReadnAnswer extends StatefulWidget {

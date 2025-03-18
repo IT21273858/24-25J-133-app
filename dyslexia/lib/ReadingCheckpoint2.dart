@@ -1,11 +1,11 @@
-import 'package:dyslexia/signup/RegisterChooseForChild.dart';
+import 'package:dyslexia/CustomDrawer.dart';
+import 'package:dyslexia/ReadingCheckpoint3.dart';
+import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
 import 'package:dyslexia/serviceprovider/timer.dart';
+import 'package:dyslexia/services/ReadServices/checkPointTwo.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
-import 'package:dyslexia/CustomDrawer.dart';
-import 'package:dyslexia/components.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 
 class ReadCheckpointTwo extends StatefulWidget {
@@ -15,13 +15,32 @@ class ReadCheckpointTwo extends StatefulWidget {
 
 class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
   final recorder = AudioRecorderService();
-
+  String displayText =
+      "Reading a paragraph is like reading a imagination of a writer. We can immerse through the writers thought, emotion when the writer writting the para and the word that he thinks next";
+  int awpm = 0;
   bool isrecording = false;
+  bool isvalidating = false;
+  bool isfetching = false;
 
   @override
   void initState() {
     isrecording = false;
+    assignPara();
     super.initState();
+  }
+
+  Future<void> assignPara() async {
+    setState(() {
+      isfetching = true;
+    });
+
+    final response = await Checkpointtwo.fetchpara(lines: 2);
+
+    setState(() {
+      isfetching = false;
+      displayText = response?['passage'] ?? "Para";
+      awpm = response?['average_wpm'] ?? 0;
+    });
   }
 
   @override
@@ -30,8 +49,6 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
     double screenHeight = MediaQuery.of(context).size.height;
     final timer = Provider.of<TimerService>(context);
 
-    String displayText =
-        "Reading a paragraph is like reading a imagination of a writer. We can immerse through the writers thought, emotion when the writer writting the para and the word that he thinks next";
     String textinstruction = "press the mic icon & speak the word displayed ";
 
     Future<void> startRecording() async {
@@ -42,10 +59,60 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
       });
     }
 
-    Future<void> stopRecording() async {
+    Future<void> ValidateAudio(String? audiopath, String mintuestaken) async {
+      if (isvalidating) {
+        CustomSnakbar.showSnack(context, "Validation already in Progress");
+        return;
+      }
+
+      if (audiopath == null) {
+        CustomSnakbar.showSnack(context, "Please Read the Passage to validate");
+        return;
+      }
+
+      setState(() {
+        isvalidating = true;
+      });
+
+      final result = await Checkpointtwo.calcWPM(
+        audiopath,
+        displayText,
+        mintuestaken,
+        awpm.toString(),
+      );
+
+      if (result != null) {
+        CustomSnakbar.showSnack(
+          context,
+          " Your Fluency Level is ${result['fluencylevel']}",
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ReadCheckpointThree()),
+        );
+      } else {
+        CustomSnakbar.showSnack(context, "Can not track your fluency re-try");
+        await assignPara();
+        setState(() {
+          isvalidating = false;
+        });
+      }
+
+      setState(() {
+        isvalidating = false;
+      });
+    }
+
+    Future<void> stopRecording({bool validate = false}) async {
       String? outputpath = await recorder.stopRecording();
       timer.stopTimer();
+      final takentime = timer.getFormattedTimeInSeconds();
+      final timetakeninMin = takentime / 60;
       timer.resetTimer();
+      if (validate) {
+        await ValidateAudio(outputpath, timetakeninMin.toString());
+      }
       setState(() {
         isrecording = false;
       });
@@ -59,7 +126,7 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
         await startRecording();
       } else {
         //stop record here
-        await stopRecording();
+        await stopRecording(validate: true);
       }
     }
 
@@ -145,18 +212,37 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                                 ),
                                 color: Color.fromRGBO(166, 159, 204, 0.31),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Text(
-                                      displayText,
-                                      style: rCheckpointParaDisplay,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child:
+                                          isfetching
+                                              ? Column(
+                                                spacing: 10,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Image.asset(
+                                                    "assets/images/doglder.gif",
+                                                    width: screenWidth * 0.7,
+                                                  ),
+                                                  Text(
+                                                    "Loading...",
+                                                    style: rCheckpointSkip,
+                                                  ),
+                                                ],
+                                              )
+                                              : Text(
+                                                displayText,
+                                                style: rCheckpointParaDisplay,
+                                              ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -196,16 +282,27 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
                         child: Column(
                           spacing: 9,
                           children: [
-                            CustomButton(
-                              text:
-                                  isrecording
-                                      ? "Check Fluency"
-                                      : "Start Reading",
-                              isLoading: false,
-                              onPressed: handleRecording,
-                            ),
+                            isvalidating
+                                ? CustomButton(
+                                  text: "Validating...",
+                                  isLoading: true,
+                                  onPressed: () {
+                                    CustomSnakbar.showSnack(
+                                      context,
+                                      "Processing Please Wait..",
+                                    );
+                                  },
+                                )
+                                : CustomButton(
+                                  text:
+                                      isrecording
+                                          ? "Check Fluency"
+                                          : "Start Reading",
+                                  isLoading: false,
+                                  onPressed: handleRecording,
+                                ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: assignPara,
                               child: Text(
                                 "Skip Paragraph",
                                 style: rCheckpointSkip,

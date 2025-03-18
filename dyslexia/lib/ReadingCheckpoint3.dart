@@ -1,4 +1,5 @@
 import 'package:dyslexia/ReadingCheckpoint3verify.dart';
+import 'package:dyslexia/services/ReadServices/checkPointThree.dart';
 import 'package:dyslexia/signup/RegisterChooseForChild.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
@@ -6,12 +7,44 @@ import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class ReadCheckpointThree extends StatelessWidget {
+class ReadCheckpointThree extends StatefulWidget {
+  @override
+  State<ReadCheckpointThree> createState() => _ReadCheckpointThreeState();
+}
+
+class _ReadCheckpointThreeState extends State<ReadCheckpointThree> {
+  bool isfetching = false;
+  String displayText = "Bamboo";
+
+  @override
+  void initState() {
+    fetchword();
+    super.initState();
+  }
+
+  Future<void> fetchword() async {
+    if (isfetching) {
+      CustomSnakbar.showSnack(context, "Fetching in processing");
+      return;
+    }
+
+    setState(() {
+      isfetching = true;
+    });
+
+    final wordresponse = await Checkpointthree.getWord(difflevl: "Easy");
+
+    setState(() {
+      displayText = wordresponse?['word'] ?? "Word";
+      isfetching = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    String displayText = "Bamboo";
+
     String textinstruction =
         "Visualize the image of the word & Keep it in mind";
     return Scaffold(
@@ -76,10 +109,26 @@ class ReadCheckpointThree extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    displayText,
-                                    style: rCheckpointtxtDisplay,
-                                  ),
+                                  isfetching
+                                      ? Column(
+                                        spacing: 10,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            "assets/images/doglder.gif",
+                                            width: screenWidth * 0.4,
+                                          ),
+                                          Text(
+                                            "Loading...",
+                                            style: rCheckpointSkip,
+                                          ),
+                                        ],
+                                      )
+                                      : Text(
+                                        displayText,
+                                        style: rCheckpointtxtDisplay,
+                                      ),
                                 ],
                               ),
                             ),
@@ -120,18 +169,28 @@ class ReadCheckpointThree extends StatelessWidget {
                             CustomButton(
                               text: "Procced",
                               isLoading: false,
-                              onPressed:
-                                  () => Navigator.pushReplacement(
+                              onPressed: () {
+                                if (isfetching) {
+                                  CustomSnakbar.showSnack(
                                     context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              ReadCheckpointThreeVerify(),
-                                    ),
+                                    " 🐱 Please wait until find a word",
+                                  );
+                                  return;
+                                }
+
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => ReadCheckpointThreeVerify(
+                                          worddisplayed: displayText,
+                                        ),
                                   ),
+                                );
+                              },
                             ),
                             TextButton(
-                              onPressed: () => {},
+                              onPressed: fetchword,
                               child: Text(
                                 "Skip Word",
                                 style: rCheckpointSkip,
@@ -194,173 +253,6 @@ class ReadCheckpointThree extends StatelessWidget {
   }
 
   // // Scrollable Child Selection
-  // Widget _buildChildSelection() {
-  //   return Container(
-  //     height: 30,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: children.length,
-  //       itemBuilder: (context, index) {
-  //         return Padding(
-  //           padding: EdgeInsets.symmetric(horizontal: 8.0),
-  //           child: ElevatedButton(
-  //             onPressed: () {},
-  //             style: ElevatedButton.styleFrom(
-  //               backgroundColor: Colors.white,
-  //               elevation: 0,
-  //               shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20),
-  //               ),
-  //             ),
-  //             child: Text(
-  //               children[index],
-  //               style: TextStyle(color: Colors.black),
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // // Performance Section with Line Chart
-  // Widget _buildPerformanceSection() {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 16.0),
-  //     child: Column(
-  //       children: [
-  //         Container(
-  //           padding: EdgeInsets.all(12),
-  //           decoration: BoxDecoration(
-  //             color: Colors.white,
-  //             borderRadius: BorderRadius.circular(18),
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 color: Colors.grey.withOpacity(0.2),
-  //                 spreadRadius: 1,
-  //                 blurRadius: 5,
-  //               ),
-  //             ],
-  //           ),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             spacing: 5,
-  //             children: [
-  //               Padding(padding: EdgeInsets.only(left: 10, right: 10)),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Text(
-  //                         'Statistics',
-  //                         style: TextStyle(
-  //                           fontSize: 18,
-  //                           fontWeight: FontWeight.normal,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         'Game Name',
-  //                         style: TextStyle(
-  //                           fontSize: 16,
-  //                           color: Colors.black,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.end,
-  //                     children: [
-  //                       Text(
-  //                         '1,027',
-  //                         style: TextStyle(
-  //                           fontSize: 20,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         '+12.75%',
-  //                         style: TextStyle(color: Colors.green, fontSize: 14),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //               Padding(padding: EdgeInsets.only(top: 10)),
-  //               LineChartWidget(chartData: performanceData),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // // Manage Children Section
-  // Widget _buildManageChildrenSection(BuildContext context) {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 16.0),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text(
-  //               "Manage Children",
-  //               style: TextStyle(
-  //                 fontSize: 18,
-  //                 fontWeight: FontWeight.bold,
-  //                 color: Colors.black,
-  //               ),
-  //             ),
-  //             IconButton(
-  //               icon: Icon(
-  //                 Icons.add_circle_outline,
-  //                 size: 24,
-  //                 color: Colors.black,
-  //               ),
-  //               onPressed: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => RegisterChooseForChild(),
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         SizedBox(height: 10),
-  //         ChildCardSliderDashboard(
-  //           childData: [
-  //             {
-  //               "name": "Child 1",
-  //               "level": "Level 02",
-  //               "lastLogged": "12 Feb 2024 - 12:30pm",
-  //               "image": "assets/images/child.png",
-  //             },
-  //             {
-  //               "name": "Child 2",
-  //               "level": "Level 03",
-  //               "lastLogged": "10 Feb 2024 - 11:45am",
-  //               "image": "assets/images/child.png",
-  //             },
-  //             {
-  //               "name": "Child 3",
-  //               "level": "Level 01",
-  //               "lastLogged": "08 Feb 2024 - 02:15pm",
-  //               "image": "assets/images/child.png",
-  //             },
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
     return Container(
       // decoration: BoxDecoration(

@@ -35,6 +35,13 @@ class _MyAppState extends State<MyApp> {
 
     print("User role: $role");
 
+    // if (role == "parent") {
+    //   _startScreen = VideoSplashScreen(nextScreen: DashboardParent());
+    // } else if (role == "child") {
+    //   _startScreen = VideoSplashScreen(nextScreen: DashboardChild());
+    // } else {
+    //   _startScreen = LoginPage();
+    // }
     if (role == "parent") {
       _startScreen = DashboardParent();
       // _startScreen = VideoSplashScreen(nextScreen: DashboardParent());
