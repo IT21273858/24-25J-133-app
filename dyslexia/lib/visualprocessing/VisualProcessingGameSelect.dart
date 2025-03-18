@@ -7,14 +7,14 @@ import 'package:dyslexia/components.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Visualprocessingpredictpattern extends StatefulWidget {
+class VisualprocessingGameselect extends StatefulWidget {
   @override
-  State<Visualprocessingpredictpattern> createState() =>
-      _VisualprocessingpredictpatternState();
+  State<VisualprocessingGameselect> createState() =>
+      _VisualprocessingGameselectState();
 }
 
-class _VisualprocessingpredictpatternState
-    extends State<Visualprocessingpredictpattern> {
+class _VisualprocessingGameselectState
+    extends State<VisualprocessingGameselect> {
   int selection = -1; // Index of selected shape
   String level = "medium"; // Default level
   String uId = '';
@@ -148,26 +148,6 @@ class _VisualprocessingpredictpatternState
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Predict Pattern", style: rCheckpointTitle),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: cardBordercolor,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.circle, color: Colors.white),
-                                  Text(
-                                    timer.getFormattedTime(),
-                                    style: timeClock,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                       Center(

@@ -15,6 +15,7 @@ import 'package:dyslexia/VisualProcessTest1.dart';
 import 'package:dyslexia/VisualProcessingTest2.dart';
 import 'package:dyslexia/parent/ParentAllGameScoresPage.dart';
 import 'package:dyslexia/variables.dart';
+import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingPredictPattern.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingPredictShape.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "icon": FeatherIcons.barChart2,
       "label": "Predict Shape",
       "page": VisualProcessText2(),
+    },
+    {
+      "icon": FeatherIcons.activity,
+      "label": "Select Game",
+      "page": VisualprocessingGameselect(),
     },
     {
       "icon": FeatherIcons.barChart2,
