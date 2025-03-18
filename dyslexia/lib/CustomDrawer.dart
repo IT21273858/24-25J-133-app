@@ -1,21 +1,15 @@
-import 'package:dyslexia/child/DashboardChild.dart';
-import 'package:dyslexia/parent/DashboardParent.dart';
 import 'package:dyslexia/GameScorePage.dart';
 import 'package:dyslexia/LevelUnlocker.dart';
 import 'package:dyslexia/LoginPage.dart';
-import 'package:dyslexia/child/ProfileChild.dart';
-import 'package:dyslexia/parent/ProfileParent.dart';
-import 'package:dyslexia/ReadingAssesment4F.dart';
-import 'package:dyslexia/ReadingAssesment5F.dart';
-import 'package:dyslexia/ReadingAssesment7P.dart';
-import 'package:dyslexia/ReadingAssesment8C.dart';
-import 'package:dyslexia/ReadingAssesment8C2.dart';
-import 'package:dyslexia/ReadingCheckpoint2.dart';
-import 'package:dyslexia/ReadingCheckpoint3.dart';
+import 'package:dyslexia/ReadingAssesment1.dart';
 import 'package:dyslexia/ScoresPage.dart';
 import 'package:dyslexia/VisualProcessTest1.dart';
 import 'package:dyslexia/VisualProcessingTest2.dart';
+import 'package:dyslexia/child/DashboardChild.dart';
+import 'package:dyslexia/child/ProfileChild.dart';
+import 'package:dyslexia/parent/DashboardParent.dart';
 import 'package:dyslexia/parent/ParentAllGameScoresPage.dart';
+import 'package:dyslexia/parent/ProfileParent.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingPredictPattern.dart';
@@ -65,21 +59,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "label": "Game Score",
       "page": Gamescorepage(),
     },
-    {"icon": FeatherIcons.barChart2, "label": "Assesment7", "page": Quiz()},
     {
       "icon": FeatherIcons.barChart2,
-      "label": "CheckpointTwo",
-      "page": ReadwithGuidance(),
-    },
-    {
-      "icon": FeatherIcons.barChart2,
-      "label": "Checkpointhree",
-      "page": ReadCheckpointThree(),
-    },
-    {
-      "icon": FeatherIcons.barChart2,
-      "label": "Rapid words",
-      "page": RapidWords(),
+      "label": "Checkpoint",
+      "page": ReadPronounceWord(),
     },
     {
       "icon": FeatherIcons.barChart2,
@@ -152,6 +135,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Drawer(
       backgroundColor: Color(0xFFF0EFF4), // Background Color
       child: Column(
@@ -252,7 +237,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
           SizedBox(height: 10),
 
           // Menu Items
-          Expanded(
+          Container(
+            height: screenHeight * 0.5,
             child: SingleChildScrollView(
               child: Column(
                 children: [

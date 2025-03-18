@@ -1,3 +1,5 @@
+import 'package:dyslexia/ReadingCheckpoint2.dart';
+import 'package:dyslexia/services/ReadServices/checkPointOne.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
@@ -14,19 +16,38 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
   // audio recoridnf
   final recorder = AudioRecorderService();
 
+  String displayText = "Bamboo";
   bool isrecording = false;
+  bool isfetching = true;
+  bool isvalidating = false;
+  String? audiopath;
 
   @override
   void initState() {
-    isrecording = false;
+    setState(() {
+      isrecording = false;
+    });
+    assignWord();
     super.initState();
+  }
+
+  Future<void> assignWord() async {
+    setState(() {
+      isfetching = true;
+      isvalidating = false;
+      audiopath = null;
+    });
+    final wordfetchted = await Checkpointone.fetchWord();
+    setState(() {
+      displayText = wordfetchted?['word'] ?? "Text";
+      isfetching = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    String displayText = "Bamboo";
     String textinstruction = "press the mic icon & speak the word displayed ";
 
     Future<void> startRecording() async {
@@ -38,11 +59,16 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
 
     Future<void> stopRecording() async {
       String? outputpath = await recorder.stopRecording();
+      if (outputpath != null) {
+        print("outputpath");
+        print(outputpath);
+        setState(() {
+          audiopath = outputpath;
+        });
+      }
       setState(() {
         isrecording = false;
       });
-      print("audio stoped");
-      print(outputpath ?? "no path");
     }
 
     Future<void> handleRecording() async {
@@ -117,10 +143,23 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    displayText,
-                                    style: rCheckpointtxtDisplay,
-                                  ),
+                                  isfetching
+                                      ? Column(
+                                        children: [
+                                          Image.asset(
+                                            "assets/images/dinowalk.gif",
+                                            width: screenWidth * 0.4,
+                                          ),
+                                          Text(
+                                            "Loading...",
+                                            style: rCheckpointSkip,
+                                          ),
+                                        ],
+                                      )
+                                      : Text(
+                                        displayText,
+                                        style: rCheckpointtxtDisplay,
+                                      ),
                                 ],
                               ),
                             ),
@@ -164,12 +203,82 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
                           spacing: 9,
                           children: [
                             CustomButton(
-                              text: "Check Spelling",
+                              text:
+                                  isvalidating
+                                      ? "Processing"
+                                      : "Check Spelling",
                               isLoading: false,
-                              onPressed: () {},
+                              onPressed: () async {
+                                if (!isfetching) {
+                                  if (audiopath != null) {
+                                    if (isvalidating) {
+                                      CustomSnakbar.showSnack(
+                                        context,
+                                        "Plese hold, processing previous request",
+                                      );
+                                      return;
+                                    }
+
+                                    setState(() {
+                                      isvalidating = true;
+                                    });
+                                    var aresponse =
+                                        await Checkpointone.getTextfromSpeech(
+                                          audiopath!,
+                                          displayText,
+                                          "Easy",
+                                        );
+
+                                    print("aresponse");
+                                    print(aresponse);
+
+                                    if (aresponse['result']) {
+                                      CustomSnakbar.showSnack(
+                                        context,
+                                        "😀 Correct Pronounce",
+                                        bgcolor: sucess,
+                                        txtcolor: readingTitleColor,
+                                      );
+                                      setState(() {
+                                        audiopath = null;
+                                        isvalidating = false;
+                                      });
+                                    } else {
+                                      CustomSnakbar.showSnack(
+                                        context,
+                                        "🙀 Incorrect Pronounce, Retry...",
+                                        txtcolor: Colors.white,
+                                        bgcolor: Colors.deepOrange.shade400,
+                                      );
+                                      setState(() {
+                                        audiopath = null;
+                                        isvalidating = false;
+                                      });
+                                    }
+
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => ReadCheckpointTwo(),
+                                      ),
+                                    );
+                                  } else {
+                                    CustomSnakbar.showSnack(
+                                      context,
+                                      "Please Press mic to record audio",
+                                    );
+                                  }
+                                } else {
+                                  CustomSnakbar.showSnack(
+                                    context,
+                                    "Finding word, Please Hold...",
+                                  );
+                                }
+                              },
                             ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: assignWord,
                               child: Text(
                                 "Skip Word",
                                 style: rCheckpointSkip,

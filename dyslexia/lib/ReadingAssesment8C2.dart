@@ -1,11 +1,9 @@
-import 'package:dyslexia/RegisterChooseForChild.dart';
+import 'package:dyslexia/CustomDrawer.dart';
+import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
 import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
-import 'package:dyslexia/CustomDrawer.dart';
-import 'package:dyslexia/components.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 
 class Quiz extends StatefulWidget {

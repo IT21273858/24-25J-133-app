@@ -1007,3 +1007,20 @@ class GameScoreCard extends StatelessWidget {
     );
   }
 }
+
+// Reusable Button Component
+class CustomSnakbar {
+  static Future<void> showSnack(
+    BuildContext context,
+    String text, {
+    Color bgcolor = wordhighlight,
+    Color txtcolor = Colors.white,
+  }) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text, style: TextStyle(color: txtcolor)),
+        backgroundColor: bgcolor,
+      ),
+    );
+  }
+}
