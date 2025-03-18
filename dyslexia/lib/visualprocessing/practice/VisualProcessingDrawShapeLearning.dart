@@ -27,6 +27,7 @@ class _VisualprocessingDrawshapeLearningState
   late String displayText;
   String textInstruction = "Draw the above-mentioned shape";
   String? predictedShape;
+  double confidence = 0.0;
   bool isLoading = false;
   bool showSuccessGif = false;
 
@@ -97,12 +98,13 @@ class _VisualprocessingDrawshapeLearningState
         setState(() {
           print("Response is  ${response}");
           predictedShape = response['prediction']['class'];
+          confidence = response['prediction']['confidence'];
         });
         if (predictedShape!.toLowerCase() == displayText.toLowerCase()) {
           setState(() {
             showSuccessGif = true;
           });
-          generateNewShape();
+          // generateNewShape();
           Future.delayed(Duration(seconds: 3), () {
             setState(() {
               showSuccessGif = false;
@@ -110,7 +112,7 @@ class _VisualprocessingDrawshapeLearningState
           });
         }
 
-        print("✅ Predicted Shape: $predictedShape");
+        print("✅ Predicted Shape: ${predictedShape}, ${confidence}");
       } else {
         print("❌ No shape detected");
       }
@@ -176,32 +178,8 @@ class _VisualprocessingDrawshapeLearningState
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: cardBordercolor,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.circle,
-                                                color: Colors.white,
-                                              ),
-                                              Text(
-                                                timer.getFormattedTime(),
-                                                style: timeClock,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
                                       Image.asset(
                                         "assets/images/beec.png",
                                         width: screenWidth * 0.25,
@@ -234,7 +212,7 @@ class _VisualprocessingDrawshapeLearningState
                       ),
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          padding: const EdgeInsets.symmetric(vertical: 15.0),
                           child: Column(
                             spacing: 10,
                             children: [
@@ -313,7 +291,7 @@ class _VisualprocessingDrawshapeLearningState
                           children: [
                             if (predictedShape != null &&
                                 predictedShape!.toLowerCase() ==
-                                    displayText.toLowerCase())
+                                    displayText.toLowerCase()) ...[
                               Text(
                                 "Predicted: $predictedShape",
                                 style: TextStyle(
@@ -321,8 +299,16 @@ class _VisualprocessingDrawshapeLearningState
                                   color: Colors.green,
                                   fontWeight: FontWeight.bold,
                                 ),
-                              )
-                            else if (predictedShape != null)
+                              ),
+                              Text(
+                                "Confidence: ${(confidence * 100).toStringAsFixed(2)}%",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ] else if (predictedShape != null)
                               Text(
                                 "Not Matched",
                                 style: TextStyle(
@@ -349,7 +335,7 @@ class _VisualprocessingDrawshapeLearningState
               ],
             ),
           ),
-          if (showSuccessGif)
+          if (showSuccessGif && predictedShape != null)
             Positioned.fill(
               child: Container(
                 color: Colors.black.withOpacity(0),

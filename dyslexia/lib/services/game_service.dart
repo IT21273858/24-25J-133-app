@@ -197,4 +197,40 @@ class GameService {
     }
     return null;
   }
+
+  static Future<Map<String, dynamic>?> verifyGame(
+    Map<String, dynamic> data,
+  ) async {
+    print("🔄 Sending game verification request...");
+
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('auth_token');
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/games/verify-gamecompletion'),
+        body: jsonEncode(data),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token", // Include token if required
+        },
+      );
+
+      print("📩 Response Status: ${response.statusCode}");
+      print("📜 Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        print("✅ Game Verification Success:");
+        print(responseData);
+        return responseData;
+      } else {
+        print("❌ Game Verification Failed: ${response.statusCode}");
+        return {"status": false, "message": "Failed to verify game"};
+      }
+    } catch (e) {
+      print("⚠️ Error in verifyGame: $e");
+      return {"status": false, "message": "An error occurred"};
+    }
+  }
 }

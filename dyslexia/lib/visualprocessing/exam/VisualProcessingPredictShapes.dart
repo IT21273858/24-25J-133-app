@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:dyslexia/variables.dart';
+import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/components.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,8 @@ class _VisualProcessingPredictShapesState
   List<Map<String, String>> pattern = [];
   String? correctShape;
   Uint8List? imageBytes; // Store decoded Base64 image to prevent flickering
-
+  bool showSuccessGif = false;
+  String? predictedShape;
   Future<void> _loadShapeData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -90,17 +92,55 @@ class _VisualProcessingPredictShapesState
       final timer = Provider.of<TimerService>(context, listen: false);
       timer.stopTimer();
       int totalSeconds = timer.getFormattedTimeInSeconds();
+
       print("✅ Correct! User selected: $selectedShape in ${totalSeconds}s");
+
+      // Prepare API request data
       final data = {
         "childId": uId,
         "gameId": widget.gameId,
         "gameStatus": "won",
-        "completionTime": totalSeconds,
+        "completionTime": totalSeconds.toString(),
       };
-      print("Data to upload ${data}");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("✅ Correct! You selected $selectedShape")),
-      );
+
+      print("📤 Data to upload: $data");
+
+      // Send data to API
+      final response = await GameService.verifyGame(data);
+
+      if (response != null && response["status"] == true) {
+        print("✅ Game verification success: ${response["message"]}");
+
+        setState(() {
+          showSuccessGif = true;
+        });
+        // generateNewShape();
+        Future.delayed(Duration(seconds: 3), () {
+          setState(() {
+            showSuccessGif = false;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VisualprocessingGameselect(),
+              ),
+            );
+          });
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("🎉 Correct! Level Up: ${response["data"]["level"]}"),
+          ),
+        );
+        timer.resetTimer();
+      } else {
+        print(
+          "❌ Game verification failed: ${response?["message"] ?? "Unknown error"}",
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("⚠️ Error updating game progress")),
+        );
+      }
     } else {
       print("❌ Wrong! Expected: $correctShape, but selected: $selectedShape");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -116,92 +156,106 @@ class _VisualProcessingPredictShapesState
 
     return Scaffold(
       backgroundColor: Color(0xFFF0EFF4),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        child: ListView(
-          children: [
-            _buildHeader(context),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Column(
-                    spacing: 20,
-                    children: [
-                      Text("What shape is this?", style: rCheckpointTitle),
-                      SizedBox(height: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: cardBordercolor,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Icon(Icons.circle, color: Colors.white),
-                              // Timer only updates text, not the full widget tree
-                              AnimatedBuilder(
-                                animation: timer,
-                                builder: (context, _) {
-                                  return Text(
-                                    timer.getFormattedTime(),
-                                    style: timeClock,
-                                  );
-                                },
-                              ),
-                            ],
+      body: Stack(
+        children: [
+          ListView(
+            children: [
+              _buildHeader(context),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Column(
+                      spacing: 20,
+                      children: [
+                        Text("What shape is this?", style: rCheckpointTitle),
+                        SizedBox(height: 10),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: cardBordercolor,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      imageBytes != null
-                          ? _buildBase64Image(imageBytes!)
-                          : Image.asset('./assets/images/shape_gif1.gif'),
-                      SizedBox(height: 10),
-                      Text(
-                        "Choose the correct shape",
-                        style: rCheckpointInst2,
-                        textAlign: TextAlign.center,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          shapeButton(
-                            0,
-                            "square",
-                            "assets/images/square_shape.gif",
-                          ),
-                          shapeButton(
-                            1,
-                            "triangle",
-                            "assets/images/triangle_shape.gif",
-                          ),
-                          shapeButton(
-                            2,
-                            "circle",
-                            "assets/images/circle_shape.gif",
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Column(
-                        children: [
-                          if (imageBytes != null)
-                            CustomButton(
-                              text: "Confirm",
-                              isLoading: false,
-                              onPressed: handleConfirm,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Icon(Icons.circle, color: Colors.white),
+                                // Timer only updates text, not the full widget tree
+                                AnimatedBuilder(
+                                  animation: timer,
+                                  builder: (context, _) {
+                                    return Text(
+                                      timer.getFormattedTime(),
+                                      style: timeClock,
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                        ],
-                      ),
-                    ],
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        imageBytes != null
+                            ? _buildBase64Image(imageBytes!)
+                            : Image.asset('./assets/images/shape_gif1.gif'),
+                        SizedBox(height: 10),
+                        Text(
+                          "Choose the correct shape",
+                          style: rCheckpointInst2,
+                          textAlign: TextAlign.center,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            shapeButton(
+                              0,
+                              "square",
+                              "assets/images/square_shape.gif",
+                            ),
+                            shapeButton(
+                              1,
+                              "triangle",
+                              "assets/images/triangle_shape.gif",
+                            ),
+                            shapeButton(
+                              2,
+                              "circle",
+                              "assets/images/circle_shape.gif",
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Column(
+                          children: [
+                            if (imageBytes != null)
+                              CustomButton(
+                                text: "Confirm",
+                                isLoading: false,
+                                onPressed: handleConfirm,
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          if (showSuccessGif)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.6),
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/pass-exam.gif",
+                    width: screenWidth * 0.8,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ],
+              ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }

@@ -20,6 +20,7 @@ import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingPredictPattern.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingDrawShape.dart';
+import 'package:dyslexia/visualprocessing/exam/VisualProcessingDrawShapes.dart';
 import 'package:dyslexia/visualprocessing/practice/VisualProcessingDrawShapeLearning.dart';
 import 'package:dyslexia/visualprocessing/practice/VisualProcessingShapeLearing.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +102,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     {
       "icon": FeatherIcons.barChart2,
       "label": "Draw Shape Time",
-      "page": VisualprocessingDrawshape(),
+      "page": VisualprocessingDrawshapes(),
     },
     {
       "icon": FeatherIcons.bookOpen,

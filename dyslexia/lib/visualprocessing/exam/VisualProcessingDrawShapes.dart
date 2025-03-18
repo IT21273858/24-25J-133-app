@@ -99,10 +99,11 @@ class _VisualprocessingDrawshapesState
           predictedShape = response['prediction']['class'];
         });
         if (predictedShape!.toLowerCase() == displayText.toLowerCase()) {
+          print("Setting gif");
           setState(() {
             showSuccessGif = true;
           });
-          generateNewShape();
+          // generateNewShape();
           Future.delayed(Duration(seconds: 3), () {
             setState(() {
               showSuccessGif = false;
@@ -110,7 +111,7 @@ class _VisualprocessingDrawshapesState
           });
         }
 
-        print("✅ Predicted Shape: $predictedShape");
+        print("✅ Predicted Shape: ${predictedShape}");
       } else {
         print("❌ No shape detected");
       }
@@ -145,6 +146,7 @@ class _VisualprocessingDrawshapesState
             physics: NeverScrollableScrollPhysics(),
             child: Column(
               children: [
+                Padding(padding: EdgeInsets.symmetric(vertical: 10)),
                 _buildHeader(context),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -346,13 +348,13 @@ class _VisualprocessingDrawshapesState
               ],
             ),
           ),
-          if (showSuccessGif)
+          if (showSuccessGif && predictedShape != null)
             Positioned.fill(
               child: Container(
-                color: Colors.black.withOpacity(0),
+                color: Colors.black.withOpacity(0.6),
                 child: Center(
                   child: Image.asset(
-                    "assets/images/pass-learning.gif",
+                    "assets/images/pass-exam.gif",
                     width: screenWidth * 0.8,
                     fit: BoxFit.cover,
                   ),
