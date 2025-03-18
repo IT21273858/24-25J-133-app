@@ -6,10 +6,8 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
-class Checkpointone {
-  static Future<Map<String, dynamic>?> fetchWord({
-    String difflevl = "Easy",
-  }) async {
+class Checkpointtwo {
+  static Future<Map<String, dynamic>?> fetchpara({int lines = 3}) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('auth_token');
@@ -20,7 +18,7 @@ class Checkpointone {
         return null;
       }
 
-      String url = '$pyserverurl/read/gen/word';
+      String url = '$pyserverurl/read/gen/passage';
 
       final response = await http.post(
         Uri.parse(url),
@@ -28,11 +26,11 @@ class Checkpointone {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
         },
-        body: jsonEncode({"difficulty": difflevl}),
+        body: jsonEncode({"num_sentences": lines}),
       );
 
       if (response.statusCode == 200) {
-        print("####################");
+        print("#################### ✅");
         print(response.body);
         return jsonDecode(response.body);
       }
@@ -46,11 +44,12 @@ class Checkpointone {
     }
   }
 
-  static Future<bool> verifySpeak({
-    String audiopath = "",
-    String audioMeme = "",
+  static Future<Map<String, dynamic>?> verifySpeak({
     String worddisplayed = "",
-    String difficulty = "Easy",
+    String audiopath = "",
+    String tTT = "",
+    String averageWPM = "",
+    String audioMeme = "",
     String readersId = "674c6844b809c21b9d948786",
   }) async {
     try {
@@ -60,10 +59,10 @@ class Checkpointone {
 
       if (token == null || role == null) {
         print("User details not found in SharedPreferences");
-        return false;
+        return null;
       }
 
-      String url = '$serverurl/read/phonemes/verify';
+      String url = '$serverurl/read/fluency/calcWPM';
 
       final response = await http.post(
         Uri.parse(url),
@@ -72,10 +71,11 @@ class Checkpointone {
           "Content-Type": "application/json",
         },
         body: jsonEncode({
+          "wordsDisplayed": worddisplayed,
           "audiopath": audiopath,
+          "TTT": tTT,
+          "AverageWPM": averageWPM,
           "audioMeme": audioMeme,
-          "worddisplayed": worddisplayed,
-          "difficulty": difficulty,
           "readersId": readersId,
         }),
       );
@@ -83,27 +83,28 @@ class Checkpointone {
       if (response.statusCode == 200) {
         print("\n\n################ ✅ decoded & verfied audio");
         final resfinal = jsonDecode(response.body);
+        print('✈️ output');
         print(resfinal);
-        print('✈️ status');
-        print(resfinal['status']);
-        return resfinal['status'];
+        // print(resfinal['status']);
+        return resfinal;
       }
 
       print(
         " Failed to verify audio:  status ${response.statusCode} , error : ${response.body}}",
       );
 
-      return false;
+      return null;
     } catch (e) {
       print("Error in getScoresDetails: $e");
-      return false;
+      return null;
     }
   }
 
-  static Future<Map<String, dynamic>> getTextfromSpeech(
-    String path,
-    String displayword,
-    String difflevel,
+  static Future<Map<String, dynamic>?> calcWPM(
+    String opath,
+    String wordsDisplayed,
+    String TTT,
+    String AverageWPM,
   ) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -120,7 +121,7 @@ class Checkpointone {
 
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
-      var audio = await http.MultipartFile.fromPath('audio', path);
+      var audio = await http.MultipartFile.fromPath('audio', opath);
 
       request.files.add(audio);
 
@@ -134,22 +135,22 @@ class Checkpointone {
         final audiopath = jresponse['file']['path'];
         final audioMeme = "audio/mpeg";
         final memetype = jresponse['file']['mimetype'];
-
         final readersId = "674c6844b809c21b9d948786";
 
         final verfiresult = await verifySpeak(
+          worddisplayed: wordsDisplayed,
           audioMeme: audioMeme,
           audiopath: audiopath,
-          difficulty: difflevel,
+          averageWPM: AverageWPM,
           readersId: readersId,
-          worddisplayed: displayword,
+          tTT: TTT,
         );
 
-        if (verfiresult) {
-          return {"result": true};
+        if (verfiresult != null) {
+          return verfiresult;
         }
 
-        return {"result": false};
+        return null;
       }
 
       final error = await response.stream.bytesToString();

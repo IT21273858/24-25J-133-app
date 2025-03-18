@@ -104,7 +104,10 @@ flutter:
     - assets/images/cath.png
     - assets/images/sqr.png
     - assets/images/patternprediction.png
+    - assets/images/dinowalk.gif
+    - assets/images/doglder.gif
     - assets/images/medie.png
+    - assets/images/gogflat.gif
 
     #   - images/a_dot_burr.jpeg
     #   - images/a_dot_ham.jpeg

@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:dyslexia/services/ReadServices/checkPointThree.dart';
 import 'package:dyslexia/signup/RegisterChooseForChild.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
@@ -5,13 +9,67 @@ import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class ReadCheckpointThreeVerify extends StatelessWidget {
+class ReadCheckpointThreeVerify extends StatefulWidget {
+  final String worddisplayed;
+
+  const ReadCheckpointThreeVerify({super.key, required this.worddisplayed});
+
+  @override
+  State<ReadCheckpointThreeVerify> createState() =>
+      _ReadCheckpointThreeVerifyState();
+}
+
+class _ReadCheckpointThreeVerifyState extends State<ReadCheckpointThreeVerify> {
+  bool isfetching = false;
+  List<dynamic> options = [];
+  dynamic selection;
+
+  @override
+  void initState() {
+    setState(() {
+      isfetching = false;
+      selection = null;
+    });
+    fetchImages();
+    super.initState();
+  }
+
+  Future<void> fetchImages() async {
+    if (isfetching) {
+      return;
+    }
+
+    setState(() {
+      isfetching = true;
+    });
+
+    final imaglist = await Checkpointthree.getImages(
+      prompt: widget.worddisplayed,
+    );
+
+    if (imaglist != null) {
+      final imgs = imaglist['Images'];
+      final correct = imgs[0];
+      imgs!.shuffle(Random());
+      setState(() {
+        options = imgs;
+        selection = correct;
+      });
+    }
+
+    setState(() {
+      isfetching = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    String displayText = "Bamboo";
-    String textinstruction = "Choose the image related to the word displayed";
+    String textinstruction =
+        isfetching
+            ? "Please wait till the image loads"
+            : "Choose the image related to the word displayed";
     return Scaffold(
       backgroundColor: Color(0xFFF0EFF4),
       body: Padding(
@@ -104,9 +162,16 @@ class ReadCheckpointThreeVerify extends StatelessWidget {
                                         ),
                                         width: 161,
                                         height: 188,
-                                        child: Image.asset(
-                                          "assets/images/test123.png",
-                                        ),
+                                        child:
+                                            isfetching || options.isEmpty
+                                                ? Image.asset(
+                                                  "assets/images/gogflat.gif",
+                                                )
+                                                : Image.memory(
+                                                  base64Decode(
+                                                    options[0]?['dataimg'],
+                                                  ),
+                                                ),
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
@@ -117,9 +182,16 @@ class ReadCheckpointThreeVerify extends StatelessWidget {
                                         ),
                                         width: 161,
                                         height: 188,
-                                        child: Image.asset(
-                                          "assets/images/test12345.png",
-                                        ),
+                                        child:
+                                            isfetching || options.isEmpty
+                                                ? Image.asset(
+                                                  "assets/images/gogflat.gif",
+                                                )
+                                                : Image.memory(
+                                                  base64Decode(
+                                                    options[1]?['dataimg'],
+                                                  ),
+                                                ),
                                       ),
                                     ],
                                   ),
@@ -135,9 +207,16 @@ class ReadCheckpointThreeVerify extends StatelessWidget {
                                         ),
                                         width: 161,
                                         height: 188,
-                                        child: Image.asset(
-                                          "assets/images/test12345.png",
-                                        ),
+                                        child:
+                                            isfetching || options.isEmpty
+                                                ? Image.asset(
+                                                  "assets/images/gogflat.gif",
+                                                )
+                                                : Image.memory(
+                                                  base64Decode(
+                                                    options[2]?['dataimg'],
+                                                  ),
+                                                ),
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
@@ -148,9 +227,16 @@ class ReadCheckpointThreeVerify extends StatelessWidget {
                                         ),
                                         width: 161,
                                         height: 188,
-                                        child: Image.asset(
-                                          "assets/images/test123.png",
-                                        ),
+                                        child:
+                                            isfetching || options.isEmpty
+                                                ? Image.asset(
+                                                  "assets/images/gogflat.gif",
+                                                )
+                                                : Image.memory(
+                                                  base64Decode(
+                                                    options[3]?['dataimg'],
+                                                  ),
+                                                ),
                                       ),
                                     ],
                                   ),
@@ -158,9 +244,12 @@ class ReadCheckpointThreeVerify extends StatelessWidget {
                               ),
                             ),
                             CustomButton(
-                              text: "Confirm",
+                              text:
+                                  isfetching
+                                      ? "Creating Wonders,wait..."
+                                      : "Confirm",
                               isLoading: false,
-                              onPressed: () {},
+                              onPressed: fetchImages,
                             ),
                             // TextButton(
                             //   onPressed: () {},
@@ -226,173 +315,6 @@ class ReadCheckpointThreeVerify extends StatelessWidget {
   }
 
   // // Scrollable Child Selection
-  // Widget _buildChildSelection() {
-  //   return Container(
-  //     height: 30,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: children.length,
-  //       itemBuilder: (context, index) {
-  //         return Padding(
-  //           padding: EdgeInsets.symmetric(horizontal: 8.0),
-  //           child: ElevatedButton(
-  //             onPressed: () {},
-  //             style: ElevatedButton.styleFrom(
-  //               backgroundColor: Colors.white,
-  //               elevation: 0,
-  //               shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20),
-  //               ),
-  //             ),
-  //             child: Text(
-  //               children[index],
-  //               style: TextStyle(color: Colors.black),
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // // Performance Section with Line Chart
-  // Widget _buildPerformanceSection() {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 16.0),
-  //     child: Column(
-  //       children: [
-  //         Container(
-  //           padding: EdgeInsets.all(12),
-  //           decoration: BoxDecoration(
-  //             color: Colors.white,
-  //             borderRadius: BorderRadius.circular(18),
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 color: Colors.grey.withOpacity(0.2),
-  //                 spreadRadius: 1,
-  //                 blurRadius: 5,
-  //               ),
-  //             ],
-  //           ),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             spacing: 5,
-  //             children: [
-  //               Padding(padding: EdgeInsets.only(left: 10, right: 10)),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Text(
-  //                         'Statistics',
-  //                         style: TextStyle(
-  //                           fontSize: 18,
-  //                           fontWeight: FontWeight.normal,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         'Game Name',
-  //                         style: TextStyle(
-  //                           fontSize: 16,
-  //                           color: Colors.black,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.end,
-  //                     children: [
-  //                       Text(
-  //                         '1,027',
-  //                         style: TextStyle(
-  //                           fontSize: 20,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         '+12.75%',
-  //                         style: TextStyle(color: Colors.green, fontSize: 14),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //               Padding(padding: EdgeInsets.only(top: 10)),
-  //               LineChartWidget(chartData: performanceData),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // // Manage Children Section
-  // Widget _buildManageChildrenSection(BuildContext context) {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 16.0),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text(
-  //               "Manage Children",
-  //               style: TextStyle(
-  //                 fontSize: 18,
-  //                 fontWeight: FontWeight.bold,
-  //                 color: Colors.black,
-  //               ),
-  //             ),
-  //             IconButton(
-  //               icon: Icon(
-  //                 Icons.add_circle_outline,
-  //                 size: 24,
-  //                 color: Colors.black,
-  //               ),
-  //               onPressed: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => RegisterChooseForChild(),
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         SizedBox(height: 10),
-  //         ChildCardSliderDashboard(
-  //           childData: [
-  //             {
-  //               "name": "Child 1",
-  //               "level": "Level 02",
-  //               "lastLogged": "12 Feb 2024 - 12:30pm",
-  //               "image": "assets/images/child.png",
-  //             },
-  //             {
-  //               "name": "Child 2",
-  //               "level": "Level 03",
-  //               "lastLogged": "10 Feb 2024 - 11:45am",
-  //               "image": "assets/images/child.png",
-  //             },
-  //             {
-  //               "name": "Child 3",
-  //               "level": "Level 01",
-  //               "lastLogged": "08 Feb 2024 - 02:15pm",
-  //               "image": "assets/images/child.png",
-  //             },
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
     return Container(
       // decoration: BoxDecoration(
