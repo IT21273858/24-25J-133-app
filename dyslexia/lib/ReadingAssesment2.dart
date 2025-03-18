@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
+import 'package:dyslexia/soundconfig.dart';
+import 'package:dyslexia/textToSpeech/TextToSpeechHelper.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -13,20 +17,88 @@ class UnderstandSound extends StatefulWidget {
 class _UnderstandSoundState extends State<UnderstandSound> {
   // audio recoridnf
   final recorder = AudioRecorderService();
-
+  String? selection = null;
+  String? correctanswer = null;
+  List<String> displayList = [];
+  final TextToSpeechHelper tts = TextToSpeechHelper();
   bool isrecording = false;
+  bool isfetching = false;
+  bool isValidating = false;
 
   @override
   void initState() {
-    isrecording = false;
+    setState(() {
+      isrecording = false;
+      isValidating = false;
+      isfetching = false;
+      displayList = [];
+      selection = null;
+      correctanswer = null;
+    });
+    assignWord();
     super.initState();
+  }
+
+  Future<void> assignWord() async {
+    if (isfetching) {
+      return;
+    }
+    setState(() {
+      isfetching = true;
+    });
+    List<List<String>> phonicslistCopy = List.from(simplephonisc);
+    phonicslistCopy.shuffle(Random());
+    List<String> displayListlocal = List.from(phonicslistCopy[0]);
+    final selectionlocal = displayListlocal[0];
+    displayListlocal.shuffle(Random());
+    setState(() {
+      displayList = displayListlocal;
+      correctanswer = selectionlocal;
+      selection = null;
+      isfetching = false;
+    });
+  }
+
+  Future<void> validate() async {
+    if (isfetching) return;
+
+    if (selection == null) {
+      CustomSnakbar.showSnack(context, "Select the matching audio first");
+      return;
+    }
+
+    setState(() {
+      isValidating = true;
+    });
+
+    if (selection == correctanswer) {
+      CustomSnakbar.showSnack(
+        context,
+        " 🥳 Your Correct",
+        bgcolor: Colors.green.shade200,
+        txtcolor: readingTitleColor,
+      );
+    } else {
+      CustomSnakbar.showSnack(
+        context,
+        " ❌ Your Prediction is wrong",
+        bgcolor: Colors.redAccent.shade200,
+      );
+    }
+    print(" correct is : $correctanswer");
+    print(" your value is : $selection");
+    await assignWord();
+    setState(() {
+      isValidating = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    String displayText = "/Sh/";
+
+    String displayText = correctanswer ?? "_";
     String hintText = "Shoe";
     String textinstruction = "Choose the correct pronounciation";
 
@@ -129,10 +201,10 @@ class _UnderstandSoundState extends State<UnderstandSound> {
                                     displayText,
                                     style: rCheckpointtxtDisplay,
                                   ),
-                                  Text(
-                                    "Hint :$hintText",
-                                    style: rCheckpointInst,
-                                  ),
+                                  // Text(
+                                  //   "Hint :$hintText",
+                                  //   style: rCheckpointInst,
+                                  // ),
                                   Image.asset(
                                     "assets/images/rabi2.png",
                                     width: screenWidth * 0.2,
@@ -185,69 +257,132 @@ class _UnderstandSoundState extends State<UnderstandSound> {
                             spacing: 12,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Container(
-                                width: screenWidth * 0.2,
-                                height: screenHeight * 0.1,
-                                padding: const EdgeInsets.all(15.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(17),
+                              GestureDetector(
+                                onTap: () {
+                                  tts.speak(displayList[0]);
+                                  setState(() {
+                                    selection = displayList[0];
+                                  });
+                                },
+                                child: Container(
+                                  width: screenWidth * 0.2,
+                                  height: screenHeight * 0.1,
+                                  padding: const EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(17),
+                                    ),
+                                    color:
+                                        selection == displayList[0]
+                                            ? wordhighlight
+                                            : Color.fromRGBO(
+                                              166,
+                                              159,
+                                              204,
+                                              0.31,
+                                            ),
                                   ),
-                                  color: Color.fromRGBO(166, 159, 204, 0.31),
-                                ),
-                                child: IconButton(
-                                  onPressed: () {},
-                                  iconSize: 32,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      tts.speak(displayList[0]);
+                                      setState(() {
+                                        selection = displayList[0];
+                                      });
+                                    },
+                                    iconSize: 32,
 
-                                  icon: Icon(
-                                    !isrecording
-                                        ? FeatherIcons.volume1
-                                        : FeatherIcons.volume2,
-                                    color: Colors.white,
+                                    icon: Icon(
+                                      !isrecording
+                                          ? FeatherIcons.volume1
+                                          : FeatherIcons.volume2,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
-                              Container(
-                                width: screenWidth * 0.2,
-                                height: screenHeight * 0.1,
-                                padding: const EdgeInsets.all(15.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(17),
+                              GestureDetector(
+                                onTap: () {
+                                  tts.speak(displayList[1]);
+                                  setState(() {
+                                    selection = displayList[1];
+                                  });
+                                },
+                                child: Container(
+                                  width: screenWidth * 0.2,
+                                  height: screenHeight * 0.1,
+                                  padding: const EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(17),
+                                    ),
+                                    color:
+                                        selection == displayList[1]
+                                            ? wordhighlight
+                                            : Color.fromRGBO(
+                                              166,
+                                              159,
+                                              204,
+                                              0.31,
+                                            ),
                                   ),
-                                  color: Color.fromRGBO(166, 159, 204, 0.31),
-                                ),
-                                child: IconButton(
-                                  onPressed: () {},
-                                  iconSize: 32,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      tts.speak(displayList[1]);
+                                      setState(() {
+                                        selection = displayList[1];
+                                      });
+                                    },
+                                    iconSize: 32,
 
-                                  icon: Icon(
-                                    !isrecording
-                                        ? FeatherIcons.volume1
-                                        : FeatherIcons.volume2,
-                                    color: Colors.white,
+                                    icon: Icon(
+                                      !isrecording
+                                          ? FeatherIcons.volume1
+                                          : FeatherIcons.volume2,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
-                              Container(
-                                width: screenWidth * 0.2,
-                                height: screenHeight * 0.1,
-                                padding: const EdgeInsets.all(15.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(17),
+                              GestureDetector(
+                                onTap: () {
+                                  tts.speak(displayList[2]);
+                                  setState(() {
+                                    selection = displayList[2];
+                                  });
+                                },
+                                child: Container(
+                                  width: screenWidth * 0.2,
+                                  height: screenHeight * 0.1,
+                                  padding: const EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(17),
+                                    ),
+                                    color:
+                                        selection == displayList[2]
+                                            ? wordhighlight
+                                            : Color.fromRGBO(
+                                              166,
+                                              159,
+                                              204,
+                                              0.31,
+                                            ),
                                   ),
-                                  color: Color.fromRGBO(166, 159, 204, 0.31),
-                                ),
-                                child: IconButton(
-                                  onPressed: () {},
-                                  iconSize: 32,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      tts.speak(displayList[2]);
+                                      setState(() {
+                                        selection = displayList[2];
+                                      });
+                                    },
+                                    iconSize: 32,
 
-                                  icon: Icon(
-                                    !isrecording
-                                        ? FeatherIcons.volume1
-                                        : FeatherIcons.volume2,
-                                    color: Colors.white,
+                                    icon: Icon(
+                                      !isrecording
+                                          ? FeatherIcons.volume1
+                                          : FeatherIcons.volume2,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -262,7 +397,7 @@ class _UnderstandSoundState extends State<UnderstandSound> {
                             CustomButton(
                               text: "Check Spelling",
                               isLoading: false,
-                              onPressed: () {},
+                              onPressed: validate,
                             ),
                             // TextButton(
                             //   onPressed: () {},
