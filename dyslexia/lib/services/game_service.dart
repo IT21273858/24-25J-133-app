@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -159,6 +160,40 @@ class GameService {
     } catch (e) {
       print("Error in Getting Games: $e");
       return null;
+    }
+    return null;
+  }
+
+  static Future<Map<String, dynamic>?> predictDrawnShape(File file) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('auth_token');
+
+      if (token == null) {
+        print("User authentication token not found");
+        return null;
+      }
+
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$baseUrl/predict-shape'),
+      );
+
+      request.headers["Authorization"] = "Bearer $token";
+      request.files.add(await http.MultipartFile.fromPath('image', file.path));
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        var decodedResponse = jsonDecode(responseBody);
+        print("✅ Shape Predicted: ${decodedResponse['prediction']}");
+        return decodedResponse;
+      } else {
+        print("❌ Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("❌ Error sending file: $e");
     }
     return null;
   }

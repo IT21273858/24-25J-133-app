@@ -12,14 +12,14 @@ import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-class Visualprocessingpredictshape extends StatefulWidget {
+class VisualprocessingDrawshapes extends StatefulWidget {
   @override
-  State<Visualprocessingpredictshape> createState() =>
-      _VisualprocessingpredictshapeState();
+  State<VisualprocessingDrawshapes> createState() =>
+      _VisualprocessingDrawshapesState();
 }
 
-class _VisualprocessingpredictshapeState
-    extends State<Visualprocessingpredictshape> {
+class _VisualprocessingDrawshapesState
+    extends State<VisualprocessingDrawshapes> {
   final GlobalKey _globalKey = GlobalKey();
   List<Offset?> _points = [];
 
