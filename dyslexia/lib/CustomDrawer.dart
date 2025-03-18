@@ -20,6 +20,7 @@ import 'package:dyslexia/variables.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingPredictPattern.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingPredictShape.dart';
+import 'package:dyslexia/visualprocessing/VisualProcessingShapeLearing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,6 +91,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "icon": FeatherIcons.activity,
       "label": "Select Game",
       "page": VisualprocessingGameselect(),
+    },
+    {
+      "icon": FeatherIcons.bookOpen,
+      "label": "Learn Shape",
+      "page": Visualprocessingshapelearing(),
     },
     {
       "icon": FeatherIcons.barChart2,

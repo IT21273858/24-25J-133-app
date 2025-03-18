@@ -113,4 +113,53 @@ class GameService {
     }
     return null;
   }
+
+  static Future<Map<String, dynamic>?> generateShapes(String level) async {
+    print("Income to generate shapes function");
+    try {
+      final shapeResponse = await http.post(
+        Uri.parse('$baseUrl/generate-shapes'),
+        body: jsonEncode({"difficulty": level}),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      print("Shape response status: ${shapeResponse.statusCode}");
+      print("Shape response body: ${shapeResponse.body}"); // Debugging
+
+      if (shapeResponse.statusCode == 200) {
+        final responseData = jsonDecode(shapeResponse.body);
+        print("####(((())))");
+        print(responseData);
+        return responseData; // Returns {status: true, patternPrediction: {...}}
+      }
+    } catch (e) {
+      print("Error in Getting Shapes: $e");
+      return null;
+    }
+    return null;
+  }
+
+  static Future<Map<String, dynamic>?> getAllGames() async {
+    print("Income to get all games function");
+    try {
+      final gameResponse = await http.get(
+        Uri.parse('$baseUrl/games/getAll'),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      print("Shape response status: ${gameResponse.statusCode}");
+      print("Shape response body: ${gameResponse.body}"); // Debugging
+
+      if (gameResponse.statusCode == 200) {
+        final responseData = jsonDecode(gameResponse.body);
+        print("####(((())))");
+        print(responseData);
+        return responseData; // Returns {status: true, patternPrediction: {...}}
+      }
+    } catch (e) {
+      print("Error in Getting Games: $e");
+      return null;
+    }
+    return null;
+  }
 }
