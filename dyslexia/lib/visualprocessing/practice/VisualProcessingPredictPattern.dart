@@ -139,7 +139,6 @@ class _VisualprocessingpredictpatternState
   Widget build(BuildContext context) {
     final timer = Provider.of<TimerService>(context);
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Color(0xFFF0EFF4),

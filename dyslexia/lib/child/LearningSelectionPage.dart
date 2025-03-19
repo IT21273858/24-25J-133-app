@@ -84,14 +84,7 @@ class Learningselectionpage extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text(
-                          option["title"],
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepPurple,
-                          ),
-                        ),
+                        Text(option["title"], style: cardheadingStyle),
                       ],
                     ),
                   ),

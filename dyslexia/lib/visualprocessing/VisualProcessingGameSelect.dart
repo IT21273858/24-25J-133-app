@@ -175,7 +175,7 @@ class _VisualprocessingGameselectState
                           children: [
                             Image.asset(
                               "assets/images/Shapes_gif.gif",
-                              width: screenWidth * 0.9,
+                              width: screenWidth * 0.5,
                             ),
                           ],
                         ),
@@ -226,11 +226,7 @@ class _VisualprocessingGameselectState
                                           SizedBox(height: 10),
                                           Text(
                                             'Draw And Predict Shape',
-                                            style: TextStyle(
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.deepPurple,
-                                            ),
+                                            style: cardheadingStyle,
                                             textAlign:
                                                 TextAlign
                                                     .center, // Centered text

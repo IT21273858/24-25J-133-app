@@ -486,7 +486,13 @@ class ChildCardSliderDashboard extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 20,
-                            backgroundImage: AssetImage(child['image']!),
+                            backgroundImage:
+                                child['image']!.startsWith('http')
+                                    ? NetworkImage(child['image']!)
+                                    : AssetImage('assets/images/user.png'),
+                            onBackgroundImageError: (_, __) {
+                              print("Error loading image: ${child['image']}");
+                            },
                           ),
                         ],
                       ),

@@ -75,6 +75,7 @@ class ApiService {
       final String name = decodedToken['name'] ?? 'User';
       final String img = decodedToken['img'] ?? '';
       final String level = decodedToken['level'] ?? '';
+      final String type = decodedToken['type'] ?? 'Reading';
 
       if (userId.isEmpty) {
         print("Invalid JWT Token: Missing user_id");
@@ -89,6 +90,7 @@ class ApiService {
       await prefs.setString('user_name', name);
       await prefs.setString('user_image', img);
       await prefs.setString('level', level);
+      await prefs.setString('type', type);
 
       // Print for debugging
       print("^^^^^^^^^^^ Decoded User Data ^^^^^^^^^^^");
@@ -98,6 +100,7 @@ class ApiService {
       print("Name: $name");
       print("Image URL: $img");
       print("Level: $level");
+      print("Type: $type");
       print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 
       // Fetch and store parent details
@@ -110,6 +113,7 @@ class ApiService {
         "name": name,
         "img": img,
         "level": level,
+        "type": type,
       };
     } catch (e) {
       print("Error in _handleLoginResponse: $e");
@@ -253,7 +257,9 @@ class ApiService {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       // String? childId = prefs.getString('user_id'); // Get stored child ID
-      String? childId = '674c6844b809c21b9d948786'; // Get stored child ID
+      String? childId = prefs.getString('user_id');
+      print("@@@@@@@@@@@@@@");
+      print(childId);
 
       String? token = prefs.getString('auth_token');
 
@@ -326,6 +332,84 @@ class ApiService {
       }
     } catch (e) {
       print("❌ Error in fetchAndStoreChildDetails: $e");
+    }
+  }
+
+  /// **Fetch Parent By ID Including Children**
+  static Future<Map<String, dynamic>?> fetchParentById() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? parentId = prefs.getString('user_id'); // Get stored parent ID
+      String? token = prefs.getString('auth_token'); // Get token for auth
+
+      if (parentId == null || token == null) {
+        print("❌ Parent ID or Token not found.");
+        return null;
+      }
+
+      String url = '$parentBaseUrl/get/$parentId';
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {"Authorization": "Bearer $token"},
+      );
+
+      if (response.statusCode == 200) {
+        final parentData = jsonDecode(response.body);
+
+        if (parentData == null || parentData['parent'] == null) {
+          print("❌ Invalid API response.");
+          return null;
+        }
+
+        // **Extract Parent Details**
+        final parent = parentData['parent'];
+        await prefs.setString('parent_name', parent['name'] ?? "Unknown");
+        await prefs.setString('parent_email', parent['email'] ?? "No Email");
+        await prefs.setString(
+          'parent_image',
+          parent['profile_img'] ?? "assets/images/user.png",
+        );
+        await prefs.setString(
+          'parent_address',
+          parent['address'] ?? "No Address",
+        );
+        await prefs.setString(
+          'parent_phone',
+          parent['phoneNumber'] ?? "No Phone",
+        );
+
+        // **Extract Children Details**
+        List<dynamic>? children = parent['Children'];
+        if (children != null && children.isNotEmpty) {
+          List<String> childrenList =
+              children.map((child) {
+                return jsonEncode({
+                  "id": child['id'],
+                  "name": child['name'],
+                  "email": child['email'],
+                  "profile_img": child['profile_img'],
+                  "level": child['level'],
+                  "phone": child['phoneNumber'],
+                  "address": child['address'],
+                  "updatedAt": formatDateTime(
+                    child['updatedAt'],
+                  ), // Format timestamp
+                });
+              }).toList();
+
+          await prefs.setStringList('children_list', childrenList);
+        }
+
+        print("✅ Parent & Children details stored successfully.");
+        return parentData; // Return full parent details
+      } else {
+        print("⚠️ Failed to fetch parent details: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("❌ Error in fetchParentById: $e");
+      return null;
     }
   }
 
