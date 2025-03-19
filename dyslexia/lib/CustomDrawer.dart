@@ -3,6 +3,12 @@ import 'package:dyslexia/LevelUnlocker.dart';
 import 'package:dyslexia/LoginPage.dart';
 import 'package:dyslexia/ReadingAssesment1.dart';
 import 'package:dyslexia/ReadingAssesment2.dart';
+import 'package:dyslexia/ReadingAssesment3.dart';
+import 'package:dyslexia/ReadingAssesment4F.dart';
+import 'package:dyslexia/ReadingAssesment5F.dart';
+import 'package:dyslexia/ReadingAssesment6P.dart';
+import 'package:dyslexia/ReadingAssesment7P.dart';
+import 'package:dyslexia/Readings.dart';
 import 'package:dyslexia/ScoresPage.dart';
 import 'package:dyslexia/VisualProcessTest1.dart';
 import 'package:dyslexia/VisualProcessingTest2.dart';
@@ -66,7 +72,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     {
       "icon": FeatherIcons.barChart2,
       "label": "Checkpoint",
-      "page": UnderstandSound(),
+      "page": ReadingPage(),
     },
     {
       "icon": FeatherIcons.barChart2,

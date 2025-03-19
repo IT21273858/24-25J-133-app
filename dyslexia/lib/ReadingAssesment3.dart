@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
+import 'package:dyslexia/services/ReadServices/readApi.dart';
+import 'package:dyslexia/textToSpeech/TextToSpeechHelper.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -13,17 +17,50 @@ class ScrambleWord extends StatefulWidget {
 class _ScrambleWordState extends State<ScrambleWord> {
   // audio recoridnf
   final recorder = AudioRecorderService();
-
+  final TextToSpeechHelper tts = TextToSpeechHelper();
   bool isrecording = false;
+  bool isfetching = false;
 
-  final List<String> correctWord = ['C', 'A', 'T'];
+  List<String> correctWord = ['C', 'A', 'T'];
   List<String> wordscramble = ['T', 'A', 'C'];
   List<String> wordinput = [];
+
+  int misscount = 0;
 
   @override
   void initState() {
     isrecording = false;
+    fetchWord();
     super.initState();
+  }
+
+  Future<void> fetchWord() async {
+    if (isfetching) {
+      return;
+    }
+
+    List<String> difflevel = ["Easy"];
+    difflevel.shuffle(Random());
+    String levl = difflevel[0];
+
+    setState(() {
+      isfetching = true;
+      correctWord = [];
+      wordscramble = [];
+      wordinput = [];
+    });
+
+    final response = await Readapi.fetchWord(difflevl: levl);
+
+    if (response != null) {}
+
+    setState(() {
+      correctWord = response?['word'].toString().split("") ?? "Cat".split("");
+      List<String> scramblehelper = List.from(correctWord);
+      scramblehelper.shuffle(Random());
+      wordscramble = scramblehelper;
+      isfetching = false;
+    });
   }
 
   @override
@@ -60,16 +97,20 @@ class _ScrambleWordState extends State<ScrambleWord> {
     }
 
     Future<void> handleWordOrder(String s) async {
-      print("inside handleword-not valid");
       if (s.isNotEmpty) {
-        print("inside handleword");
-        print(s);
         int lenExist = wordinput.length;
         if (correctWord[lenExist] == s) {
           setState(() {
             // wordscramble.indexOf(s);
             wordscramble.remove(s);
             wordinput = [...wordinput, s];
+            if (wordscramble.isEmpty) {
+              fetchWord();
+            }
+          });
+        } else {
+          setState(() {
+            misscount = misscount + 1;
           });
         }
       }
@@ -152,7 +193,9 @@ class _ScrambleWordState extends State<ScrambleWord> {
                                     ),
                                   ),
                                   child: IconButton(
-                                    onPressed: handleRecording,
+                                    onPressed: () {
+                                      tts.speak(correctWord.join(""));
+                                    },
                                     iconSize: 42,
                                     icon: Icon(
                                       !isrecording
@@ -191,88 +234,105 @@ class _ScrambleWordState extends State<ScrambleWord> {
                                       style: rCheckpointInst,
                                     ),
                                   ),
-                                  Row(
-                                    spacing: 20,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children:
-                                        wordscramble.map((letter) {
-                                          return Draggable<String>(
-                                            feedback: Container(
-                                              width: screenWidth * 0.2,
-                                              height: screenHeight * 0.1,
-                                              padding: const EdgeInsets.all(
-                                                15.0,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(17),
+                                  isfetching
+                                      ? Column(
+                                        children: [
+                                          Image.asset(
+                                            "assets/images/dinowalk.gif",
+                                            width: screenWidth * 0.4,
+                                          ),
+                                          Text(
+                                            "Loading...",
+                                            style: rCheckpointSkip,
+                                          ),
+                                        ],
+                                      )
+                                      : Row(
+                                        spacing: 20,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children:
+                                            wordscramble.map((letter) {
+                                              return Draggable<String>(
+                                                feedback: Container(
+                                                  width: screenWidth * 0.15,
+                                                  height: screenHeight * 0.1,
+                                                  padding: const EdgeInsets.all(
+                                                    8.0,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                          Radius.circular(17),
+                                                        ),
+                                                    color: Color.fromRGBO(
+                                                      166,
+                                                      159,
+                                                      204,
+                                                      0.6,
+                                                    ),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      letter,
+                                                      style: cardtxtdisplay,
+                                                    ),
+                                                  ),
                                                 ),
-                                                color: Color.fromRGBO(
-                                                  166,
-                                                  159,
-                                                  204,
-                                                  0.6,
+                                                data: letter,
+                                                childWhenDragging: Container(
+                                                  width: screenWidth * 0.15,
+                                                  height: screenHeight * 0.1,
+                                                  padding: const EdgeInsets.all(
+                                                    8.0,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                          Radius.circular(17),
+                                                        ),
+                                                    color: Color.fromRGBO(
+                                                      166,
+                                                      159,
+                                                      204,
+                                                      0.1,
+                                                    ),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      letter,
+                                                      style: cardtxtdisplay,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  letter,
-                                                  style: cardtxtdisplay,
+                                                child: Container(
+                                                  width: screenWidth * 0.15,
+                                                  height: screenHeight * 0.1,
+                                                  padding: const EdgeInsets.all(
+                                                    8.0,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                          Radius.circular(17),
+                                                        ),
+                                                    color: Color.fromRGBO(
+                                                      166,
+                                                      159,
+                                                      204,
+                                                      0.31,
+                                                    ),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      letter,
+                                                      style: cardtxtdisplay,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            data: letter,
-                                            childWhenDragging: Container(
-                                              width: screenWidth * 0.2,
-                                              height: screenHeight * 0.1,
-                                              padding: const EdgeInsets.all(
-                                                15.0,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(17),
-                                                ),
-                                                color: Color.fromRGBO(
-                                                  166,
-                                                  159,
-                                                  204,
-                                                  0.1,
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  letter,
-                                                  style: cardtxtdisplay,
-                                                ),
-                                              ),
-                                            ),
-                                            child: Container(
-                                              width: screenWidth * 0.2,
-                                              height: screenHeight * 0.1,
-                                              padding: const EdgeInsets.all(
-                                                15.0,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(17),
-                                                ),
-                                                color: Color.fromRGBO(
-                                                  166,
-                                                  159,
-                                                  204,
-                                                  0.31,
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  letter,
-                                                  style: cardtxtdisplay,
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                  ),
+                                              );
+                                            }).toList(),
+                                      ),
                                 ],
                               ),
                             ),
@@ -364,27 +424,28 @@ class _ScrambleWordState extends State<ScrambleWord> {
                           ),
                         ),
                       ),
-                      Center(
-                        child: Column(
-                          spacing: 9,
-                          children: [
-                            CustomButton(
-                              text: "Check Spelling",
-                              isLoading: false,
-                              onPressed: () {},
-                            ),
 
-                            // TextButton(
-                            //   onPressed: () {},
-                            //   child: Text(
-                            //     "Skip Word",
-                            //     style: rCheckpointSkip,
-                            //     textAlign: TextAlign.center,
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                      ),
+                      // Center(
+                      //   child: Column(
+                      //     spacing: 9,
+                      //     children: [
+                      //       CustomButton(
+                      //         text: "Check Spelling",
+                      //         isLoading: false,
+                      //         onPressed: () {},
+                      //       ),
+
+                      //       // TextButton(
+                      //       //   onPressed: () {},
+                      //       //   child: Text(
+                      //       //     "Skip Word",
+                      //       //     style: rCheckpointSkip,
+                      //       //     textAlign: TextAlign.center,
+                      //       //   ),
+                      //       // ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

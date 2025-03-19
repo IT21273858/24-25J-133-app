@@ -5,6 +5,9 @@ import 'dart:ui' as ui;
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/Sketch.dart';
+import 'package:dyslexia/services/ReadServices/readApi.dart';
+import 'package:dyslexia/soundconfig.dart';
+import 'package:dyslexia/textToSpeech/TextToSpeechHelper.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -19,7 +22,13 @@ class WriteSound extends StatefulWidget {
 
 class _WriteSoundState extends State<WriteSound> {
   final GlobalKey _globalKey = GlobalKey();
+  final TextToSpeechHelper tts = TextToSpeechHelper();
   List<Offset?> _points = [];
+
+  String? Word = null;
+  bool isfeatching = false;
+  bool isValidating = false;
+  bool showText = false;
 
   String generateRandomFileName({String extension = 'png'}) {
     final random = Random();
@@ -48,9 +57,34 @@ class _WriteSoundState extends State<WriteSound> {
     }
   }
 
+  Future<void> fetchLeter() async {
+    if (isfeatching) {
+      return;
+    }
+    setState(() {
+      isfeatching = true;
+    });
+
+    List test = List.from(testAlpha);
+    test.shuffle(Random());
+    setState(() {
+      Word = test[0];
+    });
+
+    setState(() {
+      isfeatching = false;
+    });
+  }
+
   Future<void> validateSketch() async {
     //get the sketch ( letter return by User ) and validate with the audio (sound of A). if the Audio and the Sketch matches.
     //user passes level
+
+    if (isValidating) return;
+
+    setState(() {
+      isValidating = true;
+    });
 
     try {
       RenderRepaintBoundary boundary =
@@ -69,16 +103,16 @@ class _WriteSoundState extends State<WriteSound> {
       await file.writeAsBytes(pngBytes);
 
       //validate with Google-ML
-      final inputImage = InputImage.fromFile(file);
-      final textRecognizer = TextRecognizer(
-        script: TextRecognitionScript.latin,
-      );
-      final RecognizedText recognizedText = await textRecognizer.processImage(
-        inputImage,
-      );
-      String extractedText = recognizedText.text.trim();
-      await textRecognizer.close();
-      print("extxt $extractedText");
+      // final inputImage = InputImage.fromFile(file);
+      // final textRecognizer = TextRecognizer(
+      //   script: TextRecognitionScript.latin,
+      // );
+      // final RecognizedText recognizedText = await textRecognizer.processImage(
+      //   inputImage,
+      // );
+      // String extractedText = recognizedText.text.trim();
+      // await textRecognizer.close();
+      // print("extxt $extractedText");
 
       //validate with tesserat
       // String txtext = await FlutterTesseractOcr.extractText(
@@ -86,10 +120,48 @@ class _WriteSoundState extends State<WriteSound> {
       //   language: "eng",
       // );
       // print(txtext);
+
+      final response = await Readapi.verifyHandwriting(file.path);
+
+      if (response != null) {
+        if (response['text']
+            .toString()
+            .toLowerCase()
+            .split(" ")
+            .contains(Word!.toLowerCase())) {
+          CustomSnakbar.showSnack(
+            context,
+            "Congratulations 🥳, sketch is valid",
+            bgcolor: Colors.greenAccent.shade400,
+            txtcolor: readingTitleColoropaHalf,
+          );
+          await fetchLeter();
+        } else {
+          CustomSnakbar.showSnack(
+            context,
+            "Invalid ❌, sketch is invalid",
+            bgcolor: Colors.redAccent.shade400,
+          );
+        }
+      }
     } catch (e) {
       print("error");
       print(e);
+    } finally {
+      setState(() {
+        isValidating = false;
+      });
     }
+  }
+
+  @override
+  void initState() {
+    Word = null;
+    isfeatching = false;
+    isValidating = false;
+    showText = false;
+    fetchLeter();
+    super.initState();
   }
 
   @override
@@ -174,7 +246,11 @@ class _WriteSoundState extends State<WriteSound> {
                                               ),
                                             ),
                                             child: IconButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                setState(() {
+                                                  showText = !showText;
+                                                });
+                                              },
                                               icon: Icon(
                                                 FeatherIcons.gift,
                                                 color: Colors.white,
@@ -214,7 +290,11 @@ class _WriteSoundState extends State<WriteSound> {
                                                             ),
                                                       ),
                                                       child: IconButton(
-                                                        onPressed: () {},
+                                                        onPressed: () {
+                                                          if (Word != null) {
+                                                            tts.speak(Word!);
+                                                          }
+                                                        },
                                                         icon: Icon(
                                                           FeatherIcons.volume2,
                                                           color: Colors.white,
@@ -235,9 +315,18 @@ class _WriteSoundState extends State<WriteSound> {
                                                 ],
                                               ),
                                               Image.asset(
-                                                "assets/images/teddy.png",
+                                                isValidating
+                                                    ? "assets/images/dinowalk.gif"
+                                                    : "assets/images/teddy.png",
                                                 width: screenWidth * 0.25,
                                               ),
+                                              showText
+                                                  ? Text(
+                                                    Word!,
+                                                    style:
+                                                        rCheckpointtxtDisplay,
+                                                  )
+                                                  : Text(""),
                                             ],
                                           ),
                                         ),
@@ -340,10 +429,11 @@ class _WriteSoundState extends State<WriteSound> {
                                     ),
                                   ),
                                   child: IconButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       setState(() {
                                         _points.clear();
                                       });
+                                      // await fetchLeter();
                                     },
                                     icon: Icon(
                                       Icons.refresh,
@@ -360,7 +450,10 @@ class _WriteSoundState extends State<WriteSound> {
                             spacing: 9,
                             children: [
                               CustomButton(
-                                text: "Validate Sketch",
+                                text:
+                                    isValidating
+                                        ? "Validating"
+                                        : "Validate Sketch",
                                 isLoading: false,
                                 onPressed: validateSketch,
                               ),

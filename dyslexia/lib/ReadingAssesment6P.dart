@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
+import 'package:dyslexia/soundconfig.dart';
+import 'package:dyslexia/textToSpeech/TextToSpeechHelper.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -13,20 +17,57 @@ class RhymeMatch extends StatefulWidget {
 class _RhymeMatchState extends State<RhymeMatch> {
   // audio recoridnf
   final recorder = AudioRecorderService();
+  TextToSpeechHelper tts = TextToSpeechHelper();
+  String displayText = "_";
+  String rhymics = "_";
+  String selection = "_";
+  List randomset = [];
 
   bool isrecording = false;
+  bool isfetching = false;
 
   @override
   void initState() {
     isrecording = false;
+    rhymics = "_";
+    displayText = "_";
+    selection = "_";
+    randomset = [];
+    fetchwords();
     super.initState();
+  }
+
+  Future<void> fetchwords() async {
+    if (isfetching) {
+      return;
+    }
+
+    setState(() {
+      isfetching = true;
+    });
+
+    List rhymicspool = List.from(testRhymics);
+    rhymicspool.shuffle(Random());
+    Map<String, String> randomSet = rhymicspool[0];
+
+    setState(() {
+      displayText = randomSet['word']!;
+      rhymics = randomSet['rhyme']!;
+      List test = List.from([
+        rhymics,
+        randomSet['option1']!,
+        randomSet['option2']!,
+      ]);
+      test.shuffle(Random());
+      randomset = test;
+      isfetching = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    String displayText = "Cat";
 
     String textinstruction = "Choose the a Rhymic pronounciation";
 
@@ -54,6 +95,30 @@ class _RhymeMatchState extends State<RhymeMatch> {
         //stop record here
         await stopRecording();
       }
+    }
+
+    Future<void> validateSpell() async {
+      if (selection == "_") {
+        CustomSnakbar.showSnack(context, "Please Select a option");
+        return;
+      }
+
+      if (selection == rhymics) {
+        CustomSnakbar.showSnack(
+          context,
+          " Congratulation 🥳, You passed ",
+          bgcolor: Colors.green.shade400,
+          txtcolor: readingTitleColor,
+        );
+      } else {
+        CustomSnakbar.showSnack(
+          context,
+          " Failed 🥺, Please Try Again",
+          bgcolor: Colors.red.shade400,
+        );
+      }
+
+      await fetchwords();
     }
 
     return Scaffold(
@@ -189,10 +254,18 @@ class _RhymeMatchState extends State<RhymeMatch> {
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(17),
                                   ),
-                                  color: Color.fromRGBO(166, 159, 204, 0.31),
+                                  color:
+                                      selection == randomset[0]
+                                          ? wordhighlight
+                                          : Color.fromRGBO(166, 159, 204, 0.31),
                                 ),
                                 child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    tts.speak(randomset[0]);
+                                    setState(() {
+                                      selection = randomset[0];
+                                    });
+                                  },
                                   iconSize: 32,
 
                                   icon: Icon(
@@ -211,10 +284,18 @@ class _RhymeMatchState extends State<RhymeMatch> {
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(17),
                                   ),
-                                  color: Color.fromRGBO(166, 159, 204, 0.31),
+                                  color:
+                                      selection == randomset[1]
+                                          ? wordhighlight
+                                          : Color.fromRGBO(166, 159, 204, 0.31),
                                 ),
                                 child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    tts.speak(randomset[1]);
+                                    setState(() {
+                                      selection = randomset[1];
+                                    });
+                                  },
                                   iconSize: 32,
 
                                   icon: Icon(
@@ -233,10 +314,18 @@ class _RhymeMatchState extends State<RhymeMatch> {
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(17),
                                   ),
-                                  color: Color.fromRGBO(166, 159, 204, 0.31),
+                                  color:
+                                      selection == randomset[2]
+                                          ? wordhighlight
+                                          : Color.fromRGBO(166, 159, 204, 0.31),
                                 ),
                                 child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    tts.speak(randomset[2]);
+                                    setState(() {
+                                      selection = randomset[2];
+                                    });
+                                  },
                                   iconSize: 32,
 
                                   icon: Icon(
@@ -258,7 +347,7 @@ class _RhymeMatchState extends State<RhymeMatch> {
                             CustomButton(
                               text: "Check Spelling",
                               isLoading: false,
-                              onPressed: () {},
+                              onPressed: validateSpell,
                             ),
                             // TextButton(
                             //   onPressed: () {},
