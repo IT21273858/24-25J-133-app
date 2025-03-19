@@ -1,6 +1,11 @@
+import 'dart:math';
+
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
+import 'package:dyslexia/services/ReadServices/readApi.dart';
+import 'package:dyslexia/speechTotext/speech2Text.dart';
+import 'package:dyslexia/textToSpeech/TextToSpeechHelper.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -12,40 +17,143 @@ class ReadPronounceWord extends StatefulWidget {
 
 class _ReadPronounceWordState extends State<ReadPronounceWord> {
   // audio recoridnf
-  final recorder = AudioRecorderService();
+  // final recorder = AudioRecorderService();
+  bool isInizalited = false;
+  final TextToSpeechHelper tts = TextToSpeechHelper();
+
+  Speecht2text stt = Speecht2text();
+  String displayText = "Bamboo";
 
   bool isrecording = false;
+  bool isfetching = false;
+  List<String> speaks = [];
 
   @override
   void initState() {
     isrecording = false;
+    fetchWord();
     super.initState();
+  }
+
+  Future<void> fetchWord() async {
+    if (isfetching) {
+      return;
+    }
+
+    List<String> difflevel = ["Easy", "Medium", "Hard"];
+    difflevel.shuffle(Random());
+    String levl = difflevel[0];
+
+    setState(() {
+      isfetching = true;
+      speaks = [];
+    });
+
+    final response = await Readapi.fetchWord(difflevl: levl);
+
+    if (response != null) {}
+
+    setState(() {
+      displayText = response?['word'] ?? "Text";
+      isfetching = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    String displayText = "Bamboo";
     String textinstruction = "press the mic icon & speak the word displayed ";
 
+    // Future<void> startRecording() async {
+    //   await recorder.startRecording();
+    //   setState(() {
+    //     isrecording = true;
+    //   });
+    // }
     Future<void> startRecording() async {
-      await recorder.startRecording();
+      if (!isInizalited) {
+        bool istatus = await stt.initSpeech(
+          onstoplisten: () {
+            isrecording = false;
+          },
+        );
+        if (istatus) {
+          setState(() {
+            isInizalited = true;
+          });
+        } else {
+          return;
+        }
+      }
+
       setState(() {
         isrecording = true;
       });
+
+      await stt.listen(
+        onResult: (result) {
+          print(result.recognizedWords);
+          setState(() {
+            speaks = result.recognizedWords.toLowerCase().trim().split(" ");
+          });
+        },
+      );
+    }
+
+    // Future<void> stopRecording() async {
+    //   String? outputpath = await recorder.stopRecording();
+    //   setState(() {
+    //     isrecording = false;
+    //   });
+    //   print("audio stoped");
+    //   print(outputpath ?? "no path");
+    // }
+
+    Future<void> checkspelling() async {
+      if (isrecording) {
+        CustomSnakbar.showSnack(
+          context,
+          "Con't check spelling while Recording",
+        );
+        return;
+      }
+
+      if (speaks.isEmpty) {
+        CustomSnakbar.showSnack(context, "Press Mic to speak");
+        return;
+      }
+
+      print("speaks");
+      print(speaks);
+      if (speaks.contains(displayText.toLowerCase())) {
+        CustomSnakbar.showSnack(context, "✅ Valid Pronounciation");
+      } else {
+        if (displayText.toLowerCase() == speaks.join()) {
+          CustomSnakbar.showSnack(context, "✅ Valid Pronounciation");
+        }
+        CustomSnakbar.showSnack(context, "❌ Incorrect Pronounciation");
+      }
+
+      await fetchWord();
     }
 
     Future<void> stopRecording() async {
-      String? outputpath = await recorder.stopRecording();
+      await stt.stoplistening();
+
       setState(() {
         isrecording = false;
       });
-      print("audio stoped");
-      print(outputpath ?? "no path");
+      // print("audio stoped");
+      // print(outputpath ?? "no path");
     }
 
     Future<void> handleRecording() async {
+      if (isfetching) {
+        CustomSnakbar.showSnack(context, "Wait till word display");
+        return;
+      }
+
       if (!isrecording) {
         //start record here
         await startRecording();
@@ -116,30 +224,44 @@ class _ReadPronounceWordState extends State<ReadPronounceWord> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: pointsBackgroundColor,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(40),
-                                        ),
-                                      ),
-                                      child: IconButton(
-                                        onPressed: handleRecording,
-                                        icon: Icon(
-                                          FeatherIcons.volume2,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    displayText,
-                                    style: rCheckpointtxtDisplay,
-                                  ),
-                                ],
+                                children:
+                                    isfetching
+                                        ? [
+                                          Image.asset(
+                                            "assets/images/dinowalk.gif",
+                                            width: screenWidth * 0.4,
+                                          ),
+                                          Text(
+                                            "Loading...",
+                                            style: rCheckpointSkip,
+                                          ),
+                                        ]
+                                        : [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: pointsBackgroundColor,
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(40),
+                                                ),
+                                              ),
+                                              child: IconButton(
+                                                onPressed: () {
+                                                  tts.speak(displayText);
+                                                },
+                                                icon: Icon(
+                                                  FeatherIcons.volume2,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            displayText,
+                                            style: rCheckpointtxtDisplay,
+                                          ),
+                                        ],
                               ),
                             ),
                           ],
@@ -184,7 +306,7 @@ class _ReadPronounceWordState extends State<ReadPronounceWord> {
                             CustomButton(
                               text: "Check Spelling",
                               isLoading: false,
-                              onPressed: () {},
+                              onPressed: checkspelling,
                             ),
                             // TextButton(
                             //   onPressed: () {},

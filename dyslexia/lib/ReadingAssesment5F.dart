@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/serviceprovider/audio_recorder.dart';
 import 'package:dyslexia/serviceprovider/timer.dart';
+import 'package:dyslexia/services/ReadServices/readApi.dart';
+import 'package:dyslexia/textToSpeech/TextToSpeechHelper.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -15,23 +19,58 @@ class RapidWords extends StatefulWidget {
 
 class _RapidWordsState extends State<RapidWords> {
   // audio recoridnf
-  // final recorder = AudioRecorderService();
+  final TextToSpeechHelper tts = TextToSpeechHelper();
   final speechtxt = SpeechToText();
   final gametime = 10; //in sec
   bool isGameStarted = false;
   bool isrecording = false;
   bool isCorrect = false;
 
-  List<String> WordsPool = [];
+  bool isfetching = false;
+
+  List<dynamic> initpool = [];
+  List<dynamic> WordsPool = [];
   String displayText = "Bamboo";
+
+  List<String> correctwords = [];
+  List<String> Incorrectwords = [];
 
   @override
   void initState() {
     isrecording = false;
     isGameStarted = false;
     isCorrect = false;
+    Incorrectwords = [];
+    correctwords = [];
     initSpeech();
+    fetchWord();
     super.initState();
+  }
+
+  Future<void> fetchWord() async {
+    if (isfetching) {
+      return;
+    }
+
+    List<String> difflevel = ["Easy", "Medium", "Hard"];
+    difflevel.shuffle(Random());
+    String levl = difflevel[0];
+
+    setState(() {
+      isfetching = true;
+      initpool = [];
+      Incorrectwords = [];
+      correctwords = [];
+    });
+
+    final response = await Readapi.fetchWordlist(difflevl: levl);
+
+    if (response != null) {}
+
+    setState(() {
+      initpool = response?['words'] ?? [];
+      isfetching = false;
+    });
   }
 
   void initSpeech() async {
@@ -76,6 +115,7 @@ class _RapidWordsState extends State<RapidWords> {
         setState(() {
           isCorrect = false;
           displayText = WordsPool.removeAt(0);
+          initpool.removeAt(0);
           timer.restartwithSeconds(gametime);
         });
       } else {
@@ -98,6 +138,10 @@ class _RapidWordsState extends State<RapidWords> {
             // print("✅");
             setState(() {
               isCorrect = true;
+              if (Incorrectwords.indexOf(displayText) != -1) {
+                Incorrectwords.removeAt(Incorrectwords.indexOf(displayText));
+              }
+              correctwords = [...correctwords, displayText];
             });
             timer.stopTimer();
             await stopRecording();
@@ -105,6 +149,7 @@ class _RapidWordsState extends State<RapidWords> {
             gameHandler();
           } else {
             print("not spelled");
+            Incorrectwords = [...Incorrectwords, displayText];
           }
         },
         listenFor: Duration(minutes: 5),
@@ -126,22 +171,28 @@ class _RapidWordsState extends State<RapidWords> {
       }
     }
 
-    void startGame() {
-      if (isGameStarted) return;
+    void startGame() async {
+      if (isGameStarted || isfetching) return;
+      if (initpool.isEmpty) {
+        await fetchWord();
+      }
       setState(() {
         isGameStarted = true;
-        WordsPool = [
-          "Flower",
-          "Bamboo",
-          "Apple",
-          "Banana",
-          "Leaf",
-          "Car",
-          "House",
-          "Shop",
-          "Star",
-          "Fish",
-        ];
+        WordsPool =
+            initpool.isEmpty
+                ? [
+                  "Flower",
+                  "Bamboo",
+                  "Apple",
+                  "Banana",
+                  "Leaf",
+                  "Car",
+                  "House",
+                  "Shop",
+                  "Star",
+                  "Fish",
+                ]
+                : initpool;
         displayText = WordsPool.removeAt(0);
       });
       timer.initStopwatch(gametime, onTimeup: gameHandler);
@@ -152,6 +203,7 @@ class _RapidWordsState extends State<RapidWords> {
       setState(() {
         isGameStarted = false;
         WordsPool = [];
+        initpool = [];
       });
       stopRecording();
       timer.stopStopWatch();
@@ -245,7 +297,9 @@ class _RapidWordsState extends State<RapidWords> {
                                             ),
                                           ),
                                           child: IconButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              tts.speak(displayText);
+                                            },
                                             icon: Icon(
                                               FeatherIcons.volume2,
                                               color: Colors.white,
@@ -358,7 +412,7 @@ class _RapidWordsState extends State<RapidWords> {
                           children: [
                             CustomButton(
                               text: isGameStarted ? "Stop Game" : "Start Game",
-                              isLoading: false,
+                              isLoading: isfetching,
                               onPressed: isGameStarted ? stopGame : startGame,
                             ),
                             // TextButton(
