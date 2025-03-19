@@ -35,31 +35,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   String userName = "Loading...";
   String userImage = "assets/images/user.png"; // Default image
-  String userRole = "child";
+  String userRole = "child"; // Default role
 
-  final List<Map<String, dynamic>> menuItems = [
+  final List<Map<String, dynamic>> parentMenuItems = [
     {"icon": FeatherIcons.home, "label": "Home", "page": DashboardParent()},
-    {
-      "icon": FeatherIcons.gift,
-      "label": "Lessons / Games",
-      "page": DashboardChild(),
-    },
-    {"icon": FeatherIcons.award, "label": "Profile", "page": ProfileChild()},
-    {
-      "icon": FeatherIcons.award,
-      "label": "Profile Parent",
-      "page": ProfileParent(),
-    },
-    {"icon": FeatherIcons.barChart2, "label": "Insights", "page": ScoresPage()},
+    {"icon": FeatherIcons.award, "label": "Profile", "page": ProfileParent()},
     {
       "icon": FeatherIcons.barChart2,
-      "label": "Insights_Parent",
+      "label": "Insights",
       "page": ParentAllScoresPage(),
-    },
-    {
-      "icon": FeatherIcons.barChart2,
-      "label": "LevelUnlock",
-      "page": LevelUnlocker(),
     },
     {
       "icon": FeatherIcons.barChart2,
@@ -68,18 +52,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
     },
     {
       "icon": FeatherIcons.barChart2,
-      "label": "Checkpoint",
-      "page": ReadPronounceWord(),
+      "label": "Level Unlock",
+      "page": LevelUnlocker(),
     },
+  ];
+
+  final List<Map<String, dynamic>> childMenuItems = [
+    {"icon": FeatherIcons.home, "label": "Home", "page": DashboardChild()},
+    {
+      "icon": FeatherIcons.gift,
+      "label": "Lessons / Games",
+      "page": DashboardChild(),
+    },
+    {"icon": FeatherIcons.award, "label": "Profile", "page": ProfileChild()},
+    {"icon": FeatherIcons.barChart2, "label": "Insights", "page": ScoresPage()},
     {
       "icon": FeatherIcons.barChart2,
-      "label": "Predict Shape",
-      "page": VisualProcessText2(),
-    },
-    {
-      "icon": FeatherIcons.activity,
-      "label": "Select Game",
-      "page": VisualprocessingGameselect(),
+      "label": "Checkpoint",
+      "page": ReadPronounceWord(),
     },
     {
       "icon": FeatherIcons.bookOpen,
@@ -87,44 +77,29 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "page": Visualprocessingshapelearing(),
     },
     {
-      "icon": FeatherIcons.barChart2,
-      "label": "Draw Shape Time",
-      "page": VisualprocessingDrawshapes(),
-    },
-    {
       "icon": FeatherIcons.bookOpen,
       "label": "Learn to Draw Shape",
       "page": VisualprocessingDrawshapeLearning(),
     },
     {
-      "icon": FeatherIcons.barChart2,
-      "label": "Predict pattern Time",
-      "page": Visualprocessingpredictpattern(),
+      "icon": FeatherIcons.activity,
+      "label": "Select Game",
+      "page": VisualprocessingGameselect(),
     },
     {
-      "icon": FeatherIcons.barChart2,
-      "label": "Predict pattern",
-      "page": VisualProcessText1(),
-    },
-    {
-      "icon": FeatherIcons.barChart2,
-      "label": "Word call",
+      "icon": FeatherIcons.disc,
+      "label": "Word Recall",
       "page": WordRecallTaskScreen(),
     },
     {
       "icon": FeatherIcons.disc,
-      "label": "Digits call",
+      "label": "Digits Recall",
       "page": DigitSpanTaskScreen(),
     },
     {
       "icon": FeatherIcons.disc,
-      "label": "Recall call",
+      "label": "Shape Recall",
       "page": RecallShape1Screen(),
-    },
-    {
-      "icon": FeatherIcons.disc,
-      "label": "Words recall",
-      "page": WordRecallScreen1(),
     },
   ];
 
@@ -134,13 +109,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
     setState(() {
       userName = prefs.getString('user_name') ?? "Unknown User";
       userImage = prefs.getString('user_image') ?? "assets/images/user.png";
-      userRole = prefs.getString('user_role') ?? "Unknown Role";
+      userRole = prefs.getString('user_role') ?? "unknown"; // Ensure lower case
     });
 
-    // Print details in the terminal
-    print("# User Details from Storage #");
+    print("# User Details #");
     print("User Name: $userName");
     print("User Image: $userImage");
+    print("User Role: $userRole");
     print("#");
   }
 
@@ -150,10 +125,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
       await prefs.clear(); // Clears all stored data
 
       print("@ User Logged Out @");
-      print("Storage Cleared Successfully");
-      print("@");
-
-      // Navigate to the Login Page
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => LoginPage()),
@@ -167,25 +138,30 @@ class _CustomDrawerState extends State<CustomDrawer> {
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // Fetch and print user details
+    _loadUserData();
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
+    // **Filter menu based on userRole**
+    List<Map<String, dynamic>> menuItems =
+        userRole == "parent" ? parentMenuItems : childMenuItems;
+
     return Drawer(
       backgroundColor: Color(0xFFF0EFF4), // Background Color
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Close Icon & Logo
+          // **Header Section**
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Applogo", style: menuAppLogoStyle),
+                Text("App Logo", style: menuAppLogoStyle),
                 IconButton(
                   icon: Icon(Icons.close, color: appPrimaryColor),
                   onPressed: () => Navigator.pop(context),
@@ -194,7 +170,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             ),
           ),
 
-          // Profile Section
+          // **Profile Section**
           Center(
             child: Column(
               children: [
@@ -203,7 +179,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(width: 16), // Left padding
-                    // Profile Image
+                    // **Profile Image**
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child:
@@ -221,8 +197,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 fit: BoxFit.cover,
                               ),
                     ),
-
-                    // Name & Role (Aligned Right)
+                    // **Name & Role**
                     Expanded(
                       child: Align(
                         alignment: Alignment.centerRight,
@@ -238,7 +213,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              "$userRole user",
+                              userRole == "parent"
+                                  ? "Parent User"
+                                  : "Child User",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 16,
@@ -258,7 +235,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
           SizedBox(height: 20),
 
-          // Menu Title
+          // **Menu Title**
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Text(
@@ -273,7 +250,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
           SizedBox(height: 10),
 
-          // Menu Items
+          // **Menu Items**
           Container(
             height: screenHeight * 0.5,
             child: SingleChildScrollView(
@@ -291,7 +268,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               selectedIndex = index;
                             });
 
-                            // Navigate using MaterialPageRoute
+                            // Navigate to the selected page
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -338,30 +315,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
             ),
           ),
 
-          Spacer(), // Push Logout to Bottom
-          // Logout Button
+          Spacer(),
+
+          // **Logout Button**
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigate to login page using MaterialPageRoute
-                  logoutUser(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  shadowColor: Colors.grey.withOpacity(0.2),
-                ),
-                child: Text(
-                  "Logout",
-                  style: TextStyle(color: menuColor, fontSize: 24),
-                ),
-              ),
+            child: ElevatedButton(
+              onPressed: () => logoutUser(context),
+              child: Text("Logout", style: TextStyle(fontSize: 20)),
             ),
           ),
         ],

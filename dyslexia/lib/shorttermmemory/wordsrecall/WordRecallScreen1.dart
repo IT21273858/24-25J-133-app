@@ -13,7 +13,6 @@ class _WordRecallScreen1State extends State<WordRecallScreen1> {
   int _remainingSeconds = 0;
   Timer? _timer;
   String _wordToShow = "";
-  String _level = "";
 
   @override
   void initState() {
@@ -26,7 +25,7 @@ class _WordRecallScreen1State extends State<WordRecallScreen1> {
     if (response != null && response['status'] == true) {
       setState(() {
         _wordToShow = response['generatedWord']['word']; // Example: "dog"
-        _level = response['generatedWord']['true_level']; // Example: "Level 2"
+        // Example: "Level 2"
         _remainingSeconds =
             response['generatedWord']['display_time']; // Example: 4 seconds
       });

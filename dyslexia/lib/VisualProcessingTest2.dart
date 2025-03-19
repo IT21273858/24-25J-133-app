@@ -2,14 +2,12 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:dyslexia/signup/RegisterChooseForChild.dart';
 import 'package:dyslexia/serviceprovider/drawing.dart';
 import 'package:dyslexia/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/components.dart';
 import 'dart:ui' as ui;
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 

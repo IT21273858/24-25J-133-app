@@ -125,6 +125,7 @@ flutter:
     - assets/images/square-loader.gif
     - assets/images/circle-loader.gif
     - assets/images/triangle-loader.gif
+    - assets/images/star_practice.jpg
     - assets/images/gogflat.gif
 
     - assets/images/panda.png

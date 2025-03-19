@@ -23,6 +23,7 @@ class _ProfileChildState extends State<ProfileChild> {
   String childImage = "assets/images/user.png";
   String childLevel = "Loading...";
   String childAddress = "Loading...";
+  String childType = "Loading...";
   List<Map<String, String>> gameScores = [];
 
   @override
@@ -41,6 +42,7 @@ class _ProfileChildState extends State<ProfileChild> {
       childImage = prefs.getString('child_image') ?? "assets/images/user.png";
       childLevel = prefs.getString('child_level') ?? "N/A";
       childAddress = prefs.getString('child_address') ?? "No Address";
+      childType = prefs.getString('user_type') ?? "unknown";
 
       // Load stored game scores safely
       List<String>? storedScores = prefs.getStringList('game_scores');
@@ -57,6 +59,8 @@ class _ProfileChildState extends State<ProfileChild> {
                 // "level": decoded["game"]["level"].toString(),
               };
             }).toList();
+
+        print("Child type ${childType}");
       } else {
         gameScores = []; // Avoid null reference error
       }
@@ -187,7 +191,7 @@ class _ProfileChildState extends State<ProfileChild> {
                               children: [
                                 Icon(FeatherIcons.user, size: 20),
                                 SizedBox(width: 5),
-                                Text("Reading"),
+                                Text(childType),
                               ],
                             ),
                           ],

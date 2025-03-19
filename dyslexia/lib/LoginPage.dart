@@ -1,3 +1,4 @@
+import 'package:dyslexia/signup/RegisterChoose.dart';
 import 'package:flutter/material.dart';
 import 'package:dyslexia/parent/DashboardParent.dart';
 import 'package:dyslexia/child/DashboardChild.dart';
@@ -50,6 +51,8 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setString('user_role', response['role'] ?? 'unknown');
         await prefs.setString('user_name', response['name'] ?? 'User');
         await prefs.setString('user_image', response['img'] ?? '');
+        await prefs.setString('user_type', response['type'] ?? 'unknown');
+        await prefs.setString('user_id', response['user_id'] ?? '');
 
         // Show video splash before navigating
         Navigator.pushReplacement(
@@ -165,7 +168,14 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     Text("Not a member? ", style: bodyStyle),
                     GestureDetector(
-                      onTap: _handleSignIn,
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterChoose(),
+                          ),
+                        );
+                      },
                       child: Text(
                         "Register now",
                         style: bodyStyle.copyWith(
