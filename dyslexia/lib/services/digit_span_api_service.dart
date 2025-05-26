@@ -40,11 +40,4 @@ class DigitSpanApiService {
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      }
-    } catch (e) {
-      print("Error validating sequence: $e");
-    }
-    return null;
-  }
-}
+        return jsonDe
