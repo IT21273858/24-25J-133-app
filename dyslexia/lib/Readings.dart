@@ -5,6 +5,8 @@ import 'package:dyslexia/ReadingAssesment5F.dart';
 import 'package:dyslexia/ReadingAssesment6P.dart';
 import 'package:dyslexia/ReadingAssesment7P.dart';
 import 'package:dyslexia/ReadingCheckpoint1.dart';
+import 'package:dyslexia/ReadingCheckpoint2.dart';
+import 'package:dyslexia/ReadingCheckpoint3.dart';
 import 'package:dyslexia/components.dart';
 import 'package:dyslexia/services/game_service.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +30,28 @@ class _ReadingPageState extends State<ReadingPage> {
 
   List ReadingComps = [
     {
-      "title": "Checkpoint",
-      "descr": "Read Pronounce Word",
-      "img": "assets/images/teddy.png",
+      "title": "Write Sound",
+      "descr": "WriteSound - Phe",
+      "img": "assets/images/cath.png",
+      "Nav": WriteSound(),
+    },
+    {
+      "title": "Spell The Word",
+      "descr": "Checkpoint 1",
+      "img": "assets/images/rabi3.png",
       "Nav": ReadCheckpointOne(),
+    },
+    {
+      "title": "Read Passage - FLuency",
+      "descr": "Checkpoint 2",
+      "img": "assets/images/beec.png",
+      "Nav": ReadCheckpointTwo(),
+    },
+    {
+      "title": "Comprehention - Image",
+      "descr": "Checkpoint 3",
+      "img": "assets/images/teddy.png",
+      "Nav": ReadCheckpointThree(),
     },
     {
       "title": "Read Pronounce Word",
@@ -39,30 +59,24 @@ class _ReadingPageState extends State<ReadingPage> {
       "img": "assets/images/rabi3.png",
       "Nav": ReadPronounceWord(),
     },
-    {
-      "title": "Understand Sound",
-      "descr": "UnderstandSound",
-      "img": "assets/images/beare.png",
-      "Nav": UnderstandSound(),
-    },
+    // {
+    //   "title": "Understand Sound",
+    //   "descr": "UnderstandSound",
+    //   "img": "assets/images/beare.png",
+    //   "Nav": UnderstandSound(),
+    // },
     {
       "title": "Scramble Word",
       "descr": "Scramble Word",
       "img": "assets/images/beec.png",
       "Nav": ScrambleWord(),
     },
-    {
-      "title": "Write Sound",
-      "descr": "WriteSound - Phe",
-      "img": "assets/images/cath.png",
-      "Nav": WriteSound(),
-    },
-    {
-      "title": "Rapid Words",
-      "descr": "RapidWords - F",
-      "img": "assets/images/teddy.png",
-      "Nav": RapidWords(),
-    },
+    // {
+    //   "title": "Rapid Words",
+    //   "descr": "RapidWords - F",
+    //   "img": "assets/images/teddy.png",
+    //   "Nav": RapidWords(),
+    // },
     {
       "title": "Rhyme Match",
       "descr": "Rhyme Match - p",

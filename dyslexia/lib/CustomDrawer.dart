@@ -9,6 +9,7 @@ import 'package:dyslexia/ReadingAssesment5F.dart';
 import 'package:dyslexia/ReadingAssesment6P.dart';
 import 'package:dyslexia/ReadingAssesment7P.dart';
 import 'package:dyslexia/ReadingCheckpoint3.dart';
+import 'package:dyslexia/ReadingCheckpoint3.dart';
 import 'package:dyslexia/Readings.dart';
 import 'package:dyslexia/ScoresPage.dart';
 import 'package:dyslexia/VisualProcessTest1.dart';
@@ -63,6 +64,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
     },
     {
       "icon": FeatherIcons.barChart2,
+      "label": "Image generrrated",
+      "page": ReadCheckpointThree(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
       "label": "Level Unlock",
       "page": LevelUnlocker(),
     },
@@ -81,6 +87,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "icon": FeatherIcons.barChart2,
       "label": "Reading Games",
       "page": ReadingPage(),
+    },
+    {
+      "icon": FeatherIcons.barChart2,
+      "label": "Image generrrated",
+      "page": ReadCheckpointThree(),
     },
     {
       "icon": FeatherIcons.barChart2,

@@ -20,15 +20,14 @@ class Readapi {
         return null;
       }
 
-      String url = '$pyserverurl/read/gen/word';
+      String url = '$pyserverurl/read/get-random-word';
 
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse(url),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
         },
-        body: jsonEncode({"difficulty": difflevl}),
       );
 
       if (response.statusCode == 200) {
@@ -122,6 +121,46 @@ class Readapi {
       print(
         " 👎 ❌ Failed to verify Imagesendhandwrite:  status ${response.statusCode} , error : ${error}}",
       );
+      return null;
+    } catch (e) {
+      print("Error in getScoresDetails: $e");
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> fetchWordWithMax({
+    String difflevl = "Easy",
+    int limit = 4,
+  }) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('auth_token');
+      String? role = prefs.getString('user_role');
+
+      if (token == null || role == null) {
+        print("User details not found in SharedPreferences");
+        return null;
+      }
+
+      String url = '$pyserverurl/read/get-random-word-max';
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({"limit": limit}),
+      );
+
+      if (response.statusCode == 200) {
+        print("####################");
+        print(response.body);
+        return jsonDecode(response.body);
+      }
+
+      print("Failed to Game Scores. Status code: ${response.statusCode}");
+
       return null;
     } catch (e) {
       print("Error in getScoresDetails: $e");

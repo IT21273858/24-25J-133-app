@@ -124,7 +124,7 @@ class _WriteSoundState extends State<WriteSound> {
       final response = await Readapi.verifyHandwriting(file.path);
 
       if (response != null) {
-        if (response['text']
+        if (response['result']['predictedChar']
             .toString()
             .toLowerCase()
             .split(" ")
@@ -136,12 +136,18 @@ class _WriteSoundState extends State<WriteSound> {
             txtcolor: readingTitleColoropaHalf,
           );
           await fetchLeter();
+          setState(() {
+            _points.clear();
+          });
         } else {
           CustomSnakbar.showSnack(
             context,
             "Invalid ❌, sketch is invalid",
             bgcolor: Colors.redAccent.shade400,
           );
+          setState(() {
+            _points.clear();
+          });
         }
       }
     } catch (e) {
@@ -376,14 +382,24 @@ class _WriteSoundState extends State<WriteSound> {
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(20),
                                     ),
-                                    color: cardBackgroundcolor,
+                                    color: const ui.Color.fromARGB(
+                                      255,
+                                      0,
+                                      0,
+                                      0,
+                                    ),
                                   ),
                                   width: screenWidth * 0.8,
                                   height: screenHeight * 0.3,
                                   child: RepaintBoundary(
                                     key: _globalKey,
                                     child: Container(
-                                      color: Colors.white,
+                                      color: const ui.Color.fromARGB(
+                                        255,
+                                        0,
+                                        0,
+                                        0,
+                                      ),
                                       child: GestureDetector(
                                         onPanUpdate: (details) {
                                           RenderBox renderBox =

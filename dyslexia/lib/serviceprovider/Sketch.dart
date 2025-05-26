@@ -9,8 +9,8 @@ class Drawing extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint();
     // paint.color = readingTitleColor;
-    paint.color = Colors.white;
-    paint.strokeWidth = 4;
+    paint.color = const Color.fromARGB(255, 255, 255, 255);
+    paint.strokeWidth = 32;
     paint.strokeCap = StrokeCap.round;
 
     Paint fillPaint = Paint();
