@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:dyslexia/serviceprovider/Sketch.dart';
+import 'package:dyslexia/serviceprovider/Sketch1.dart';
 import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:dyslexia/services/game_service.dart';
 import 'package:dyslexia/variables.dart';
