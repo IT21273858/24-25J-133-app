@@ -20,15 +20,14 @@ class Checkpointone {
         return null;
       }
 
-      String url = '$pyserverurl/read/gen/word';
+      String url = '$pyserverurl/read/get-random-word';
 
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse(url),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
         },
-        body: jsonEncode({"difficulty": difflevl}),
       );
 
       if (response.statusCode == 200) {
@@ -63,7 +62,7 @@ class Checkpointone {
         return false;
       }
 
-      String url = '$serverurl/read/phonemes/verify';
+      String url = '$pyserverurl/read/verifyspeak';
 
       final response = await http.post(
         Uri.parse(url),
@@ -73,8 +72,7 @@ class Checkpointone {
         },
         body: jsonEncode({
           "audiopath": audiopath,
-          "audioMeme": audioMeme,
-          "worddisplayed": worddisplayed,
+          "targetword": worddisplayed,
           "difficulty": difficulty,
           "readersId": readersId,
         }),
@@ -83,10 +81,14 @@ class Checkpointone {
       if (response.statusCode == 200) {
         print("\n\n################ ✅ decoded & verfied audio");
         final resfinal = jsonDecode(response.body);
+        print('✈️ REsULT ^^^^^^^^^^^^^^^^^');
         print(resfinal);
-        print('✈️ status');
-        print(resfinal['status']);
-        return resfinal['status'];
+        print('✈️ ^^^^^^^^^^^^^^^^^^^^^^^');
+
+        if (resfinal['cer-rate'] > 0.5) {
+          return false;
+        }
+        return true;
       }
 
       print(

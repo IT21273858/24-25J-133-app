@@ -1,2 +1,2 @@
-final serverurl = "https://z03jsbzm-8000.asse.devtunnels.ms";
-final pyserverurl = "https://z03jsbzm-5000.asse.devtunnels.ms";
+final serverurl = "https://sz07446t-8000.asse.devtunnels.ms";
+final pyserverurl = "https://sz07446t-5000.asse.devtunnels.ms";

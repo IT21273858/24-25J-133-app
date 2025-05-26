@@ -20,15 +20,14 @@ class Checkpointthree {
         return null;
       }
 
-      String url = '$pyserverurl/read/gen/word';
+      String url = '$pyserverurl/read/get-random-word';
 
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse(url),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
         },
-        body: jsonEncode({"difficulty": difflevl}),
       );
 
       if (response.statusCode == 200) {

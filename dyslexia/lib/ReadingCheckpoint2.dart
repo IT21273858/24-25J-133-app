@@ -35,6 +35,9 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
     });
 
     final response = await Checkpointtwo.fetchpara(lines: 2);
+    print("****** Response ********");
+    print(response);
+    print("**************");
 
     setState(() {
       isfetching = false;
@@ -84,13 +87,14 @@ class _ReadCheckpointTwoState extends State<ReadCheckpointTwo> {
       if (result != null) {
         CustomSnakbar.showSnack(
           context,
-          " Your Fluency Level is ${result['fluencylevel']}",
+          " Your Fluency Level is ${result['result']['fluency_score']}",
         );
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ReadCheckpointThree()),
-        );
+        await assignPara();
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => ReadCheckpointThree()),
+        // );
       } else {
         CustomSnakbar.showSnack(context, "Can not track your fluency re-try");
         await assignPara();

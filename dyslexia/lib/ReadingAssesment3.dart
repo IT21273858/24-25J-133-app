@@ -50,7 +50,7 @@ class _ScrambleWordState extends State<ScrambleWord> {
       wordinput = [];
     });
 
-    final response = await Readapi.fetchWord(difflevl: levl);
+    final response = await Readapi.fetchWordWithMax(difflevl: levl, limit: 4);
 
     if (response != null) {}
 

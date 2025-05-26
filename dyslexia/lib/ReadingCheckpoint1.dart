@@ -256,13 +256,16 @@ class _ReadCheckpointOneState extends State<ReadCheckpointOne> {
                                       });
                                     }
 
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => ReadCheckpointTwo(),
-                                      ),
-                                    );
+                                    // stopRecording();
+                                    assignWord();
+
+                                    // Navigator.pushReplacement(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder:
+                                    //         (context) => ,
+                                    //   ),
+                                    // );
                                   } else {
                                     CustomSnakbar.showSnack(
                                       context,

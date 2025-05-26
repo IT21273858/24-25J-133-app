@@ -18,15 +18,14 @@ class Checkpointtwo {
         return null;
       }
 
-      String url = '$pyserverurl/read/gen/passage';
+      String url = '$pyserverurl/read/get-random-passage';
 
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse(url),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
         },
-        body: jsonEncode({"num_sentences": lines}),
       );
 
       if (response.statusCode == 200) {
@@ -62,7 +61,7 @@ class Checkpointtwo {
         return null;
       }
 
-      String url = '$serverurl/read/fluency/calcWPM';
+      String url = '$pyserverurl/read/verify-passage';
 
       final response = await http.post(
         Uri.parse(url),
@@ -71,7 +70,7 @@ class Checkpointtwo {
           "Content-Type": "application/json",
         },
         body: jsonEncode({
-          "wordsDisplayed": worddisplayed,
+          "passage": worddisplayed,
           "audiopath": audiopath,
           "TTT": tTT,
           "AverageWPM": averageWPM,
@@ -100,6 +99,7 @@ class Checkpointtwo {
     }
   }
 
+  // now CPM
   static Future<Map<String, dynamic>?> calcWPM(
     String opath,
     String wordsDisplayed,
