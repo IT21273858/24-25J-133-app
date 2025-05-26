@@ -50,6 +50,9 @@ dependencies:
   google_mlkit_text_recognition: ^0.14.0
   flutter_swiper_view: ^1.1.8
   flutter_tts: ^4.2.2
+  confetti: ^0.8.0
+  image: ^4.0.1
+  http: ^1.4.0
 
   # speech_to_text_continuous: ^6.5.4
 

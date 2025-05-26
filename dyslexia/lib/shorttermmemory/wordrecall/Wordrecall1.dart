@@ -58,7 +58,7 @@ class WordRecallTaskScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => WordRecallTaskScreen2(),
+                        builder: (context) => WordRecallTaskScreen2(level: 1),
                       ),
                     );
                   },

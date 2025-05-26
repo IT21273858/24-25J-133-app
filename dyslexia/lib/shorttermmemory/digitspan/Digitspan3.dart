@@ -1,4 +1,6 @@
 import 'package:dyslexia/shorttermmemory/digitspan/Digitspan4.dart';
+import 'package:dyslexia/services/digit_span_api_service.dart';
+// ✅ Import API service
 import 'package:flutter/material.dart';
 
 class DigitSpan3TaskScreen extends StatefulWidget {
@@ -11,16 +13,22 @@ class DigitSpan3TaskScreen extends StatefulWidget {
 }
 
 class _DigitSpan3TaskScreenState extends State<DigitSpan3TaskScreen> {
-  List<int> _selectedNumbers = []; // Holds user-selected numbers
+  List<int> _selectedNumbers = [];
 
-  void _submit() {
-    if (_selectedNumbers.join() == widget.digitSequence.join()) {
+  void _submit() async {
+    var result = await DigitSpanApiService.validateSequence(
+      _selectedNumbers,
+      widget.digitSequence,
+    );
+
+    if (result != null &&
+        result['status'] == true &&
+        result['isCorrect'] == true) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => DigitSpanTaskLevel4()),
       );
     } else {
-      // **Reset selected numbers and show error message**
       setState(() {
         _selectedNumbers.clear();
       });
@@ -127,13 +135,4 @@ class _DigitSpan3TaskScreenState extends State<DigitSpan3TaskScreen> {
               ),
               onPressed: _submit,
               child: const Text(
-                'Submit',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+           

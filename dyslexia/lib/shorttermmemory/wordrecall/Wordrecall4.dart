@@ -1,5 +1,5 @@
 import 'package:dyslexia/CustomDrawer.dart';
-import 'package:dyslexia/shorttermmemory/wordrecall/Wordrecall2.dart';
+import 'package:dyslexia/shorttermmemory/wordrecall/WordRecall2.dart';
 import 'package:flutter/material.dart';
 
 class WordRecallTaskLevel4 extends StatelessWidget {
@@ -31,7 +31,7 @@ class WordRecallTaskLevel4 extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Text(
-                  "Great Job!",
+                  "Well Done!",
                   style: TextStyle(
                     fontSize: screenWidth * 0.08,
                     fontWeight: FontWeight.bold,
@@ -42,7 +42,7 @@ class WordRecallTaskLevel4 extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 Text(
-                  "You Passed Level 1",
+                  "You Passed Level 4",
                   style: TextStyle(
                     fontSize: screenWidth * 0.07,
                     fontWeight: FontWeight.bold,
@@ -57,8 +57,10 @@ class WordRecallTaskLevel4 extends StatelessWidget {
                   height: screenHeight * 0.4, // 40% of screen height
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/quin1.png'),
-                      fit: BoxFit.contain, // Fits the panda image
+                      image: AssetImage(
+                        'assets/images/book.png',
+                      ), // Change the image
+                      fit: BoxFit.contain, // Adjust the image size
                     ),
                   ),
                 ),
@@ -68,7 +70,10 @@ class WordRecallTaskLevel4 extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => WordRecallTaskScreen2(),
+                        builder:
+                            (context) => WordRecallTaskScreen2(
+                              level: 1,
+                            ), // Navigate to WordRecallScreen2
                       ),
                     );
                   },

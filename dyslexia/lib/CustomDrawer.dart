@@ -24,6 +24,7 @@ import 'package:dyslexia/visualprocessing/practice/VisualProcessingShapeLearing.
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dyslexia/shorttermmemory/morphing/MorphGameScreen.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -111,6 +112,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "label": "Word call",
       "page": WordRecallTaskScreen(),
     },
+    {
+      "icon": FeatherIcons.disc,
+      "label": "Morphing Shape Game",
+      "page": MorphGameScreen(),
+    },
+
     {
       "icon": FeatherIcons.disc,
       "label": "Digits call",

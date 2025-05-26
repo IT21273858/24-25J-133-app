@@ -1,5 +1,6 @@
+// ✅ All imports at the top
 import 'package:dyslexia/CustomDrawer.dart';
-import 'package:dyslexia/services/memory_service.dart';
+import 'package:dyslexia/services/digit_span_api_service.dart';
 import 'package:dyslexia/shorttermmemory/digitspan/Digitspan3.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -15,35 +16,39 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
   List<int> _digitSequence = [];
   int _currentIndex = 0;
   String _currentDigit = "";
+  String selectedDifficulty = 'easy'; // Selected difficulty
 
   @override
   void initState() {
     super.initState();
-    _fetchDigitSequence();
+    // Wait for user to press Start Game
   }
 
   Future<void> _fetchDigitSequence() async {
-    var response = await MemoryService.generateDigitSequence();
-    if (response != null && response['status'] == true) {
-      List<int> fetchedSequence = List<int>.from(
-        response['digitSequence']['digitSequence'],
-      );
-      int displayTime = response['digitSequence']['displayTime'];
+    var response = await DigitSpanApiService.fetchDigitSequence(
+      difficulty: selectedDifficulty,
+    );
+
+    if (response != null) {
+      List<int> fetchedSequence = List<int>.from(response['digit_sequence']);
+      int displayTime = response['display_time'];
 
       setState(() {
         _digitSequence = fetchedSequence;
         _remainingSeconds = displayTime;
+        _currentIndex = 0; // Reset index
         _currentDigit =
             _digitSequence.isNotEmpty ? _digitSequence[0].toString() : "";
       });
 
-      _startCountdown();
+      _startCountdown(displayTime);
     } else {
       print("Failed to fetch digit sequence");
     }
   }
 
-  void _startCountdown() {
+  void _startCountdown(int displayTime) {
+    _timer?.cancel(); // Cancel any previous timer
     const oneSecond = Duration(seconds: 1);
     _timer = Timer.periodic(oneSecond, (Timer timer) {
       if (_remainingSeconds <= 0) {
@@ -55,6 +60,7 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
           if (_currentIndex < _digitSequence.length - 1) {
             _currentIndex++;
             _currentDigit = _digitSequence[_currentIndex].toString();
+            _remainingSeconds = displayTime; // Reset for next digit
           }
         });
       }
@@ -90,7 +96,7 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildHeader(context), // Profile and Menu
+              _buildHeader(context),
               SizedBox(height: screenHeight * 0.02),
               Text(
                 'Digit Span Task',
@@ -114,6 +120,37 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
                 ),
               ),
               SizedBox(height: screenHeight * 0.03),
+
+              // Difficulty Selector
+              DropdownButton<String>(
+                value: selectedDifficulty,
+                items: [
+                  DropdownMenuItem(value: 'easy', child: Text('Easy')),
+                  DropdownMenuItem(value: 'medium', child: Text('Medium')),
+                  DropdownMenuItem(value: 'hard', child: Text('Hard')),
+                  DropdownMenuItem(
+                    value: 'very hard',
+                    child: Text('Very Hard'),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      selectedDifficulty = value;
+                    });
+                  }
+                },
+              ),
+
+              SizedBox(height: screenHeight * 0.02),
+
+              ElevatedButton(
+                onPressed: _fetchDigitSequence,
+                child: Text('Start Game'),
+              ),
+
+              SizedBox(height: screenHeight * 0.03),
+
               // Digit Display
               Container(
                 padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
@@ -131,6 +168,7 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
                 ),
               ),
               SizedBox(height: screenHeight * 0.02),
+
               // Countdown Timer
               Container(
                 padding: EdgeInsets.all(12),
@@ -147,7 +185,6 @@ class _DigitSpanTaskScreen2State extends State<DigitSpanTaskScreen2> {
                   ),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.05),
             ],
           ),
         ),

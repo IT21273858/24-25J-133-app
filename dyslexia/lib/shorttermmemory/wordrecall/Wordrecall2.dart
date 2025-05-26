@@ -1,5 +1,4 @@
 import 'package:dyslexia/CustomDrawer.dart';
-import 'package:dyslexia/shorttermmemory/wordrecall/Wordrecall3.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -7,42 +6,63 @@ void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: WordRecallTaskScreen2(),
+      home: WordRecallTaskScreen2(level: 1),
     ),
   );
 }
 
 class WordRecallTaskScreen2 extends StatefulWidget {
+  final int level;
+  WordRecallTaskScreen2({required this.level});
+
   @override
-  _WordRecallTaskScreen2State createState() => _WordRecallTaskScreen2State();
+  _WordRecallTaskScreenState createState() => _WordRecallTaskScreenState();
 }
 
-class _WordRecallTaskScreen2State extends State<WordRecallTaskScreen2> {
-  int _remainingSeconds = 3; // Set initial countdown seconds
+class _WordRecallTaskScreenState extends State<WordRecallTaskScreen2> {
+  int _remainingSeconds = 3; // Countdown timer
   Timer? _timer;
-  String _wordToShow = ""; // Word that will be displayed
+  String _wordToShow = "";
 
-  final List<String> _words = [
-    'AN',
-    'AT',
-    'BY',
-    'DO',
-    'GO',
-    'HE',
-    'IF',
-    'IN',
-    'IS',
-    'IT',
-    'ME',
-    'NO',
-    'OF',
-    'ON',
-    'OR',
-    'TO',
-    'UP',
-    'WE',
-    'YE',
-  ]; // List of 2-letter meaningful words
+  // Word lists for different levels
+  final Map<int, List<String>> _wordLevels = {
+    1: [
+      'AN',
+      'AT',
+      'BY',
+      'DO',
+      'GO',
+      'HE',
+      'IF',
+      'IN',
+      'IS',
+      'IT',
+    ], // 2-letter words
+    2: [
+      'CAT',
+      'DOG',
+      'SUN',
+      'MAP',
+      'HAT',
+      'PEN',
+      'RUN',
+      'CAR',
+      'BAT',
+      'TOP',
+    ], // 3-letter words
+    3: [
+      'TREE',
+      'FISH',
+      'BIRD',
+      'MOON',
+      'STAR',
+      'WIND',
+      'HAND',
+      'FOOT',
+      'DOOR',
+      'FARM',
+    ], // 4-letter words
+  };
 
   @override
   void initState() {
@@ -52,11 +72,10 @@ class _WordRecallTaskScreen2State extends State<WordRecallTaskScreen2> {
   }
 
   void _generateWord() {
+    final words = _wordLevels[widget.level] ?? [];
     setState(() {
-      // Randomly pick a word from the list
       _wordToShow =
-          _words[(DateTime.now().millisecondsSinceEpoch % _words.length)
-              .toInt()];
+          words[(DateTime.now().millisecondsSinceEpoch % words.length).toInt()];
     });
   }
 
@@ -65,14 +84,21 @@ class _WordRecallTaskScreen2State extends State<WordRecallTaskScreen2> {
     _timer = Timer.periodic(oneSecond, (Timer timer) {
       if (_remainingSeconds <= 0) {
         timer.cancel();
-        // Navigate to the next screen when the timer ends
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => WordRecallTaskScreen3(wordToShow: _wordToShow),
-          ),
-        );
+        if (widget.level < 3) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => WordRecallTaskScreen2(level: widget.level + 1),
+            ),
+          );
+        } else {
+          // If last level, navigate to completion page or restart
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => CompletionScreen()),
+          );
+        }
       } else {
         setState(() {
           _remainingSeconds--;
@@ -89,114 +115,69 @@ class _WordRecallTaskScreen2State extends State<WordRecallTaskScreen2> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      backgroundColor: Color(0xFFFAF4FF), // Updated background color
+      backgroundColor: Color(0xFFFAF4FF),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _buildHeader(context), // Header with profile and menu
-                SizedBox(height: screenHeight * 0.02),
-                Text(
-                  'Word Recall',
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Level ${widget.level}',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple,
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple[100],
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Text(
+                  _wordToShow,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.08,
+                    fontSize: 50,
                     fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple, // Updated color
-                    fontFamily: 'Risque',
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                Container(
-                  width: screenWidth * 0.8, // 80% of screen width
-                  height: screenHeight * 0.3, // 30% of screen height
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/quin1.png'),
-                      fit: BoxFit.contain,
-                    ),
+                    color: Colors.deepPurple,
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.03),
-                // Make the word display more prominent
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurple[100], // Updated color
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Text(
-                    _wordToShow,
-                    style: TextStyle(
-                      fontSize:
-                          screenWidth *
-                          0.2, // Increased font size for visibility
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple, // Updated color
-                    ),
-                  ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                '00 : ${_remainingSeconds.toString().padLeft(2, '0')}',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple,
                 ),
-                SizedBox(height: screenHeight * 0.02),
-                // Countdown Timer
-                Container(
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurple[100], // Updated color
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Text(
-                    '00 : ${_remainingSeconds.toString().padLeft(2, '0')}',
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.08,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple, // Updated color
-                    ),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.05),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+}
 
-  // Header Section with Profile and Menu
-  Widget _buildHeader(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: EdgeInsets.all(screenWidth * 0.04),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _buildIconButton(Icons.menu, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CustomDrawer()),
-            );
-          }),
-          CircleAvatar(
-            radius: screenWidth * 0.07,
-            backgroundImage: AssetImage('assets/images/user.png'),
+class CompletionScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text(
+          'Congratulations! You completed all levels!',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.deepPurple,
           ),
-        ],
+          textAlign: TextAlign.center,
+        ),
       ),
-    );
-  }
-
-  // Icon button for menu
-  Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.black),
-      onPressed: onPressed,
     );
   }
 }

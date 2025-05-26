@@ -92,7 +92,7 @@ class _WordRecallScreen1State extends State<WordRecallScreen1> {
               height: screenHeight * 0.3, // 30% of screen height
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/panda.png'),
+                  image: AssetImage('assets/images/quin1.png'),
                   fit: BoxFit.contain,
                 ),
               ),

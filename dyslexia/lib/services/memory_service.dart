@@ -7,10 +7,10 @@ import 'package:intl/intl.dart';
 
 class MemoryService {
   static const String parentBaseUrl =
-      'https://btjcczvg-8000.asse.devtunnels.ms/parents';
+      'https://x4mf7d5w-8000.asse.devtunnels.ms/parents';
   static const String childBaseUrl =
-      'https://btjcczvg-8000.asse.devtunnels.ms/childrens';
-  static const String baseUrl = 'https://btjcczvg-8000.asse.devtunnels.ms';
+      'https://x4mf7d5w-8000.asse.devtunnels.ms/childrens';
+  static const String baseUrl = 'https://x4mf7d5w-8000.asse.devtunnels.ms/';
 
   static Future<Map<String, dynamic>?> generateDigitSequence() async {
     print("🔄 Fetching digit sequence...");

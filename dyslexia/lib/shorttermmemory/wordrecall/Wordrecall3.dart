@@ -1,43 +1,88 @@
-import 'package:dyslexia/shorttermmemory/wordrecall/Wordrecall4.dart';
 import 'package:flutter/material.dart';
 
-class WordRecallTaskScreen3 extends StatefulWidget {
+class WordRecallTaskScreen extends StatefulWidget {
   final String? wordToShow;
+  final int level; // Track level number
 
-  const WordRecallTaskScreen3({super.key, required this.wordToShow});
+  const WordRecallTaskScreen({
+    super.key,
+    required this.wordToShow,
+    required this.level,
+  });
 
   @override
   _WordRecallTaskScreenState createState() => _WordRecallTaskScreenState();
 }
 
-class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
-  List<String> _selectedWords = []; // To hold the selected words
-  final List<String> _wordOptions = [
-    'AN',
-    'AT',
-    'BY',
-    'DO',
-    'GO',
-    'HE',
-    'IF',
-    'IN',
-    'IS',
-    'IT',
-    'ME',
-    'NO',
-    'OF',
-    'ON',
-    'OR',
-    'TO',
-    'UP',
-    'WE',
-    'YE',
-  ]; // Word options
+class _WordRecallTaskScreenState extends State<WordRecallTaskScreen> {
+  List<String> _selectedWords = [];
+  List<String> _wordOptions = [];
 
   @override
   void initState() {
     super.initState();
-    print(widget.wordToShow); // Debugging log
+    _initializeWordOptions();
+  }
+
+  // Initialize words based on level
+  void _initializeWordOptions() {
+    switch (widget.level) {
+      case 1:
+        _wordOptions = [
+          'AN',
+          'AT',
+          'BY',
+          'DO',
+          'GO',
+          'HE',
+          'IF',
+          'IN',
+          'IS',
+          'IT',
+        ];
+        break;
+      case 2:
+        _wordOptions = [
+          'CAT',
+          'DOG',
+          'SUN',
+          'HAT',
+          'PEN',
+          'CAR',
+          'BAT',
+          'TOP',
+          'RED',
+          'BOX',
+        ];
+        break;
+      case 3:
+        _wordOptions = [
+          'LION',
+          'FISH',
+          'TREE',
+          'STAR',
+          'MOON',
+          'BIRD',
+          'WIND',
+          'ROCK',
+          'COLD',
+        ];
+        break;
+      case 4:
+        _wordOptions = [
+          'PLANT',
+          'CHAIR',
+          'TABLE',
+          'HORSE',
+          'WATER',
+          'HOUSE',
+          'APPLE',
+        ];
+        break;
+      default:
+        _wordOptions = ['SCHOOL', 'GARDEN', 'MOUNTAIN', 'FLOWERS'];
+        break;
+    }
   }
 
   @override
@@ -47,20 +92,18 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // Remove color from AppBar
-        elevation: 0, // Remove shadow
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black), // Menu icon color
-          onPressed: () {}, // Add menu functionality here
+          icon: const Icon(Icons.menu, color: Colors.black),
+          onPressed: () {},
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
               radius: screenWidth * 0.07,
-              backgroundImage: AssetImage(
-                'assets/images/user.png',
-              ), // Profile image
+              backgroundImage: const AssetImage('assets/images/user.png'),
             ),
           ),
         ],
@@ -80,28 +123,23 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
               ),
             ),
             SizedBox(height: screenHeight * 0.02),
-            Image.asset(
-              'assets/images/panda.png', // Replace with your panda image path
-              height: screenHeight * 0.2,
-            ),
-            SizedBox(height: screenHeight * 0.02),
-
+            Image.asset('assets/images/panda.png', height: screenHeight * 0.2),
             SizedBox(height: screenHeight * 0.02),
 
             // Box displaying selected words
             Container(
-              height: screenHeight * 0.15, // Size of the box
+              height: screenHeight * 0.15,
               width: double.infinity,
               margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               decoration: BoxDecoration(
-                color: Colors.deepPurple.shade100, // Slightly darker background
+                color: Colors.deepPurple.shade100,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: Text(
                   _selectedWords.isEmpty ? "---" : _selectedWords.join(', '),
                   style: const TextStyle(
-                    fontSize: 40, // Set font size
+                    fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -110,7 +148,6 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
             ),
             SizedBox(height: screenHeight * 0.02),
 
-            // Make sure the GridView takes up available space but doesn't overflow
             Expanded(
               child: GridView.builder(
                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
@@ -124,10 +161,7 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
                 itemBuilder: (context, index) {
                   return ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Colors
-                              .deepPurple
-                              .shade200, // Light deep purple button
+                      backgroundColor: Colors.deepPurple.shade200,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -142,8 +176,7 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color:
-                            Colors.white, // White text on buttons for contrast
+                        color: Colors.white,
                       ),
                     ),
                   );
@@ -156,8 +189,7 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
             // Submit Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    Colors.deepPurple, // Deep purple for submit button
+                backgroundColor: Colors.deepPurple,
                 padding: EdgeInsets.symmetric(
                   horizontal: screenWidth * 0.2,
                   vertical: screenHeight * 0.02,
@@ -171,10 +203,7 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
               },
               child: const Text(
                 'Submit',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                ), // White text
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
 
@@ -188,13 +217,31 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
   // Function to check if user selected the correct word
   void _checkSuccess(BuildContext context) {
     if (_selectedWords.contains(widget.wordToShow)) {
-      // Navigate to Success Screen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => WordRecallTaskLevel4()),
-      );
+      // Move to next level
+      int nextLevel = widget.level + 1;
+
+      if (nextLevel <= 4) {
+        // Ensure the next level is not beyond level 4
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => WordRecallTaskScreen(
+                  wordToShow: getNextWord(nextLevel),
+                  level: nextLevel,
+                ),
+          ),
+        );
+      } else {
+        // Handle if all levels are completed (optional)
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Congratulations, you've completed all levels!"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     } else {
-      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Incorrect! Try Again."),
@@ -202,5 +249,28 @@ class _WordRecallTaskScreenState extends State<WordRecallTaskScreen3> {
         ),
       );
     }
+  }
+
+  // Get next word based on level
+  String getNextWord(int level) {
+    List<String> words = [];
+    switch (level) {
+      case 1:
+        words = ['AN', 'AT', 'BY', 'DO'];
+        break;
+      case 2:
+        words = ['CAT', 'DOG', 'SUN', 'HAT'];
+        break;
+      case 3:
+        words = ['LION', 'FISH', 'TREE', 'STAR'];
+        break;
+      case 4:
+        words = ['PLANT', 'CHAIR', 'TABLE', 'HORSE'];
+        break;
+      default:
+        words = ['SCHOOL', 'GARDEN', 'MOUNTAIN', 'FLOWERS'];
+        break;
+    }
+    return words[0]; // Select first word (you can randomize this)
   }
 }
