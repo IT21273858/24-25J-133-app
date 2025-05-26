@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:dyslexia/serviceprovider/drawing.dart';
+import 'package:dyslexia/serviceprovider/Sketch.dart';
 import 'package:dyslexia/serviceprovider/timer.dart';
 import 'package:dyslexia/services/game_service.dart';
 import 'package:dyslexia/variables.dart';
@@ -23,7 +23,7 @@ class _VisualprocessingDrawshapeLearningState
     extends State<VisualprocessingDrawshapeLearning> {
   final GlobalKey _globalKey = GlobalKey();
   List<Offset?> _points = [];
-  List<String> shapes = ["Circle", "Square", "Triangle"];
+  List<String> shapes = ["Circle", "Square", "Triangle", "Star", "Airplane"];
   late String displayText;
   String textInstruction = "Draw the above-mentioned shape";
   String? predictedShape;
@@ -97,22 +97,25 @@ class _VisualprocessingDrawshapeLearningState
       if (response != null) {
         setState(() {
           print("Response is  ${response}");
-          predictedShape = response['prediction']['class'];
-          confidence = response['prediction']['confidence'];
+          predictedShape = response['prediction'];
+          confidence = response['confidence'];
         });
+
         if (predictedShape!.toLowerCase() == displayText.toLowerCase()) {
+          print("Setting gif");
           setState(() {
             showSuccessGif = true;
           });
-          // generateNewShape();
           Future.delayed(Duration(seconds: 3), () {
             setState(() {
               showSuccessGif = false;
+              generateNewShape();
             });
           });
         }
+        _points.clear();
 
-        print("✅ Predicted Shape: ${predictedShape}, ${confidence}");
+        print("✅ Predicted Shape: ${predictedShape}");
       } else {
         print("❌ No shape detected");
       }
@@ -417,6 +420,10 @@ String getLoaderGif(String shape) {
       return 'assets/images/square-loader.gif';
     case "triangle":
       return 'assets/images/triangle-loader.gif';
+    case "star":
+      return 'assets/images/star-loader.gif';
+    case "airplane":
+      return 'assets/images/airplane-loader.gif';
     default:
       return 'assets/images/triangle_shape.gif';
   }

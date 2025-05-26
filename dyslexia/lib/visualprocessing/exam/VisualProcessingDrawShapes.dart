@@ -23,7 +23,7 @@ class _VisualprocessingDrawshapesState
     extends State<VisualprocessingDrawshapes> {
   final GlobalKey _globalKey = GlobalKey();
   List<Offset?> _points = [];
-  List<String> shapes = ["Circle", "Square", "Triangle"];
+  List<String> shapes = ["Circle", "Square", "Triangle", "Star", "Airplane"];
   late String displayText;
   String textInstruction = "Draw the above-mentioned shape";
   String? predictedShape;
@@ -96,14 +96,14 @@ class _VisualprocessingDrawshapesState
       if (response != null) {
         setState(() {
           print("Response is  ${response}");
-          predictedShape = response['prediction']['class'];
+          predictedShape = response['prediction'];
         });
+
         if (predictedShape!.toLowerCase() == displayText.toLowerCase()) {
           print("Setting gif");
           setState(() {
             showSuccessGif = true;
           });
-          // generateNewShape();
           Future.delayed(Duration(seconds: 3), () {
             setState(() {
               showSuccessGif = false;

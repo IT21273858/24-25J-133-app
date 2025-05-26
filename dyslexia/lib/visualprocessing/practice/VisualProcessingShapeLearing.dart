@@ -17,6 +17,10 @@ class _VisualprocessingshapelearingState
     {"name": "Square", "image": "assets/images/square_practice.jpg"},
     {"name": "Triangle", "image": "assets/images/triangle_practice.jpg"},
     {"name": "Star", "image": "assets/images/star_practice.jpg"},
+    {"name": "Hexagon", "image": "assets/images/hexagon.jpg"},
+    {"name": "Parallelogram", "image": "assets/images/parallelogram.jpg"},
+    {"name": "Rectangle", "image": "assets/images/rectangle.jpg"},
+    {"name": "Semicircle", "image": "assets/images/semicircle.jpg"},
   ];
   final TextToSpeechHelper ttsHelper = TextToSpeechHelper(); // TTS instance
   final SwiperController swiperController =

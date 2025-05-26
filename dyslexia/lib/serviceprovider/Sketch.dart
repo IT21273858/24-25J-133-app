@@ -9,7 +9,7 @@ class Drawing extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint();
     // paint.color = readingTitleColor;
-    paint.color = Colors.black;
+    paint.color = Colors.white;
     paint.strokeWidth = 4;
     paint.strokeCap = StrokeCap.round;
 

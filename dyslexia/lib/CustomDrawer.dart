@@ -8,6 +8,7 @@ import 'package:dyslexia/ReadingAssesment4F.dart';
 import 'package:dyslexia/ReadingAssesment5F.dart';
 import 'package:dyslexia/ReadingAssesment6P.dart';
 import 'package:dyslexia/ReadingAssesment7P.dart';
+import 'package:dyslexia/ReadingCheckpoint3.dart';
 import 'package:dyslexia/Readings.dart';
 import 'package:dyslexia/ScoresPage.dart';
 import 'package:dyslexia/VisualProcessTest1.dart';
@@ -22,6 +23,9 @@ import 'package:dyslexia/parent/ParentAllGameScoresPage.dart';
 import 'package:dyslexia/parent/ProfileParent.dart';
 import 'package:dyslexia/shorttermmemory/wordsrecall/WordRecallScreen1.dart';
 import 'package:dyslexia/variables.dart';
+import 'package:dyslexia/visualprocessing/GAN/GANShapeScreen.dart';
+import 'package:dyslexia/visualprocessing/GAN/GANVisualprocessingDrawshapeLearning.dart';
+import 'package:dyslexia/visualprocessing/GAN/VisualProcessingPredictPatterns.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingGameSelect.dart';
 import 'package:dyslexia/visualprocessing/practice/VisualProcessingPredictPattern.dart';
 import 'package:dyslexia/visualprocessing/VisualProcessingDrawShape.dart';
@@ -79,9 +83,29 @@ class _CustomDrawerState extends State<CustomDrawer> {
       "page": ReadingPage(),
     },
     {
+      "icon": FeatherIcons.barChart2,
+      "label": "Image generation",
+      "page": ReadCheckpointThree(),
+    },
+    {
       "icon": FeatherIcons.bookOpen,
       "label": "Learn to Draw Shape",
       "page": VisualprocessingDrawshapeLearning(),
+    },
+    {
+      "icon": FeatherIcons.gitlab,
+      "label": "Learn to GAN Shape",
+      "page": GANShapeScreen(),
+    },
+    {
+      "icon": FeatherIcons.gitlab,
+      "label": "Learn to GAN Shape",
+      "page": VisualProcessingPredictPatterns(gameId: ''),
+    },
+    {
+      "icon": FeatherIcons.gitlab,
+      "label": "Match the Shape",
+      "page": GANVisualProcessingDrawShapeLearning(),
     },
   ];
 

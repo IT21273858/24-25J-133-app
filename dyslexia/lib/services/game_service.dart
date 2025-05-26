@@ -7,10 +7,10 @@ import 'package:intl/intl.dart';
 
 class GameService {
   static const String parentBaseUrl =
-      'https://btjcczvg-8000.asse.devtunnels.ms/parents';
+      'https://57qld95f-8000.asse.devtunnels.ms/parents';
   static const String childBaseUrl =
-      'https://btjcczvg-8000.asse.devtunnels.ms/childrens';
-  static const String baseUrl = 'https://btjcczvg-8000.asse.devtunnels.ms';
+      'https://57qld95f-8000.asse.devtunnels.ms/childrens';
+  static const String baseUrl = 'https://57qld95f-8000.asse.devtunnels.ms';
 
   static Future<Map<String, dynamic>?> getScoresDetails() async {
     try {
@@ -176,8 +176,12 @@ class GameService {
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('$baseUrl/predict-shape'),
+        Uri.parse('$baseUrl/predict-new-shape'),
       );
+      // var request = http.MultipartRequest(
+      //   'POST',
+      //   Uri.parse('$baseUrl/predict-shape'),
+      // );
 
       request.headers["Authorization"] = "Bearer $token";
       request.files.add(await http.MultipartFile.fromPath('image', file.path));
@@ -231,6 +235,51 @@ class GameService {
     } catch (e) {
       print("⚠️ Error in verifyGame: $e");
       return {"status": false, "message": "An error occurred"};
+    }
+  }
+
+  static Future<String?> generateGANShape(String label) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/generate-gan-shape'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'label': label}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['image_base64']; // Get base64 image string
+      } else {
+        print("Error: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error generating GAN shape: $e");
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getGANShape(String shapeName) async {
+    try {
+      print("Fetching GAN shape image for: $shapeName");
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/get-gan-shape'),
+        body: jsonEncode({"shape": shapeName}),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        print("✅ GAN shape response: $responseData");
+        return responseData; // Expected to return {"image_base64": "..."}
+      } else {
+        print("❌ GAN shape API error: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("❌ Exception in getGANShape: $e");
+      return null;
     }
   }
 }

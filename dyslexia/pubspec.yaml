@@ -127,6 +127,15 @@ flutter:
     - assets/images/triangle-loader.gif
     - assets/images/star_practice.jpg
     - assets/images/gogflat.gif
+    - assets/images/airplane-loader.gif
+    - assets/images/star-loader.gif
+    - assets/images/hexagon.jpg
+    - assets/images/parallelogram.jpg
+    - assets/images/rectangle.jpg
+    - assets/images/semicircle.jpg
+    - assets/images/learnshape.gif
+    - assets/images/matchshape.gif
+    - assets/images/drawlearn.gif
 
     - assets/images/panda.png
     - assets/images/bunny1.png

@@ -1,6 +1,8 @@
 import 'package:dyslexia/CustomDrawer.dart';
 import 'package:dyslexia/VisualProcessTest1.dart';
 import 'package:dyslexia/variables.dart';
+import 'package:dyslexia/visualprocessing/GAN/GANShapeScreen.dart';
+import 'package:dyslexia/visualprocessing/GAN/GANVisualprocessingDrawshapeLearning.dart';
 import 'package:dyslexia/visualprocessing/practice/VisualProcessingPredictPattern.dart';
 import 'package:dyslexia/visualprocessing/practice/VisualProcessingDrawShapeLearning.dart';
 import 'package:dyslexia/visualprocessing/practice/VisualProcessingPredictShapesLearning.dart';
@@ -17,8 +19,18 @@ class Learningselectionpage extends StatelessWidget {
     },
     {
       "title": "Draw And Learn",
-      "image": "assets/images/Shapes_gif.gif",
+      "image": "assets/images/drawlearn.gif",
       "page": VisualprocessingDrawshapeLearning(),
+    },
+    {
+      "title": "Learn Shapes",
+      "image": "assets/images/learnshape.gif",
+      "page": GANShapeScreen(),
+    },
+    {
+      "title": "Match the Shapes",
+      "image": "assets/images/matchshape.gif",
+      "page": GANVisualProcessingDrawShapeLearning(),
     },
     {
       "title": "Find Shape",

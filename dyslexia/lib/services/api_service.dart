@@ -6,9 +6,9 @@ import 'package:intl/intl.dart';
 
 class ApiService {
   static const String parentBaseUrl =
-      'https://btjcczvg-8000.asse.devtunnels.ms/parents';
+      'https://57qld95f-8000.asse.devtunnels.ms/parents';
   static const String childBaseUrl =
-      'https://btjcczvg-8000.asse.devtunnels.ms/childrens';
+      'https://57qld95f-8000.asse.devtunnels.ms/childrens';
 
   /// **Login Function**
   static Future<Map<String, dynamic>?> loginUser(
